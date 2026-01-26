@@ -1,5 +1,6 @@
 import QRCodeStyling from 'qr-code-styling';
 import type { QRConfig } from '@/lib/types/qr-config';
+import { isGradient } from '@/lib/types/gradient';
 
 /**
  * Creates a QRCodeStyling instance with the given configuration.
@@ -7,11 +8,33 @@ import type { QRConfig } from '@/lib/types/qr-config';
  * Uses Error Correction Level H (30% recovery capacity) for maximum resilience
  * against damage and logo overlays. Includes ISO 18004 compliant 4-module quiet zone.
  *
- * @param config - QR code configuration (data, colors, scale)
+ * Supports advanced styling:
+ * - Gradient or solid foreground colors
+ * - All dot style options (square, dots, rounded, classy, classy-rounded, extra-rounded)
+ * - Corner square and corner dot styles
+ * - Logo overlay with hideBackgroundDots
+ *
+ * @param config - QR code configuration (data, colors, scale, styles, logo)
  * @returns QRCodeStyling instance
  */
 export function createQRCode(config: QRConfig): QRCodeStyling {
   const size = (config.scale || 10) * 25; // Approximate size based on scale
+
+  // Determine dot color/gradient
+  const dotsColor = config.foregroundGradient && isGradient(config.foregroundGradient)
+    ? undefined
+    : config.foreground;
+
+  const dotsGradient = config.foregroundGradient && isGradient(config.foregroundGradient)
+    ? config.foregroundGradient
+    : undefined;
+
+  // Build image options if logo is provided
+  const imageOptions = config.logo ? {
+    hideBackgroundDots: config.logo.hideBackgroundDots,
+    imageSize: config.logo.size,
+    margin: config.logo.margin,
+  } : undefined;
 
   return new QRCodeStyling({
     width: size,
@@ -22,20 +45,25 @@ export function createQRCode(config: QRConfig): QRCodeStyling {
       errorCorrectionLevel: 'H', // TECH-01: Always use highest error correction (30% recovery)
     },
     dotsOptions: {
-      color: config.foreground,
-      type: 'square',
+      color: dotsColor,
+      gradient: dotsGradient,
+      type: config.dotsStyle || 'square',
     },
     backgroundOptions: {
       color: config.background === 'transparent' ? 'transparent' : config.background,
     },
     cornersSquareOptions: {
-      color: config.foreground,
-      type: 'square',
+      color: dotsColor,
+      gradient: dotsGradient,
+      type: config.cornersSquareStyle || 'square',
     },
     cornersDotOptions: {
-      color: config.foreground,
-      type: 'square',
+      color: dotsColor,
+      gradient: dotsGradient,
+      type: config.cornersDotStyle || 'square',
     },
+    image: config.logo?.image,
+    imageOptions,
   });
 }
 
@@ -118,30 +146,9 @@ export async function generateQRDataURL(
   try {
     const size = width || (config.scale || 10) * 25;
 
-    const qrCode = new QRCodeStyling({
-      width: size,
-      height: size,
-      data: config.data,
-      margin: Math.round(size * 0.1), // ~10% margin for quiet zone
-      qrOptions: {
-        errorCorrectionLevel: 'H',
-      },
-      dotsOptions: {
-        color: config.foreground,
-        type: 'square',
-      },
-      backgroundOptions: {
-        color: config.background === 'transparent' ? 'transparent' : config.background,
-      },
-      cornersSquareOptions: {
-        color: config.foreground,
-        type: 'square',
-      },
-      cornersDotOptions: {
-        color: config.foreground,
-        type: 'square',
-      },
-    });
+    // Use createQRCode for consistent styling with advanced options
+    const configWithSize = { ...config, scale: Math.round(size / 25) };
+    const qrCode = createQRCode(configWithSize);
 
     const rawData = await qrCode.getRawData('png');
     if (!rawData) {
