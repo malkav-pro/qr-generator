@@ -13,9 +13,12 @@ import {
   CornerSquareStylePicker,
   CornerDotStylePicker,
   LogoUploader,
+  ShareButton,
 } from '@/components';
 import { useQRCode } from '@/hooks/useQRCode';
+import { useURLState } from '@/hooks/useURLState';
 import { extractSolidColor, parseGradientCSS } from '@/lib/utils/gradient-parser';
+import { fromShareableConfig, type ShareableConfig } from '@/lib/url-state';
 import type {
   QRType,
   EmailData,
@@ -109,6 +112,54 @@ export default function Home() {
       : undefined,
   };
 
+  // URL state synchronization - restore config from URL on mount
+  const handleRestore = useCallback((restored: ShareableConfig) => {
+    // Preserve existing logo when restoring from URL
+    const fullConfig = fromShareableConfig(restored, logo ? {
+      image: logo,
+      size: 0.25,
+      margin: 0,
+      hideBackgroundDots: true,
+    } : undefined);
+
+    // Restore all state from config
+    setQrType(fullConfig.type);
+    setData(fullConfig.data);
+    setBackground(fullConfig.background);
+
+    // Restore gradient or solid foreground
+    if (fullConfig.foregroundGradient) {
+      setColorMode('gradient');
+      const gradient = fullConfig.foregroundGradient;
+      setGradientStart(gradient.colorStops[0].color);
+      setGradientEnd(gradient.colorStops[1].color);
+
+      // Determine gradient type from rotation
+      const rotation = gradient.rotation;
+      if (gradient.type === 'radial') {
+        setGradientType('radial');
+      } else if (rotation === Math.PI / 2) {
+        setGradientType('vertical');
+      } else if (rotation === (3 * Math.PI) / 4) {
+        setGradientType('diagonal');
+      } else {
+        setGradientType('horizontal');
+      }
+    } else {
+      setColorMode('solid');
+      setForeground(fullConfig.foreground);
+    }
+
+    // Restore styles
+    if (fullConfig.dotsStyle) setDotsStyle(fullConfig.dotsStyle);
+    if (fullConfig.cornersSquareStyle) setCornersSquareStyle(fullConfig.cornersSquareStyle);
+    if (fullConfig.cornersDotStyle) setCornersDotStyle(fullConfig.cornersDotStyle);
+    if (fullConfig.cornersSquareColor) setCornerSquareColor(fullConfig.cornersSquareColor);
+    if (fullConfig.cornersDotColor) setCornerDotColor(fullConfig.cornersDotColor);
+  }, [logo]);
+
+  useURLState(qrConfig, handleRestore, { delay: 500 });
+
   // Use the QR code hook with 300ms debounce (PREVIEW-02)
   const { canvasRef, isGenerating, error } = useQRCode(qrConfig, 300);
 
@@ -145,13 +196,13 @@ export default function Home() {
                 isGenerating={isGenerating}
                 error={error}
               />
-              <div className="mt-6">
+              <div className="mt-6 flex flex-col sm:flex-row gap-3">
                 <ExportButton
                   qrConfig={qrConfig}
                   disabled={!canExport}
                   filename="qrcode"
                 />
-                
+                <ShareButton className="w-full sm:w-auto" />
               </div>
             </div>
           </section>
