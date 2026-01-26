@@ -11,6 +11,25 @@ export function ContrastWarning({
   background,
   minRatio = 12,
 }: ContrastWarningProps) {
+  const isTransparent = background === 'transparent';
+
+  // Can't calculate contrast with transparent background
+  if (isTransparent) {
+    return (
+      <div className="p-4 rounded-md border-2 bg-blue-50 border-blue-400">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl text-blue-600">ℹ</span>
+          <div>
+            <p className="font-medium text-sm">Transparent Background</p>
+            <p className="text-xs text-blue-700 mt-1">
+              Contrast depends on where the QR code is placed
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const ratio = calculateContrastRatio(foreground, background);
   const isGood = ratio >= minRatio;
 

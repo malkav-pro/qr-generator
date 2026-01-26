@@ -1,26 +1,50 @@
-import QRCode from 'qrcode';
+import QRCodeStyling from 'qr-code-styling';
 import type { QRConfig } from '@/lib/types/qr-config';
 
 /**
- * Generates a QR code and renders it to a canvas element.
+ * Creates a QRCodeStyling instance with the given configuration.
  *
  * Uses Error Correction Level H (30% recovery capacity) for maximum resilience
  * against damage and logo overlays. Includes ISO 18004 compliant 4-module quiet zone.
  *
+ * @param config - QR code configuration (data, colors, scale)
+ * @returns QRCodeStyling instance
+ */
+export function createQRCode(config: QRConfig): QRCodeStyling {
+  const size = (config.scale || 10) * 25; // Approximate size based on scale
+
+  return new QRCodeStyling({
+    width: size,
+    height: size,
+    data: config.data || '',
+    margin: 4 * (config.scale || 10), // TECH-02: 4-module quiet zone scaled
+    qrOptions: {
+      errorCorrectionLevel: 'H', // TECH-01: Always use highest error correction (30% recovery)
+    },
+    dotsOptions: {
+      color: config.foreground,
+      type: 'square',
+    },
+    backgroundOptions: {
+      color: config.background === 'transparent' ? 'transparent' : config.background,
+    },
+    cornersSquareOptions: {
+      color: config.foreground,
+      type: 'square',
+    },
+    cornersDotOptions: {
+      color: config.foreground,
+      type: 'square',
+    },
+  });
+}
+
+/**
+ * Generates a QR code and renders it to a canvas element.
+ *
  * @param canvas - HTML canvas element to render the QR code to
  * @param config - QR code configuration (data, colors, scale)
  * @throws Error if QR generation fails or data is invalid
- *
- * @example
- * const canvas = canvasRef.current;
- * await generateQRCode(canvas, {
- *   type: 'url',
- *   data: 'https://example.com',
- *   foreground: '#000000',
- *   background: '#ffffff',
- *   errorCorrectionLevel: 'H',
- *   scale: 10
- * });
  */
 export async function generateQRCode(
   canvas: HTMLCanvasElement,
@@ -36,14 +60,37 @@ export async function generateQRCode(
   }
 
   try {
-    await QRCode.toCanvas(canvas, config.data, {
-      errorCorrectionLevel: 'H',  // TECH-01: Always use highest error correction (30% recovery)
-      margin: 4,                   // TECH-02: ISO 18004 compliant 4-module quiet zone
-      color: {
-        dark: config.foreground,   // Foreground color for dark modules
-        light: config.background   // Background color for light modules
-      },
-      scale: config.scale || 10    // Module size multiplier (default 10)
+    const qrCode = createQRCode(config);
+    const rawData = await qrCode.getRawData('png');
+
+    if (!rawData) {
+      throw new Error('Failed to generate QR code blob');
+    }
+
+    // In browser environment, rawData is a Blob
+    const blob = rawData as Blob;
+
+    // Load the blob as an image and draw to canvas
+    const img = new Image();
+    const url = URL.createObjectURL(blob);
+
+    await new Promise<void>((resolve, reject) => {
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0);
+        }
+        URL.revokeObjectURL(url);
+        resolve();
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error('Failed to load QR code image'));
+      };
+      img.src = url;
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
@@ -54,28 +101,10 @@ export async function generateQRCode(
 /**
  * Generates a QR code and returns it as a data URL (base64-encoded PNG).
  *
- * Uses Error Correction Level H (30% recovery capacity) for maximum resilience.
- * Includes ISO 18004 compliant 4-module quiet zone.
- *
- * Useful for exporting QR codes as images or displaying in <img> tags.
- *
  * @param config - QR code configuration (data, colors, scale)
  * @param width - Optional width in pixels for the generated image
  * @returns Promise resolving to data URL string (data:image/png;base64,...)
  * @throws Error if QR generation fails or data is invalid
- *
- * @example
- * const dataUrl = await generateQRDataURL({
- *   type: 'url',
- *   data: 'https://example.com',
- *   foreground: '#000000',
- *   background: '#ffffff',
- *   errorCorrectionLevel: 'H',
- *   scale: 10
- * }, 1000);
- *
- * // Use in <img> tag
- * <img src={dataUrl} alt="QR Code" />
  */
 export async function generateQRDataURL(
   config: QRConfig,
@@ -87,22 +116,47 @@ export async function generateQRDataURL(
   }
 
   try {
-    const options: QRCode.QRCodeToDataURLOptions = {
-      errorCorrectionLevel: 'H',  // TECH-01: Always use highest error correction (30% recovery)
-      margin: 4,                   // TECH-02: ISO 18004 compliant 4-module quiet zone
-      color: {
-        dark: config.foreground,   // Foreground color for dark modules
-        light: config.background   // Background color for light modules
-      },
-      scale: config.scale || 10    // Module size multiplier (default 10)
-    };
+    const size = width || (config.scale || 10) * 25;
 
-    // Add width if specified
-    if (width) {
-      options.width = width;
+    const qrCode = new QRCodeStyling({
+      width: size,
+      height: size,
+      data: config.data,
+      margin: Math.round(size * 0.1), // ~10% margin for quiet zone
+      qrOptions: {
+        errorCorrectionLevel: 'H',
+      },
+      dotsOptions: {
+        color: config.foreground,
+        type: 'square',
+      },
+      backgroundOptions: {
+        color: config.background === 'transparent' ? 'transparent' : config.background,
+      },
+      cornersSquareOptions: {
+        color: config.foreground,
+        type: 'square',
+      },
+      cornersDotOptions: {
+        color: config.foreground,
+        type: 'square',
+      },
+    });
+
+    const rawData = await qrCode.getRawData('png');
+    if (!rawData) {
+      throw new Error('Failed to generate QR code blob');
     }
 
-    return await QRCode.toDataURL(config.data, options);
+    // In browser environment, rawData is a Blob
+    const blob = rawData as Blob;
+
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = () => reject(new Error('Failed to convert blob to data URL'));
+      reader.readAsDataURL(blob);
+    });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     throw new Error(`Failed to generate QR code data URL: ${message}`);

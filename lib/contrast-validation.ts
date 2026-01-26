@@ -61,12 +61,17 @@ export function calculateContrastRatio(color1: string, color2: string): number {
 /**
  * Validate that two colors meet a minimum contrast ratio
  * Default minimum is 12:1 for QR code scannability
+ * Returns true for transparent backgrounds (contrast depends on placement)
  */
 export function validateContrast(
   fg: string,
   bg: string,
   minRatio: number = 12
 ): boolean {
+  // Transparent backgrounds can't be validated - allow export
+  if (bg === 'transparent') {
+    return true;
+  }
   const ratio = calculateContrastRatio(fg, bg);
   return ratio >= minRatio;
 }

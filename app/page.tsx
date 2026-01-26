@@ -144,6 +144,7 @@ export default function Home() {
                   label="Background"
                   color={background}
                   onChange={setBackground}
+                  allowTransparent
                 />
               </div>
               <div className="mt-6">
