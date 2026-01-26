@@ -2,15 +2,20 @@
 
 import { useState } from 'react';
 import { HexColorPicker } from 'react-colorful';
-import GradientPicker from 'react-best-gradient-color-picker';
+
+type GradientType = 'horizontal' | 'vertical' | 'diagonal' | 'radial';
 
 interface GradientColorPickerProps {
   label: string;
   solidColor: string;                    // Hex color for solid mode
-  gradientCSS: string;                   // CSS gradient string for gradient mode
+  gradientStart: string;                 // Start color for gradient
+  gradientEnd: string;                   // End color for gradient
+  gradientType: GradientType;            // Direction/type of gradient
   mode: 'solid' | 'gradient';            // Current mode
   onSolidChange: (color: string) => void;
-  onGradientChange: (css: string) => void;
+  onGradientStartChange: (color: string) => void;
+  onGradientEndChange: (color: string) => void;
+  onGradientTypeChange: (type: GradientType) => void;
   onModeChange: (mode: 'solid' | 'gradient') => void;
 }
 
@@ -21,13 +26,18 @@ function isValidHex(value: string): boolean {
 export function GradientColorPicker({
   label,
   solidColor,
-  gradientCSS,
+  gradientStart,
+  gradientEnd,
+  gradientType,
   mode,
   onSolidChange,
-  onGradientChange,
+  onGradientStartChange,
+  onGradientEndChange,
+  onGradientTypeChange,
   onModeChange,
 }: GradientColorPickerProps) {
   const [showPicker, setShowPicker] = useState(false);
+  const [activeGradientField, setActiveGradientField] = useState<'start' | 'end'>('start');
 
   const handleHexInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
@@ -43,7 +53,27 @@ export function GradientColorPicker({
     }
   };
 
+  const handleGradientHexInput = (
+    field: 'start' | 'end',
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    let value = e.target.value;
+    if (value && !value.startsWith('#')) {
+      value = `#${value}`;
+    }
+
+    if (field === 'start') {
+      onGradientStartChange(value);
+    } else {
+      onGradientEndChange(value);
+    }
+  };
+
   const isValidSolid = isValidHex(solidColor);
+  const isValidStart = isValidHex(gradientStart);
+  const isValidEnd = isValidHex(gradientEnd);
+
+  const gradientCSS = buildGradientCSS(gradientType, gradientStart, gradientEnd);
 
   // Generate preview style based on mode
   const previewStyle: React.CSSProperties = mode === 'solid' 
@@ -89,7 +119,7 @@ export function GradientColorPicker({
               value={solidColor}
               onChange={handleHexInput}
               placeholder="#000000"
-              className={`flex-1 px-3 py-2 border rounded-md font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              className={`flex-1 px-3 py-2 border rounded-md font-mono text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 isValidSolid ? 'border-gray-300' : 'border-red-400 bg-red-50'
               }`}
               maxLength={7}
@@ -127,15 +157,123 @@ export function GradientColorPicker({
             aria-label={`${label} gradient preview`}
           />
 
-          {/* Gradient picker */}
-          <div className="pt-2">
-            <GradientPicker
-              value={gradientCSS}
-              onChange={onGradientChange}
-            />
+          <div className="grid gap-3 sm:grid-cols-[1fr_1fr]">
+            <div className="space-y-2">
+              <label className="block text-xs font-medium text-gray-600">Start color</label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={gradientStart}
+                  onChange={(e) => handleGradientHexInput('start', e)}
+                  placeholder="#000000"
+                  className={`flex-1 px-3 py-2 border rounded-md font-mono text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    isValidStart ? 'border-gray-300' : 'border-red-400 bg-red-50'
+                  }`}
+                  maxLength={7}
+                  onFocus={() => setActiveGradientField('start')}
+                />
+                <div
+                  className="w-10 h-10 rounded-md border-2 border-gray-300 cursor-pointer hover:border-blue-400 transition-colors"
+                  style={{ backgroundColor: isValidStart ? gradientStart : '#fff' }}
+                  onClick={() => {
+                    setActiveGradientField('start');
+                    setShowPicker(!showPicker);
+                  }}
+                  title="Click to toggle color picker"
+                  aria-label={`${label} gradient start swatch`}
+                />
+              </div>
+              {!isValidStart && (
+                <p className="text-xs text-red-600">
+                  Enter a valid hex color (e.g., #FF0000 or #F00)
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-xs font-medium text-gray-600">End color</label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={gradientEnd}
+                  onChange={(e) => handleGradientHexInput('end', e)}
+                  placeholder="#333333"
+                  className={`flex-1 px-3 py-2 border rounded-md font-mono text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    isValidEnd ? 'border-gray-300' : 'border-red-400 bg-red-50'
+                  }`}
+                  maxLength={7}
+                  onFocus={() => setActiveGradientField('end')}
+                />
+                <div
+                  className="w-10 h-10 rounded-md border-2 border-gray-300 cursor-pointer hover:border-blue-400 transition-colors"
+                  style={{ backgroundColor: isValidEnd ? gradientEnd : '#fff' }}
+                  onClick={() => {
+                    setActiveGradientField('end');
+                    setShowPicker(!showPicker);
+                  }}
+                  title="Click to toggle color picker"
+                  aria-label={`${label} gradient end swatch`}
+                />
+              </div>
+              {!isValidEnd && (
+                <p className="text-xs text-red-600">
+                  Enter a valid hex color (e.g., #FF0000 or #F00)
+                </p>
+              )}
+            </div>
           </div>
+
+          <div className="space-y-2">
+            <label className="block text-xs font-medium text-gray-600">Gradient direction</label>
+            <div className="flex flex-wrap gap-2">
+              {(['horizontal', 'vertical', 'diagonal', 'radial'] as GradientType[]).map((type) => (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => onGradientTypeChange(type)}
+                  className={`px-3 py-1 text-sm rounded border transition-colors ${
+                    gradientType === type
+                      ? 'bg-blue-600 text-white border-blue-600'
+                      : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
+                  }`}
+                >
+                  {type.charAt(0).toUpperCase() + type.slice(1)}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {showPicker && (
+            <div className="pt-2">
+              <HexColorPicker
+                color={activeGradientField === 'start' ? gradientStart : gradientEnd}
+                onChange={(color) =>
+                  activeGradientField === 'start'
+                    ? onGradientStartChange(color)
+                    : onGradientEndChange(color)
+                }
+              />
+            </div>
+          )}
         </div>
       )}
     </div>
   );
+}
+
+function buildGradientCSS(type: GradientType, start: string, end: string): string {
+  const safeStart = isValidHex(start) ? start : '#000000';
+  const safeEnd = isValidHex(end) ? end : '#333333';
+
+  switch (type) {
+    case 'vertical':
+      return `linear-gradient(180deg, ${safeStart} 0%, ${safeEnd} 100%)`;
+    case 'diagonal':
+      return `linear-gradient(135deg, ${safeStart} 0%, ${safeEnd} 100%)`;
+    case 'radial':
+      return `radial-gradient(circle, ${safeStart} 0%, ${safeEnd} 100%)`;
+    case 'horizontal':
+    default:
+      return `linear-gradient(90deg, ${safeStart} 0%, ${safeEnd} 100%)`;
+  }
 }

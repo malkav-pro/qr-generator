@@ -49,7 +49,7 @@ export function ColorPicker({
 
       {/* Transparent option for background */}
       {allowTransparent && (
-        <label className="flex items-center gap-2 text-sm">
+        <label className="flex items-center gap-2 text-sm text-gray-900">
           <input
             type="checkbox"
             checked={isTransparent}
@@ -68,7 +68,7 @@ export function ColorPicker({
             value={color}
             onChange={handleHexInput}
             placeholder="#000000"
-            className={`flex-1 px-3 py-2 border rounded-md font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+            className={`flex-1 px-3 py-2 border rounded-md font-mono text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
               isValid ? 'border-gray-300' : 'border-red-400 bg-red-50'
             }`}
             maxLength={7}

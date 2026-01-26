@@ -5,13 +5,25 @@ import {
   TypeSelector,
   DataInput,
   ColorPicker,
+  GradientColorPicker,
   ContrastWarning,
   QRPreview,
   ExportButton,
+  DotStylePicker,
+  CornerSquareStylePicker,
+  CornerDotStylePicker,
+  LogoUploader,
 } from '@/components';
 import { useQRCode } from '@/hooks/useQRCode';
-import { validateContrast } from '@/lib/contrast-validation';
-import type { QRType, EmailData, QRConfig } from '@/lib/types/qr-config';
+import { extractSolidColor, parseGradientCSS } from '@/lib/utils/gradient-parser';
+import type {
+  QRType,
+  EmailData,
+  QRConfig,
+  DotType,
+  CornerSquareType,
+  CornerDotType,
+} from '@/lib/types/qr-config';
 
 export default function Home() {
   // QR Type state
@@ -26,6 +38,24 @@ export default function Home() {
   // Color customization
   const [foreground, setForeground] = useState('#000000');
   const [background, setBackground] = useState('#ffffff');
+  const [colorMode, setColorMode] = useState<'solid' | 'gradient'>('solid');
+  const [gradientStart, setGradientStart] = useState('#000000');
+  const [gradientEnd, setGradientEnd] = useState('#333333');
+  const [gradientType, setGradientType] = useState<'horizontal' | 'vertical' | 'diagonal' | 'radial'>(
+    'horizontal'
+  );
+  const [cornerSquareColor, setCornerSquareColor] = useState('#000000');
+  const [cornerDotColor, setCornerDotColor] = useState('#000000');
+
+  // Style customization
+  const [dotsStyle, setDotsStyle] = useState<DotType>('square');
+  const [cornersSquareStyle, setCornersSquareStyle] =
+    useState<CornerSquareType>('square');
+  const [cornersDotStyle, setCornersDotStyle] =
+    useState<CornerDotType>('square');
+
+  // Logo overlay
+  const [logo, setLogo] = useState<string | null>(null);
 
   // Handle type changes - clear data when switching types
   const handleTypeChange = useCallback((newType: QRType) => {
@@ -45,22 +75,46 @@ export default function Home() {
   }, []);
 
   // Build QR config from state
+  const gradientCSS =
+    colorMode === 'gradient'
+      ? buildGradientCSS(gradientType, gradientStart, gradientEnd)
+      : '';
+  const foregroundGradient =
+    colorMode === 'gradient' ? parseGradientCSS(gradientCSS) ?? undefined : undefined;
+  const effectiveForeground =
+    colorMode === 'gradient' ? extractSolidColor(gradientCSS) : foreground;
+  const contrastForeground =
+    effectiveForeground.length === 9 ? effectiveForeground.slice(0, 7) : effectiveForeground;
+
   const qrConfig: QRConfig = {
     type: qrType,
     data: data,
-    foreground: foreground,
+    foreground: effectiveForeground,
     background: background,
     errorCorrectionLevel: 'H',  // TECH-01: Always use highest error correction
-    scale: 10,
+    scale: 12,
+    foregroundGradient,
+    dotsStyle,
+    cornersSquareStyle,
+    cornersDotStyle,
+    cornersSquareColor: cornerSquareColor,
+    cornersDotColor: cornerDotColor,
+    logo: logo
+      ? {
+          image: logo,
+          size: 0.25,
+          margin: 0,
+          hideBackgroundDots: true,
+        }
+      : undefined,
   };
 
   // Use the QR code hook with 300ms debounce (PREVIEW-02)
   const { canvasRef, isGenerating, error } = useQRCode(qrConfig, 300);
 
   // Check contrast for export button disabled state
-  const hasValidContrast = validateContrast(foreground, background, 12);
   const hasData = data.trim().length > 0;
-  const canExport = hasData && hasValidContrast && !isGenerating && !error;
+  const canExport = hasData && !isGenerating && !error;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -93,15 +147,11 @@ export default function Home() {
               />
               <div className="mt-6">
                 <ExportButton
-                  canvasRef={canvasRef}
+                  qrConfig={qrConfig}
                   disabled={!canExport}
-                  filename="qrcode.png"
+                  filename="qrcode"
                 />
-                {!hasValidContrast && hasData && (
-                  <p className="mt-2 text-sm text-amber-600">
-                    Improve contrast ratio for better scan reliability
-                  </p>
-                )}
+                
               </div>
             </div>
           </section>
@@ -135,10 +185,18 @@ export default function Home() {
                 Colors
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <ColorPicker
+                <GradientColorPicker
                   label="Foreground"
-                  color={foreground}
-                  onChange={setForeground}
+                  solidColor={foreground}
+                  gradientStart={gradientStart}
+                  gradientEnd={gradientEnd}
+                  gradientType={gradientType}
+                  mode={colorMode}
+                  onSolidChange={setForeground}
+                  onGradientStartChange={setGradientStart}
+                  onGradientEndChange={setGradientEnd}
+                  onGradientTypeChange={setGradientType}
+                  onModeChange={setColorMode}
                 />
                 <ColorPicker
                   label="Background"
@@ -146,14 +204,44 @@ export default function Home() {
                   onChange={setBackground}
                   allowTransparent
                 />
-              </div>
-              <div className="mt-6">
-                <ContrastWarning
-                  foreground={foreground}
-                  background={background}
-                  minRatio={12}
+                <ColorPicker
+                  label="Corner Square Color"
+                  color={cornerSquareColor}
+                  onChange={setCornerSquareColor}
+                />
+                <ColorPicker
+                  label="Corner Dot Color"
+                  color={cornerDotColor}
+                  onChange={setCornerDotColor}
                 />
               </div>
+              
+            </div>
+
+            {/* Styles Card */}
+            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
+              <h3 className="text-lg font-semibold mb-4 text-gray-900">
+                Styles
+              </h3>
+              <div className="space-y-6">
+                <DotStylePicker value={dotsStyle} onChange={setDotsStyle} />
+                <CornerSquareStylePicker
+                  value={cornersSquareStyle}
+                  onChange={setCornersSquareStyle}
+                />
+                <CornerDotStylePicker
+                  value={cornersDotStyle}
+                  onChange={setCornersDotStyle}
+                />
+              </div>
+            </div>
+
+            {/* Logo Card */}
+            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
+              <h3 className="text-lg font-semibold mb-4 text-gray-900">
+                Logo
+              </h3>
+              <LogoUploader logo={logo} onLogoChange={setLogo} qrSize={300} />
             </div>
           </section>
         </div>
@@ -169,4 +257,22 @@ export default function Home() {
       </footer>
     </div>
   );
+}
+
+function buildGradientCSS(
+  type: 'horizontal' | 'vertical' | 'diagonal' | 'radial',
+  start: string,
+  end: string
+): string {
+  switch (type) {
+    case 'vertical':
+      return `linear-gradient(180deg, ${start} 0%, ${end} 100%)`;
+    case 'diagonal':
+      return `linear-gradient(135deg, ${start} 0%, ${end} 100%)`;
+    case 'radial':
+      return `radial-gradient(circle, ${start} 0%, ${end} 100%)`;
+    case 'horizontal':
+    default:
+      return `linear-gradient(90deg, ${start} 0%, ${end} 100%)`;
+  }
 }

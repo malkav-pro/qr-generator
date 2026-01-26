@@ -28,21 +28,23 @@ function createSVGQRCode(config: QRConfig): QRCodeStyling {
     ? config.foregroundGradient
     : undefined;
 
+  const logo = config.logo && typeof config.logo === 'object' ? config.logo : undefined;
+
   // Build image options if logo is provided
-  const imageOptions = config.logo ? {
-    hideBackgroundDots: config.logo.hideBackgroundDots,
-    imageSize: config.logo.size,
-    margin: config.logo.margin,
+  const imageOptions = logo ? {
+    hideBackgroundDots: logo.hideBackgroundDots ?? true,
+    imageSize: logo.size ?? 0.2,
+    margin: logo.margin ?? 0,
   } : undefined;
 
-  return new QRCodeStyling({
-    type: 'svg',
+  const baseOptions = {
+    type: 'svg' as const,
     width: size,
     height: size,
     data: config.data || '',
     margin: 4 * (config.scale || 10),
     qrOptions: {
-      errorCorrectionLevel: 'H',
+      errorCorrectionLevel: 'H' as const,
     },
     dotsOptions: {
       color: dotsColor,
@@ -53,17 +55,23 @@ function createSVGQRCode(config: QRConfig): QRCodeStyling {
       color: config.background === 'transparent' ? 'transparent' : config.background,
     },
     cornersSquareOptions: {
-      color: dotsColor,
-      gradient: dotsGradient,
+      color: config.cornersSquareColor || config.foreground,
       type: config.cornersSquareStyle || 'square',
     },
     cornersDotOptions: {
-      color: dotsColor,
-      gradient: dotsGradient,
+      color: config.cornersDotColor || config.foreground,
       type: config.cornersDotStyle || 'square',
     },
-    image: config.logo?.image,
-    imageOptions,
+  };
+
+  return new QRCodeStyling({
+    ...baseOptions,
+    ...(logo
+      ? {
+          image: logo.image,
+          imageOptions,
+        }
+      : {}),
   });
 }
 

@@ -29,20 +29,22 @@ export function createQRCode(config: QRConfig): QRCodeStyling {
     ? config.foregroundGradient
     : undefined;
 
+  const logo = config.logo && typeof config.logo === 'object' ? config.logo : undefined;
+
   // Build image options if logo is provided
-  const imageOptions = config.logo ? {
-    hideBackgroundDots: config.logo.hideBackgroundDots,
-    imageSize: config.logo.size,
-    margin: config.logo.margin,
+  const imageOptions = logo ? {
+    hideBackgroundDots: logo.hideBackgroundDots ?? true,
+    imageSize: logo.size ?? 0.2,
+    margin: logo.margin ?? 0,
   } : undefined;
 
-  return new QRCodeStyling({
+  const baseOptions = {
     width: size,
     height: size,
     data: config.data || '',
     margin: 4 * (config.scale || 10), // TECH-02: 4-module quiet zone scaled
     qrOptions: {
-      errorCorrectionLevel: 'H', // TECH-01: Always use highest error correction (30% recovery)
+      errorCorrectionLevel: 'H' as const, // TECH-01: Always use highest error correction (30% recovery)
     },
     dotsOptions: {
       color: dotsColor,
@@ -53,17 +55,79 @@ export function createQRCode(config: QRConfig): QRCodeStyling {
       color: config.background === 'transparent' ? 'transparent' : config.background,
     },
     cornersSquareOptions: {
-      color: dotsColor,
-      gradient: dotsGradient,
+      color: config.cornersSquareColor || config.foreground,
       type: config.cornersSquareStyle || 'square',
     },
     cornersDotOptions: {
-      color: dotsColor,
-      gradient: dotsGradient,
+      color: config.cornersDotColor || config.foreground,
       type: config.cornersDotStyle || 'square',
     },
-    image: config.logo?.image,
-    imageOptions,
+  };
+
+  return new QRCodeStyling({
+    ...baseOptions,
+    ...(logo
+      ? {
+          image: logo.image,
+          imageOptions,
+        }
+      : {}),
+  });
+}
+
+/**
+ * Creates a QRCodeStyling instance with an explicit pixel size.
+ *
+ * Useful for high-quality exports where scaling a canvas would degrade edges.
+ */
+export function createQRCodeWithSize(
+  config: QRConfig,
+  sizePx: number
+): QRCodeStyling {
+  const margin = Math.round((sizePx * 4) / 25);
+  const dotsColor = config.foregroundGradient && isGradient(config.foregroundGradient)
+    ? undefined
+    : config.foreground;
+  const dotsGradient = config.foregroundGradient && isGradient(config.foregroundGradient)
+    ? config.foregroundGradient
+    : undefined;
+  const logo = config.logo && typeof config.logo === 'object' ? config.logo : undefined;
+  const imageOptions = logo ? {
+    hideBackgroundDots: logo.hideBackgroundDots ?? true,
+    imageSize: logo.size ?? 0.2,
+    margin: logo.margin ?? 0,
+  } : undefined;
+
+  return new QRCodeStyling({
+    width: sizePx,
+    height: sizePx,
+    data: config.data || '',
+    margin,
+    qrOptions: {
+      errorCorrectionLevel: 'H' as const,
+    },
+    dotsOptions: {
+      color: dotsColor,
+      gradient: dotsGradient,
+      type: config.dotsStyle || 'square',
+    },
+    backgroundOptions: {
+      color: config.background === 'transparent' ? 'transparent' : config.background,
+    },
+    cornersSquareOptions: {
+      color: config.cornersSquareColor || config.foreground,
+      type: config.cornersSquareStyle || 'square',
+    },
+    cornersDotOptions: {
+      color: config.cornersDotColor || config.foreground,
+      type: config.cornersDotStyle || 'square',
+    },
+    ...(logo
+      ? {
+          image: logo.image,
+          imageOptions,
+        }
+      : {}),
   });
 }
 

@@ -54,10 +54,6 @@ export function QRPreview({
         style={{ minWidth: '256px', minHeight: '256px' }}
       />
 
-      {/* Helper text */}
-      <p className="mt-4 text-xs text-gray-500 text-center">
-        QR code updates automatically as you type
-      </p>
     </div>
   );
 }

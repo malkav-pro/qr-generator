@@ -45,6 +45,8 @@ export interface QRConfig {
   dotsStyle?: DotType;                   // Dot appearance style (default: 'square')
   cornersSquareStyle?: CornerSquareType; // Corner square style (default: 'square')
   cornersDotStyle?: CornerDotType;       // Corner dot style (default: 'square')
+  cornersSquareColor?: string;           // Solid color for corner squares
+  cornersDotColor?: string;              // Solid color for corner dots
   logo?: LogoConfig;                     // Optional logo overlay
 }
 

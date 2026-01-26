@@ -10,6 +10,9 @@
  * - Image viewers may show 72/96 DPI but print size will be correct
  */
 
+import type { QRConfig } from '@/lib/types/qr-config';
+import { createQRCodeWithSize } from '@/lib/qr-generation';
+
 export interface ExportOptions {
   /** Target DPI for export (default: 300) */
   dpi?: number;
@@ -17,6 +20,13 @@ export interface ExportOptions {
   widthInches?: number;
   /** Target height in inches (default: 2) */
   heightInches?: number;
+  /** Filename for download (default: 'qrcode.png') */
+  filename?: string;
+}
+
+export interface QRExportOptions {
+  /** Target size in pixels (default: 1024) */
+  sizePx?: number;
   /** Filename for download (default: 'qrcode.png') */
   filename?: string;
 }
@@ -91,6 +101,36 @@ export async function exportPNG(
       1.0 // Maximum quality
     );
   });
+}
+
+/**
+ * Export a QR code directly from configuration as a high-resolution PNG blob.
+ *
+ * Avoids canvas scaling artifacts by rendering at the target size.
+ */
+export async function exportQRCodePNG(
+  config: QRConfig,
+  options?: QRExportOptions
+): Promise<Blob> {
+  const { sizePx = 1024 } = options || {};
+
+  if (!config.data || config.data.trim() === '') {
+    throw new Error('Cannot export QR code PNG: data is empty');
+  }
+
+  try {
+    const qrCode = createQRCodeWithSize(config, sizePx);
+    const rawData = await qrCode.getRawData('png');
+
+    if (!rawData) {
+      throw new Error('Failed to generate QR code PNG blob');
+    }
+
+    return rawData as Blob;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    throw new Error(`Failed to export QR code PNG: ${message}`);
+  }
 }
 
 /**
