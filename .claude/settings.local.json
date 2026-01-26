@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git commit -m \"$\\(cat <<''EOF''\ndocs: initialize project\n\nSelf-hosted QR code generator with full visual customization, deployable to Vercel with no external dependencies.\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "WebSearch",
+      "WebFetch(domain:www.npmjs.com)",
+      "WebFetch(domain:next-qrcode.js.org)",
+      "WebFetch(domain:github.com)",
+      "Bash(git check-ignore:*)"
+    ]
+  }
+}
