@@ -1,9 +1,36 @@
+import { ColorValue, Gradient } from './gradient';
+
 export type QRType = 'url' | 'text' | 'email';
 
 export interface EmailData {
   to: string;
   subject?: string;
   body?: string;
+}
+
+/**
+ * Dot style types from qr-code-styling library
+ */
+export type DotType = 'square' | 'dots' | 'rounded' | 'classy' | 'classy-rounded' | 'extra-rounded';
+
+/**
+ * Corner square style types
+ */
+export type CornerSquareType = 'square' | 'dot' | 'extra-rounded';
+
+/**
+ * Corner dot style types
+ */
+export type CornerDotType = 'square' | 'dot';
+
+/**
+ * Logo configuration for QR code overlay
+ */
+export interface LogoConfig {
+  image: string;              // Data URL of logo image
+  size: number;               // 0-0.25, percentage of QR code size
+  margin: number;             // Margin around logo in pixels
+  hideBackgroundDots: boolean; // Whether to hide dots behind logo
 }
 
 export interface QRConfig {
@@ -13,6 +40,12 @@ export interface QRConfig {
   background: string;     // Hex color for light modules
   errorCorrectionLevel: 'L' | 'M' | 'Q' | 'H';
   scale: number;          // Module size multiplier
+  // Advanced styling options
+  foregroundGradient?: Gradient;         // Alternative to solid foreground color
+  dotsStyle?: DotType;                   // Dot appearance style (default: 'square')
+  cornersSquareStyle?: CornerSquareType; // Corner square style (default: 'square')
+  cornersDotStyle?: CornerDotType;       // Corner dot style (default: 'square')
+  logo?: LogoConfig;                     // Optional logo overlay
 }
 
 export interface ExportConfig {
