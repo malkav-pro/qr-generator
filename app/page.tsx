@@ -1,10 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { TypeSelector } from '@/components/TypeSelector';
-import { DataInput } from '@/components/DataInput';
-import { ColorPicker } from '@/components/ColorPicker';
-import { ContrastWarning } from '@/components/ContrastWarning';
+import {
+  TypeSelector,
+  DataInput,
+  ColorPicker,
+  ContrastWarning,
+  QRPreview,
+} from '@/components';
 import { useQRCode } from '@/hooks/useQRCode';
 import type { QRType, EmailData, QRConfig } from '@/lib/types/qr-config';
 
@@ -39,45 +42,63 @@ export default function Home() {
   const { canvasRef, isGenerating, error } = useQRCode(qrConfig, 300);
 
   return (
-    <div className="min-h-screen p-8">
-      <h1 className="text-2xl font-bold mb-6">QR Code Generator</h1>
+    <div className="min-h-screen p-8 bg-gray-50">
+      <div className="max-w-5xl mx-auto">
+        <h1 className="text-3xl font-bold mb-2">QR Code Generator</h1>
+        <p className="text-gray-600 mb-8">
+          Create custom QR codes with colors and multiple data types
+        </p>
 
-      <div className="max-w-4xl space-y-6">
-        <TypeSelector value={qrType} onChange={setQrType} />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Left column: Configuration */}
+          <div className="space-y-6">
+            <div className="bg-white p-6 rounded-lg shadow">
+              <h2 className="text-lg font-semibold mb-4">Content</h2>
+              <div className="space-y-4">
+                <TypeSelector value={qrType} onChange={setQrType} />
+                <DataInput
+                  type={qrType}
+                  value={data}
+                  emailData={emailData}
+                  onChange={handleDataChange}
+                  onEmailChange={handleEmailChange}
+                />
+              </div>
+            </div>
 
-        <DataInput
-          type={qrType}
-          value={data}
-          emailData={emailData}
-          onChange={handleDataChange}
-          onEmailChange={handleEmailChange}
-        />
+            <div className="bg-white p-6 rounded-lg shadow">
+              <h2 className="text-lg font-semibold mb-4">Colors</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <ColorPicker
+                  label="Foreground"
+                  color={foreground}
+                  onChange={setForeground}
+                />
+                <ColorPicker
+                  label="Background"
+                  color={background}
+                  onChange={setBackground}
+                />
+              </div>
+              <div className="mt-4">
+                <ContrastWarning
+                  foreground={foreground}
+                  background={background}
+                  minRatio={12}
+                />
+              </div>
+            </div>
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <ColorPicker
-            label="Foreground Color"
-            color={foreground}
-            onChange={setForeground}
-          />
-
-          <ColorPicker
-            label="Background Color"
-            color={background}
-            onChange={setBackground}
-          />
-        </div>
-
-        <ContrastWarning
-          foreground={foreground}
-          background={background}
-          minRatio={12}
-        />
-
-        <div className="mt-6 p-4 border border-gray-300 rounded-lg">
-          <h2 className="text-lg font-semibold mb-2">QR Code Preview</h2>
-          {isGenerating && <p className="text-blue-600 mb-2">Generating...</p>}
-          {error && <p className="text-red-600 mb-2">Error: {error}</p>}
-          <canvas ref={canvasRef} className="border border-gray-200"></canvas>
+          {/* Right column: Preview */}
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h2 className="text-lg font-semibold mb-4">Preview</h2>
+            <QRPreview
+              canvasRef={canvasRef}
+              isGenerating={isGenerating}
+              error={error}
+            />
+          </div>
         </div>
       </div>
     </div>
