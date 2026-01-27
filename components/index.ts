@@ -10,3 +10,7 @@ export { ShareButton } from './ShareButton';
 export { DotStylePicker, CornerSquareStylePicker, CornerDotStylePicker } from './StylePicker';
 export { DotStylePreview, CornerSquarePreview, CornerDotPreview } from './style-previews';
 export { Footer } from './Footer';
+
+// New form components
+export { FormFieldSet } from './forms';
+export { UrlForm, TextForm, EmailForm } from './forms/qr-forms';
