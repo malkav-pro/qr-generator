@@ -5,6 +5,7 @@ import { EmailForm } from '@/components/forms/qr-forms/EmailForm';
 import { WhatsAppForm } from '@/components/forms/qr-forms/WhatsAppForm';
 import { WiFiForm } from '@/components/forms/qr-forms/WiFiForm';
 import { VCardForm } from '@/components/forms/qr-forms/VCardForm';
+import { TelegramForm } from '@/components/forms/qr-forms/TelegramForm';
 import { QRTypeKey } from './formatters';
 
 // Common props all QR form components accept
@@ -21,6 +22,7 @@ export const qrFormRegistry: Record<QRTypeKey, ComponentType<QRFormProps>> = {
   whatsapp: WhatsAppForm,
   wifi: WiFiForm,
   vcard: VCardForm,
+  telegram: TelegramForm,
 };
 
 // Get form component for a QR type (type-safe lookup)

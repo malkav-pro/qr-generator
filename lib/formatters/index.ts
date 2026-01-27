@@ -16,6 +16,9 @@ export { wifiSchema, type WiFiData, formatWiFi } from './wifi';
 // vCard type
 export { vcardSchema, type VCardData, formatVCard, getVCardCharacterCount } from './vcard';
 
+// Telegram type
+export { telegramSchema, type TelegramData, formatTelegram } from './telegram';
+
 // QR type keys for registry (v1.0 types + v1.1 simple/complex types)
-export const QR_TYPES = ['url', 'text', 'email', 'whatsapp', 'wifi', 'vcard'] as const;
+export const QR_TYPES = ['url', 'text', 'email', 'whatsapp', 'wifi', 'vcard', 'telegram'] as const;
 export type QRTypeKey = typeof QR_TYPES[number];
