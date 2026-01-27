@@ -150,7 +150,7 @@ export default function Home() {
     if (fullConfig.cornersDotColor) setCornerDotColor(fullConfig.cornersDotColor);
   }, [logo]);
 
-  useURLState(qrConfig, handleRestore, { delay: 500 });
+  useURLState(handleRestore);
 
   // Use the QR code hook with 300ms debounce (PREVIEW-02)
   // Generate at 400px for crisp display without scaling artifacts
@@ -274,7 +274,7 @@ export default function Home() {
                   disabled={!canExport}
                   filename="qrcode"
                 />
-                <ShareButton className="w-full" />
+                <ShareButton qrConfig={qrConfig} className="w-full" />
               </div>
             </div>
           </div>

@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import vCardsJS from 'vcards-js';
 
 // E.164 phone validation (reuse WhatsApp pattern)
 const e164Regex = /^\+[1-9]\d{6,14}$/;
@@ -45,34 +44,51 @@ export type VCardData = z.infer<typeof vcardSchema>;
 
 // Format vCard data as RFC 2426 compliant vCard 3.0 string
 export function formatVCard(data: VCardData): string {
-  const vCard = vCardsJS();
+  // Manual vCard 3.0 generation to avoid vcards-js Node.js dependencies in browser
+  const lines: string[] = [];
 
-  // Required fields
-  vCard.firstName = data.firstName;
-  vCard.lastName = data.lastName;
+  lines.push('BEGIN:VCARD');
+  lines.push('VERSION:3.0');
 
-  // Optional fields - only set if non-empty
+  // Format full name
+  const fullName = `${data.firstName} ${data.lastName}`;
+  lines.push(`FN:${escapeVCardValue(fullName)}`);
+
+  // Format structured name (N: LastName;FirstName;MiddleName;Prefix;Suffix)
+  lines.push(`N:${escapeVCardValue(data.lastName)};${escapeVCardValue(data.firstName)};;;`);
+
+  // Optional fields
   if (data.phoneNumber && data.phoneNumber.trim()) {
-    vCard.workPhone = data.phoneNumber;
+    lines.push(`TEL;TYPE=WORK,VOICE:${escapeVCardValue(data.phoneNumber)}`);
   }
   if (data.email && data.email.trim()) {
-    vCard.email = data.email;
+    lines.push(`EMAIL:${escapeVCardValue(data.email)}`);
   }
   if (data.website && data.website.trim()) {
-    vCard.url = data.website;
+    lines.push(`URL:${escapeVCardValue(data.website)}`);
   }
   if (data.company && data.company.trim()) {
-    vCard.organization = data.company;
+    lines.push(`ORG:${escapeVCardValue(data.company)}`);
   }
   if (data.title && data.title.trim()) {
-    vCard.title = data.title;
+    lines.push(`TITLE:${escapeVCardValue(data.title)}`);
   }
   if (data.department && data.department.trim()) {
-    vCard.role = data.department;
+    lines.push(`ROLE:${escapeVCardValue(data.department)}`);
   }
 
-  // vcards-js handles all RFC 2426 escaping automatically
-  return vCard.getFormattedString();
+  lines.push('END:VCARD');
+
+  return lines.join('\r\n');
+}
+
+// Escape special characters in vCard values per RFC 2426
+function escapeVCardValue(value: string): string {
+  return value
+    .replace(/\\/g, '\\\\')  // Backslash
+    .replace(/;/g, '\\;')    // Semicolon
+    .replace(/,/g, '\\,')    // Comma
+    .replace(/\n/g, '\\n');  // Newline
 }
 
 // Get character count for vCard data (supports partial data for real-time counting)
