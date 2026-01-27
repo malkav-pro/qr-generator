@@ -76,7 +76,7 @@ export function ExportButton({
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between gap-3">
-        <div className="flex gap-1 p-1 bg-gray-100 rounded-md">
+        <div className="flex gap-1 p-1 bg-[var(--surface-base)] rounded-lg border border-[var(--border-medium)]">
           <Button
             type="button"
             onClick={() => setFormat('png')}
@@ -102,7 +102,10 @@ export function ExportButton({
             value={selectedDpi}
             onChange={(e) => setSelectedDpi(Number(e.target.value))}
             disabled={disabled || isExporting}
-            className="px-3 py-2 h-10 text-sm border border-[var(--color-border)] rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-colors duration-150 disabled:bg-gray-100 disabled:cursor-not-allowed motion-reduce:transition-none"
+            className="px-3.5 py-2.5 h-11 text-sm border rounded-lg font-medium
+              transition-all duration-200
+              focus:outline-none
+              disabled:opacity-40 disabled:cursor-not-allowed"
             aria-label="Select export quality"
           >
             {DPI_OPTIONS.map((option) => (
@@ -120,7 +123,7 @@ export function ExportButton({
         loading={isExporting}
         variant="primary"
         size="md"
-        className="w-full h-11"
+        className="w-full h-12"
         aria-label={`Export QR code as ${format.toUpperCase()}`}
       >
         {!isExporting && (
@@ -141,13 +144,13 @@ export function ExportButton({
       </Button>
 
       {error && (
-        <p className="text-sm text-red-600" role="alert">
+        <p className="text-sm text-red-400 font-medium" role="alert">
           {error}
         </p>
       )}
 
       {format === 'png' && (
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-[var(--text-muted)] font-medium">
           {selectedDpi * 2}x{selectedDpi * 2}px at 2&quot; x 2&quot;
         </p>
       )}

@@ -7,8 +7,8 @@ import type { QRConfig } from '@/lib/types/qr-config';
  * Result object returned by useQRCode hook
  */
 export interface UseQRCodeResult {
-  /** Ref to attach to canvas element for QR rendering */
-  canvasRef: React.RefObject<HTMLCanvasElement | null>;
+  /** Ref to attach to container element for QR rendering */
+  containerRef: React.RefObject<HTMLDivElement | null>;
   /** True while QR code is being generated */
   isGenerating: boolean;
   /** Error message if generation failed, null otherwise */
@@ -18,39 +18,21 @@ export interface UseQRCodeResult {
 /**
  * React hook for debounced QR code generation.
  *
- * Automatically generates QR codes to a canvas element when config changes.
- * Debounces updates to prevent excessive regeneration during rapid changes
- * (e.g., while user is typing).
+ * Automatically generates QR codes to a container element when config changes.
+ * Uses direct canvas rendering for crisp, artifact-free display.
+ * Debounces updates to prevent excessive regeneration during rapid changes.
  *
  * @param config - QR code configuration (data, colors, scale, etc.)
- * @param debounceMs - Debounce delay in milliseconds (default: 300ms per PREVIEW-02)
- * @returns Object with canvasRef, isGenerating state, and error state
- *
- * @example
- * function QRPreview({ data }: { data: string }) {
- *   const { canvasRef, isGenerating, error } = useQRCode({
- *     type: 'url',
- *     data,
- *     foreground: '#000000',
- *     background: '#ffffff',
- *     errorCorrectionLevel: 'H',
- *     scale: 10
- *   });
- *
- *   return (
- *     <div>
- *       {isGenerating && <p>Generating...</p>}
- *       {error && <p className="text-red-500">{error}</p>}
- *       <canvas ref={canvasRef} />
- *     </div>
- *   );
- * }
+ * @param debounceMs - Debounce delay in milliseconds (default: 300ms)
+ * @param displaySize - Target display size in pixels (optional)
+ * @returns Object with containerRef, isGenerating state, and error state
  */
 export function useQRCode(
   config: QRConfig,
-  debounceMs: number = 300
+  debounceMs: number = 300,
+  displaySize?: number
 ): UseQRCodeResult {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -58,11 +40,13 @@ export function useQRCode(
   const isMountedRef = useRef(true);
 
   // Debounce the entire config object to prevent excessive regeneration
-  // Use JSON serialization for deep comparison
   const debouncedConfig = useDebounce(
     JSON.stringify(config),
     debounceMs
   );
+
+  // Debounce display size changes too
+  const debouncedSize = useDebounce(displaySize, debounceMs);
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -72,18 +56,17 @@ export function useQRCode(
   }, []);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    const container = containerRef.current;
+    if (!container) return;
 
     // Parse debounced config back to object
     const parsedConfig: QRConfig = JSON.parse(debouncedConfig);
 
     // Handle empty data gracefully
     if (!parsedConfig.data || parsedConfig.data.trim() === '') {
-      // Clear canvas
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Clear container
+      while (container.firstChild) {
+        container.removeChild(container.firstChild);
       }
       setError(null);
       setIsGenerating(false);
@@ -98,7 +81,7 @@ export function useQRCode(
       setError(null);
 
       try {
-        await generateQRCode(canvas, parsedConfig);
+        await generateQRCode(container, parsedConfig, debouncedSize);
 
         if (isMountedRef.current) {
           setError(null);
@@ -116,10 +99,10 @@ export function useQRCode(
     };
 
     generate();
-  }, [debouncedConfig]);
+  }, [debouncedConfig, debouncedSize]);
 
   return {
-    canvasRef,
+    containerRef,
     isGenerating,
     error
   };

@@ -50,18 +50,18 @@ export function ShareButton({ className = '' }: ShareButtonProps) {
     <button
       onClick={handleCopy}
       disabled={copied}
-      className={`w-full h-11 px-4 py-2 rounded-lg font-medium transition-all duration-150 shadow-sm
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
-        active:scale-95 disabled:active:scale-100
-        motion-reduce:transition-none motion-reduce:active:scale-100 ${
+      className={`w-full h-12 px-5 py-2.5 rounded-xl font-semibold tracking-tight transition-all duration-300
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-raised)]
+        active:scale-[0.98] disabled:active:scale-100
+        ${
         copied
-          ? 'bg-green-600 text-white cursor-default focus-visible:ring-green-600'
+          ? 'bg-green-500 text-[var(--background)] cursor-default focus-visible:ring-green-500 shadow-[0_0_20px_rgba(34,197,94,0.3)]'
           : error
-            ? 'bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-600'
-            : 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white focus-visible:ring-[var(--color-primary)]'
+            ? 'bg-red-500 text-white hover:bg-red-600 focus-visible:ring-red-500 shadow-[0_0_20px_rgba(239,68,68,0.3)]'
+            : 'bg-[var(--surface-elevated)] text-[var(--text-primary)] border border-[var(--border-medium)] hover:border-[var(--border-strong)] hover:bg-[var(--surface-base)] focus-visible:ring-[var(--accent-start)]'
       } ${className}`}
     >
-      {copied ? 'Copied!' : error ? error : 'Share URL'}
+      {copied ? '✓ Copied!' : error ? error : 'Share URL'}
     </button>
   );
 }

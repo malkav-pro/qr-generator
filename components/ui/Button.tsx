@@ -11,28 +11,31 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary: `
-    bg-[var(--color-primary)] text-white
-    hover:bg-[var(--color-primary-hover)]
-    focus-visible:ring-[var(--color-primary)]
-    shadow-sm
+    relative overflow-hidden
+    bg-gradient-to-r from-[var(--accent-start)] to-[var(--accent-end)]
+    text-[var(--background)] font-bold
+    hover:shadow-[0_0_24px_var(--accent-glow)]
+    focus-visible:ring-[var(--accent-start)]
+    before:absolute before:inset-0 before:bg-white before:opacity-0
+    hover:before:opacity-10 before:transition-opacity before:duration-300
   `,
   secondary: `
-    bg-white text-gray-900 border border-gray-300
-    hover:bg-gray-50
-    focus-visible:ring-gray-500
-    shadow-sm
+    bg-[var(--surface-elevated)] text-[var(--text-primary)]
+    border border-[var(--border-medium)]
+    hover:border-[var(--border-strong)] hover:bg-[var(--surface-base)]
+    focus-visible:ring-[var(--accent-start)]
   `,
   ghost: `
-    bg-transparent text-gray-700
-    hover:bg-gray-100
-    focus-visible:ring-gray-400
+    bg-transparent text-[var(--text-secondary)]
+    hover:bg-[var(--surface-elevated)] hover:text-[var(--text-primary)]
+    focus-visible:ring-[var(--accent-start)]
   `,
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
-  sm: 'px-3 py-1.5 text-sm',
-  md: 'px-4 py-2 text-base',
-  lg: 'px-6 py-3 text-lg',
+  sm: 'px-4 py-2 text-sm',
+  md: 'px-5 py-2.5 text-[0.9375rem]',
+  lg: 'px-7 py-3.5 text-base',
 };
 
 export function Button({
@@ -47,13 +50,13 @@ export function Button({
   return (
     <button
       className={`
-        rounded-lg
-        font-medium
+        rounded-xl
+        font-semibold tracking-tight
         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
-        transition-all duration-150
-        active:scale-95
-        disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100
-        motion-reduce:transition-none motion-reduce:active:scale-100
+        focus-visible:ring-offset-[var(--background)]
+        transition-all duration-300
+        active:scale-[0.98]
+        disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100
         ${variantStyles[variant]}
         ${sizeStyles[size]}
         ${className}

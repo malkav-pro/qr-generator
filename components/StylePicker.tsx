@@ -28,10 +28,10 @@ function StylePicker<T extends string>({
 }: StylePickerProps<T>) {
   return (
     <div>
-      <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
+      <label className="block text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-3">
         {label}
       </label>
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-3 gap-2.5">
         {options.map((option) => {
           const isSelected = value === option.value;
           return (
@@ -40,19 +40,21 @@ function StylePicker<T extends string>({
               type="button"
               onClick={() => onChange(option.value)}
               className={`
-                flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all duration-150
-                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2
-                motion-reduce:transition-none
+                relative flex flex-col items-center gap-2.5 p-3.5 rounded-lg border-2 transition-all duration-300
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-start)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-raised)]
+                hover:scale-[1.02] active:scale-[0.98]
                 ${isSelected
-                  ? 'ring-2 ring-[var(--color-primary)] bg-blue-50 border-[var(--color-primary)]'
-                  : 'border-[var(--color-border)] hover:border-gray-400 hover:bg-gray-50'
+                  ? 'border-[var(--accent-start)] bg-[var(--accent-glow)] shadow-[0_0_16px_var(--accent-glow)]'
+                  : 'border-[var(--border-medium)] bg-[var(--surface-elevated)] hover:border-[var(--border-strong)] hover:bg-[var(--surface-base)]'
                 }
               `}
             >
               <div className="flex items-center justify-center">
                 {renderPreview(option.value)}
               </div>
-              <span className="text-xs font-medium text-gray-700">
+              <span className={`text-xs font-semibold tracking-tight ${
+                isSelected ? 'text-[var(--accent-start)]' : 'text-[var(--text-secondary)]'
+              }`}>
                 {option.label}
               </span>
             </button>

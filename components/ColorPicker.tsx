@@ -42,47 +42,70 @@ export function ColorPicker({
   };
 
   return (
-    <div className="space-y-2">
-      <label className="block text-sm font-medium text-[var(--color-text)]">{label}</label>
+    <div className="space-y-2.5">
+      <div className="flex items-center justify-between">
+        <label className="block text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">{label}</label>
 
-      {allowTransparent && (
-        <label className="flex items-center gap-2 text-sm text-gray-900">
-          <input
-            type="checkbox"
-            checked={isTransparent}
-            onChange={handleTransparentToggle}
-            className="w-4 h-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
-          />
-          <span>Transparent</span>
-        </label>
-      )}
+        {allowTransparent && (
+          <label className="flex items-center gap-2 text-xs text-[var(--text-primary)] cursor-pointer group">
+            <div className="relative">
+              <input
+                type="checkbox"
+                checked={isTransparent}
+                onChange={handleTransparentToggle}
+                className="sr-only peer"
+              />
+              <div className={`w-4 h-4 rounded border-2 transition-all duration-200 flex items-center justify-center
+                ${isTransparent
+                  ? 'bg-[var(--accent-start)] border-[var(--accent-start)]'
+                  : 'bg-[var(--surface-base)] border-[var(--border-strong)] group-hover:border-[var(--accent-start)]'
+                }
+                peer-focus-visible:ring-2 peer-focus-visible:ring-[var(--accent-start)] peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[var(--surface-raised)]`}
+              >
+                {isTransparent && (
+                  <svg className="w-2.5 h-2.5 text-white" viewBox="0 0 12 12" fill="none">
+                    <path d="M2 6L5 9L10 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                )}
+              </div>
+            </div>
+            <span className="font-medium group-hover:text-[var(--accent-start)] transition-colors duration-200">Transparent</span>
+          </label>
+        )}
+      </div>
 
       {!isTransparent && (
-        <div className="flex items-center gap-2">
+        <div className="flex items-stretch gap-2.5">
           <input
             type="text"
             value={color}
             onChange={handleHexInput}
             placeholder="#000000"
-            className={`flex-1 px-3 py-2 h-10 border rounded-lg font-mono text-sm text-gray-900
-              focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]
-              transition-colors duration-150 motion-reduce:transition-none ${
-              isValid ? 'border-[var(--color-border)]' : 'border-red-400 bg-red-50'
+            className={`flex-1 px-3.5 py-2.5 border rounded-lg font-mono text-sm
+              focus:outline-none transition-all duration-200 ${
+              isValid
+                ? 'border-[var(--border-medium)] focus:border-[var(--accent-start)] focus:shadow-[0_0_0_3px_var(--accent-glow)]'
+                : 'border-red-500/50 bg-red-500/5 text-red-400'
             }`}
             maxLength={7}
           />
 
-          <Popover className="relative">
+          <Popover className="relative flex-shrink-0">
             <Popover.Button
-              className="w-10 h-10 rounded-lg border-2 border-[var(--color-border)] cursor-pointer
-                hover:border-[var(--color-primary)] transition-colors duration-150 motion-reduce:transition-none
-                focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
-              style={{ backgroundColor: isValid ? color : '#fff' }}
+              className="relative w-11 h-full rounded-lg border-2 cursor-pointer overflow-hidden
+                transition-all duration-200
+                focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-start)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-raised)]
+                hover:scale-105 hover:shadow-[0_0_16px_var(--accent-glow)]"
+              style={{
+                backgroundColor: isValid ? color : '#fff',
+                borderColor: isValid ? 'var(--border-strong)' : 'var(--border-medium)'
+              }}
               title="Click to open color picker"
               aria-label={`${label} color swatch`}
             />
 
-            <Popover.Panel className="absolute z-10 mt-2 right-0 bg-white rounded-lg shadow-lg border border-[var(--color-border)] p-3">
+            <Popover.Panel className="absolute z-[100] mt-2 right-0 bg-[var(--surface-elevated)] rounded-xl border border-[var(--border-strong)] p-4"
+                            style={{ boxShadow: 'var(--shadow-lg)' }}>
               <HexColorPicker color={displayColor} onChange={onChange} />
             </Popover.Panel>
           </Popover>
@@ -90,7 +113,7 @@ export function ColorPicker({
       )}
 
       {!isTransparent && !isValid && (
-        <p className="text-xs text-red-600">
+        <p className="text-xs text-red-400 font-medium">
           Enter a valid hex color (e.g., #FF0000 or #F00)
         </p>
       )}

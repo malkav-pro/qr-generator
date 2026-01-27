@@ -97,7 +97,7 @@ export default function Home() {
     foreground: effectiveForeground,
     background: background,
     errorCorrectionLevel: 'H',  // TECH-01: Always use highest error correction
-    scale: 12,
+    scale: 10,
     foregroundGradient,
     dotsStyle,
     cornersSquareStyle,
@@ -107,7 +107,7 @@ export default function Home() {
     logo: logo
       ? {
           image: logo,
-          size: 0.25,
+          size: 0.33,
           margin: 0,
           hideBackgroundDots: true,
         }
@@ -119,7 +119,7 @@ export default function Home() {
     // Preserve existing logo when restoring from URL
     const fullConfig = fromShareableConfig(restored, logo ? {
       image: logo,
-      size: 0.25,
+      size: 0.33,
       margin: 0,
       hideBackgroundDots: true,
     } : undefined);
@@ -163,31 +163,43 @@ export default function Home() {
   useURLState(qrConfig, handleRestore, { delay: 500 });
 
   // Use the QR code hook with 300ms debounce (PREVIEW-02)
-  const { canvasRef, isGenerating, error } = useQRCode(qrConfig, 300);
+  // Generate at 400px for crisp display without scaling artifacts
+  const { containerRef, isGenerating, error } = useQRCode(qrConfig, 300, 400);
 
   // Check contrast for export button disabled state
   const hasData = data.trim().length > 0;
   const canExport = hasData && !isGenerating && !error;
 
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--color-surface)]">
+    <div className="min-h-screen flex flex-col bg-[var(--background)] relative">
+      {/* Ambient background gradients */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute -top-1/2 -right-1/4 w-[800px] h-[800px] rounded-full bg-gradient-to-br from-[var(--accent-start)] to-transparent opacity-[0.03] blur-3xl" />
+        <div className="absolute -bottom-1/2 -left-1/4 w-[600px] h-[600px] rounded-full bg-gradient-to-tr from-[var(--accent-end)] to-transparent opacity-[0.02] blur-3xl" />
+      </div>
+
       {/* Header */}
-      <header className="bg-[var(--color-surface-raised)] border-b border-[var(--color-border)]">
-        <div className="max-w-6xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-[var(--color-text)]">
-            QR Code Generator
-          </h1>
-          <p className="mt-1 text-sm sm:text-base text-[var(--color-text-muted)]">
-            Generate QR codes you own - no tracking, no redirects
-          </p>
+      <header className="relative z-10 border-b border-[var(--border-subtle)]">
+        <div className="max-w-7xl mx-auto px-6 py-8 lg:px-12 lg:py-12">
+          <div className="flex items-end gap-3">
+            <div className="w-1.5 h-12 bg-gradient-to-b from-[var(--accent-start)] to-[var(--accent-end)] rounded-full" />
+            <div>
+              <h1 className="text-4xl lg:text-5xl font-bold tracking-tight gradient-text leading-none">
+                QR Code Generator
+              </h1>
+              <p className="mt-2 text-base lg:text-lg text-[var(--text-secondary)] font-medium">
+                Generate QR codes you own — no tracking, no redirects
+              </p>
+            </div>
+          </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8 flex-1">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <main className="relative z-10 max-w-7xl mx-auto px-6 py-12 lg:px-12 lg:py-16 flex-1 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,_1fr)_420px] gap-8 lg:gap-12 items-start">
           {/* Controls Section - Left column on desktop */}
-          <div className="lg:order-1 space-y-4">
+          <div className="lg:order-1 space-y-6">
             <ControlSection title="Data Input" defaultOpen>
               <TypeSelector value={qrType} onChange={handleTypeChange} />
               <DataInput
@@ -253,21 +265,24 @@ export default function Home() {
           </div>
 
           {/* Preview Section - Right column on desktop, sticky */}
-          <div className="lg:order-2 lg:sticky lg:top-8 lg:self-start">
-            <div className="bg-[var(--color-surface-raised)] rounded-lg shadow-sm border border-[var(--color-border)] p-6">
-              <h2 className="text-lg font-semibold mb-4">Preview</h2>
+          <div className="lg:order-2 sticky top-6">
+            <div className="relative bg-[var(--surface-raised)] rounded-2xl border border-[var(--border-medium)] p-8 transition-all duration-300 hover:border-[var(--border-strong)]"
+                 style={{ boxShadow: 'var(--shadow-lg)' }}>
+              {/* Accent corner decoration */}
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-[var(--accent-start)] to-transparent opacity-10 rounded-tr-2xl" />
+
               <QRPreview
-                canvasRef={canvasRef}
+                containerRef={containerRef}
                 isGenerating={isGenerating}
                 error={error}
               />
-              <div className="mt-6 flex flex-col sm:flex-row gap-3">
+              <div className="mt-8 flex flex-col gap-3">
                 <ExportButton
                   qrConfig={qrConfig}
                   disabled={!canExport}
                   filename="qrcode"
                 />
-                <ShareButton className="w-full sm:w-auto" />
+                <ShareButton className="w-full" />
               </div>
             </div>
           </div>

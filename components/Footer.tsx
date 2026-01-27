@@ -1,19 +1,19 @@
 export function Footer() {
   return (
-    <footer className="border-t border-[var(--color-border)] mt-auto">
-      <div className="max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <div className="text-center space-y-2">
-          <p className="text-sm text-[var(--color-text-muted)]">
+    <footer className="relative border-t border-[var(--border-subtle)] mt-auto">
+      <div className="max-w-7xl mx-auto px-6 py-10 lg:px-12">
+        <div className="text-center space-y-3">
+          <p className="text-sm font-semibold text-[var(--text-secondary)] tracking-tight">
             &copy; {new Date().getFullYear()} Malkav Production
           </p>
-          <p className="text-xs text-[var(--color-text-muted)]">
+          <p className="text-xs text-[var(--text-muted)] font-medium">
             Your data never leaves your browser
           </p>
           <a
-            href="/MANIFESTO.md"
-            className="inline-block text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:rounded"
+            href="/manifesto"
+            className="inline-block text-sm gradient-text font-bold hover:opacity-80 transition-opacity duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-start)] focus-visible:rounded-md focus-visible:px-2 focus-visible:py-1"
           >
-            Read our manifesto
+            Read our manifesto →
           </a>
         </div>
       </div>

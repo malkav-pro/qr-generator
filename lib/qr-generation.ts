@@ -132,63 +132,90 @@ export function createQRCodeWithSize(
 }
 
 /**
- * Generates a QR code and renders it to a canvas element.
+ * Generates a QR code and renders it to a container element.
+ * Uses direct append() for crisp rendering without PNG conversion artifacts.
  *
- * @param canvas - HTML canvas element to render the QR code to
+ * @param container - HTML element to render the QR code into
  * @param config - QR code configuration (data, colors, scale)
+ * @param displaySize - Target display size in pixels
  * @throws Error if QR generation fails or data is invalid
  */
 export async function generateQRCode(
-  canvas: HTMLCanvasElement,
-  config: QRConfig
+  container: HTMLElement,
+  config: QRConfig,
+  displaySize?: number
 ): Promise<void> {
-  // Handle empty data gracefully - clear canvas
+  // Clear existing content safely
+  while (container.firstChild) {
+    container.removeChild(container.firstChild);
+  }
+
+  // Handle empty data gracefully
   if (!config.data || config.data.trim() === '') {
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
     return;
   }
 
   try {
-    const qrCode = createQRCode(config);
-    const rawData = await qrCode.getRawData('png');
+    // Generate at exactly the display size for crisp rendering
+    const size = displaySize || (config.scale || 10) * 25;
 
-    if (!rawData) {
-      throw new Error('Failed to generate QR code blob');
-    }
+    const dotsColor = config.foregroundGradient && isGradient(config.foregroundGradient)
+      ? undefined
+      : config.foreground;
+    const dotsGradient = config.foregroundGradient && isGradient(config.foregroundGradient)
+      ? config.foregroundGradient
+      : undefined;
+    const logo = config.logo && typeof config.logo === 'object' ? config.logo : undefined;
+    const imageOptions = logo ? {
+      hideBackgroundDots: logo.hideBackgroundDots ?? true,
+      imageSize: logo.size ?? 0.2,
+      margin: logo.margin ?? 0,
+    } : undefined;
 
-    // In browser environment, rawData is a Blob
-    const blob = rawData as Blob;
+    // Calculate margin proportionally
+    const margin = Math.round((size * 4) / 25);
 
-    // Load the blob as an image and draw to canvas
-    const img = new Image();
-    const url = URL.createObjectURL(blob);
-
-    await new Promise<void>((resolve, reject) => {
-      img.onload = () => {
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(img, 0, 0);
-        }
-        URL.revokeObjectURL(url);
-        resolve();
-      };
-      img.onerror = () => {
-        URL.revokeObjectURL(url);
-        reject(new Error('Failed to load QR code image'));
-      };
-      img.src = url;
+    const qrCode = new QRCodeStyling({
+      type: 'canvas',
+      width: size,
+      height: size,
+      data: config.data || '',
+      margin,
+      qrOptions: {
+        errorCorrectionLevel: 'H' as const,
+      },
+      dotsOptions: {
+        color: dotsColor,
+        gradient: dotsGradient,
+        type: config.dotsStyle || 'square',
+      },
+      backgroundOptions: {
+        color: config.background === 'transparent' ? 'transparent' : config.background,
+      },
+      cornersSquareOptions: {
+        color: config.cornersSquareColor || config.foreground,
+        type: config.cornersSquareStyle || 'square',
+      },
+      cornersDotOptions: {
+        color: config.cornersDotColor || config.foreground,
+        type: config.cornersDotStyle || 'square',
+      },
+      ...(logo
+        ? {
+            image: logo.image,
+            imageOptions,
+          }
+        : {}),
     });
+
+    // Render directly to container - no PNG conversion!
+    await qrCode.append(container);
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     throw new Error(`Failed to generate QR code: ${message}`);
   }
 }
+
 
 /**
  * Generates a QR code and returns it as a data URL (base64-encoded PNG).

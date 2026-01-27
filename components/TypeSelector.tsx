@@ -13,8 +13,8 @@ const types: Array<{ value: QRType; label: string }> = [
 
 export function TypeSelector({ value, onChange }: TypeSelectorProps) {
   return (
-    <div className="space-y-2">
-      <label className="block text-sm font-medium text-[var(--color-text)]">QR Code Type</label>
+    <div className="space-y-2.5">
+      <label className="block text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">QR Code Type</label>
       <div className="flex gap-2" role="tablist">
         {types.map((type) => (
           <button
@@ -24,12 +24,12 @@ export function TypeSelector({ value, onChange }: TypeSelectorProps) {
             aria-label={`Select ${type.label} type`}
             aria-selected={value === type.value}
             onClick={() => onChange(type.value)}
-            className={`px-4 py-2 rounded-lg font-medium transition-all duration-150
-              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2
-              motion-reduce:transition-none ${
+            className={`relative px-5 py-2.5 rounded-lg font-semibold text-sm tracking-tight transition-all duration-300
+              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-start)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-raised)]
+              ${
               value === type.value
-                ? 'bg-[var(--color-primary)] text-white border border-[var(--color-primary)]'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300 border border-transparent'
+                ? 'bg-gradient-to-r from-[var(--accent-start)] to-[var(--accent-end)] text-[var(--background)] shadow-[0_0_20px_var(--accent-glow)]'
+                : 'bg-[var(--surface-elevated)] text-[var(--text-secondary)] hover:bg-[var(--surface-base)] hover:text-[var(--text-primary)] border border-[var(--border-medium)]'
             }`}
           >
             {type.label}

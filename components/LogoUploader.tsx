@@ -98,8 +98,8 @@ export function LogoUploader({ logo, onLogoChange, qrSize = 300 }: LogoUploaderP
   };
 
   return (
-    <div className="space-y-2">
-      <label className="block text-sm font-medium text-[var(--color-text)]">
+    <div className="space-y-2.5">
+      <label className="block text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">
         Logo (Optional)
       </label>
 
@@ -111,15 +111,15 @@ export function LogoUploader({ logo, onLogoChange, qrSize = 300 }: LogoUploaderP
           onDragOver={handleDrag}
           onDrop={handleDrop}
           className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer
-            transition-colors duration-150 motion-reduce:transition-none
-            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 ${
+            transition-all duration-300
+            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-start)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-raised)] ${
             dragActive
-              ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/5'
-              : 'border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)]/5'
+              ? 'border-[var(--accent-start)] bg-[var(--accent-glow)]'
+              : 'border-[var(--border-medium)] hover:border-[var(--accent-start)] hover:bg-[var(--accent-glow)]'
           }`}
         >
           <div className="space-y-2">
-            <div className="text-gray-500">
+            <div className="text-[var(--text-secondary)]">
               <svg
                 className="mx-auto h-12 w-12"
                 fill="none"
@@ -134,13 +134,13 @@ export function LogoUploader({ logo, onLogoChange, qrSize = 300 }: LogoUploaderP
                 />
               </svg>
             </div>
-            <div className="text-sm text-gray-600">
-              <span className="font-medium text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]">
+            <div className="text-sm text-[var(--text-secondary)]">
+              <span className="font-semibold text-[var(--accent-start)] hover:text-[var(--accent-end)] transition-colors duration-200">
                 Click to upload
               </span>
               {' or drag and drop'}
             </div>
-            <div className="text-xs text-gray-500">
+            <div className="text-xs text-[var(--text-muted)] font-medium">
               PNG or JPG (max 5MB)
             </div>
           </div>
@@ -158,13 +158,14 @@ export function LogoUploader({ logo, onLogoChange, qrSize = 300 }: LogoUploaderP
             <img
               src={logo}
               alt="Logo preview"
-              className="max-w-[150px] max-h-[150px] border-2 border-gray-200 rounded-lg"
+              className="max-w-[150px] max-h-[150px] border-2 border-[var(--border-medium)] rounded-lg"
             />
             <button
               onClick={handleRemove}
               className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center
-                hover:bg-red-600 transition-colors duration-150 motion-reduce:transition-none
-                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
+                hover:bg-red-600 transition-all duration-200
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-raised)]
+                shadow-md hover:shadow-lg"
               title="Remove logo"
             >
               ×
@@ -173,17 +174,6 @@ export function LogoUploader({ logo, onLogoChange, qrSize = 300 }: LogoUploaderP
         </div>
       )}
 
-      {warning && (
-        <div
-          className={`p-3 rounded-lg text-sm ${
-            warning.level === 'warning'
-              ? 'bg-yellow-50 text-yellow-800 border border-yellow-200'
-              : 'bg-red-50 text-red-800 border border-red-200'
-          }`}
-        >
-          {warning.message}
-        </div>
-      )}
     </div>
   );
 }
