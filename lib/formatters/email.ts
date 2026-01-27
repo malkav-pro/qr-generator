@@ -7,12 +7,10 @@ export const emailSchema = z.object({
     .email('Must be a valid email address'),
   subject: z.string()
     .max(200, 'Subject must be 200 characters or less')
-    .optional()
-    .transform((val) => val || ''),
+    .optional(),
   body: z.string()
     .max(1000, 'Body must be 1000 characters or less')
-    .optional()
-    .transform((val) => val || ''),
+    .optional(),
 });
 
 export type EmailData = z.infer<typeof emailSchema>;

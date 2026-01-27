@@ -3,7 +3,6 @@
 import { useState, useCallback } from 'react';
 import {
   TypeSelector,
-  DataInput,
   ColorPicker,
   GradientColorPicker,
   ContrastWarning,
@@ -21,9 +20,9 @@ import { useQRCode } from '@/hooks/useQRCode';
 import { useURLState } from '@/hooks/useURLState';
 import { extractSolidColor, parseGradientCSS } from '@/lib/utils/gradient-parser';
 import { fromShareableConfig, type ShareableConfig } from '@/lib/url-state';
+import { getQRForm } from '@/lib/registry';
+import { type QRTypeKey } from '@/lib/formatters';
 import type {
-  QRType,
-  EmailData,
   QRConfig,
   DotType,
   CornerSquareType,
@@ -32,13 +31,10 @@ import type {
 
 export default function Home() {
   // QR Type state
-  const [qrType, setQrType] = useState<QRType>('url');
+  const [qrType, setQrType] = useState<QRTypeKey>('url');
 
   // Data state (raw input for URL/text, formatted mailto for email)
   const [data, setData] = useState('');
-
-  // Email-specific data for the email form
-  const [emailData, setEmailData] = useState<EmailData>({ to: '' });
 
   // Color customization
   const [foreground, setForeground] = useState('#000000');
@@ -63,15 +59,9 @@ export default function Home() {
   const [logo, setLogo] = useState<string | null>(null);
 
   // Handle type changes - clear data when switching types
-  const handleTypeChange = useCallback((newType: QRType) => {
+  const handleTypeChange = useCallback((newType: QRTypeKey) => {
     setQrType(newType);
     setData('');
-    setEmailData({ to: '' });
-  }, []);
-
-  // Handle email data changes
-  const handleEmailChange = useCallback((newEmailData: EmailData) => {
-    setEmailData(newEmailData);
   }, []);
 
   // Handle data changes
@@ -202,13 +192,15 @@ export default function Home() {
           <div className="lg:order-1 space-y-6">
             <ControlSection title="Data Input" defaultOpen>
               <TypeSelector value={qrType} onChange={handleTypeChange} />
-              <DataInput
-                type={qrType}
-                value={data}
-                emailData={emailData}
-                onChange={handleDataChange}
-                onEmailChange={handleEmailChange}
-              />
+              {(() => {
+                const FormComponent = getQRForm(qrType);
+                return (
+                  <FormComponent
+                    onDataChange={handleDataChange}
+                    initialValue={data}
+                  />
+                );
+              })()}
             </ControlSection>
 
             <ControlSection title="Colors">
