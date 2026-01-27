@@ -1,17 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { Popover } from '@headlessui/react';
 import { HexColorPicker } from 'react-colorful';
 
 type GradientType = 'horizontal' | 'vertical' | 'diagonal' | 'radial';
 
 interface GradientColorPickerProps {
   label: string;
-  solidColor: string;                    // Hex color for solid mode
-  gradientStart: string;                 // Start color for gradient
-  gradientEnd: string;                   // End color for gradient
-  gradientType: GradientType;            // Direction/type of gradient
-  mode: 'solid' | 'gradient';            // Current mode
+  solidColor: string;
+  gradientStart: string;
+  gradientEnd: string;
+  gradientType: GradientType;
+  mode: 'solid' | 'gradient';
   onSolidChange: (color: string) => void;
   onGradientStartChange: (color: string) => void;
   onGradientEndChange: (color: string) => void;
@@ -36,9 +36,6 @@ export function GradientColorPicker({
   onGradientTypeChange,
   onModeChange,
 }: GradientColorPickerProps) {
-  const [showPicker, setShowPicker] = useState(false);
-  const [activeGradientField, setActiveGradientField] = useState<'start' | 'end'>('start');
-
   const handleHexInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
     if (value && !value.startsWith('#')) {
@@ -74,9 +71,7 @@ export function GradientColorPicker({
   const isValidEnd = isValidHex(gradientEnd);
 
   const gradientCSS = buildGradientCSS(gradientType, gradientStart, gradientEnd);
-
-  // Generate preview style based on mode
-  const previewStyle: React.CSSProperties = mode === 'solid' 
+  const previewStyle: React.CSSProperties = mode === 'solid'
     ? { backgroundColor: isValidSolid ? solidColor : '#fff' }
     : { background: gradientCSS };
 
@@ -84,7 +79,6 @@ export function GradientColorPicker({
     <div className="space-y-2">
       <label className="block text-sm font-medium text-[var(--color-text)]">{label}</label>
 
-      {/* Mode toggle buttons */}
       <div className="flex gap-1 p-1 bg-gray-100 rounded-md w-fit">
         <button
           type="button"
@@ -110,7 +104,6 @@ export function GradientColorPicker({
         </button>
       </div>
 
-      {/* Solid color mode */}
       {mode === 'solid' && (
         <div className="space-y-2">
           <div className="flex items-center gap-2">
@@ -119,21 +112,27 @@ export function GradientColorPicker({
               value={solidColor}
               onChange={handleHexInput}
               placeholder="#000000"
-              className={`flex-1 px-3 py-2 border rounded-lg font-mono text-sm text-gray-900
+              className={`flex-1 px-3 py-2 h-10 border rounded-lg font-mono text-sm text-gray-900
                 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]
                 transition-colors duration-150 motion-reduce:transition-none ${
                 isValidSolid ? 'border-[var(--color-border)]' : 'border-red-400 bg-red-50'
               }`}
               maxLength={7}
             />
-            <div
-              className="w-10 h-10 rounded-lg border-2 border-[var(--color-border)] cursor-pointer
-                hover:border-[var(--color-primary)] transition-colors duration-150 motion-reduce:transition-none"
-              style={previewStyle}
-              onClick={() => setShowPicker(!showPicker)}
-              title="Click to toggle color picker"
-              aria-label={`${label} color swatch - click to ${showPicker ? 'hide' : 'show'} picker`}
-            />
+
+            <Popover className="relative">
+              <Popover.Button
+                className="w-10 h-10 rounded-lg border-2 border-[var(--color-border)] cursor-pointer
+                  hover:border-[var(--color-primary)] transition-colors duration-150 motion-reduce:transition-none
+                  focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
+                style={previewStyle}
+                title="Click to open color picker"
+              />
+
+              <Popover.Panel className="absolute z-10 mt-2 right-0 bg-white rounded-lg shadow-lg border border-[var(--color-border)] p-3">
+                <HexColorPicker color={solidColor} onChange={onSolidChange} />
+              </Popover.Panel>
+            </Popover>
           </div>
 
           {!isValidSolid && (
@@ -141,106 +140,86 @@ export function GradientColorPicker({
               Enter a valid hex color (e.g., #FF0000 or #F00)
             </p>
           )}
-
-          {showPicker && (
-            <div className="pt-2">
-              <HexColorPicker color={solidColor} onChange={onSolidChange} />
-            </div>
-          )}
         </div>
       )}
 
-      {/* Gradient mode */}
       {mode === 'gradient' && (
-        <div className="space-y-2">
-          {/* Preview swatch */}
+        <div className="space-y-3">
           <div
             className="w-full h-10 rounded-lg border-2 border-[var(--color-border)]"
             style={previewStyle}
             aria-label={`${label} gradient preview`}
           />
 
-          <div className="grid gap-3 sm:grid-cols-[1fr_1fr]">
-            <div className="space-y-2">
-              <label className="block text-xs font-medium text-gray-600">Start color</label>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-gray-600">Start</label>
               <div className="flex items-center gap-2">
                 <input
                   type="text"
                   value={gradientStart}
                   onChange={(e) => handleGradientHexInput('start', e)}
                   placeholder="#000000"
-                  className={`flex-1 px-3 py-2 border rounded-lg font-mono text-sm text-gray-900
+                  className={`flex-1 px-2 py-1.5 h-10 border rounded-lg font-mono text-xs text-gray-900
                     focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]
                     transition-colors duration-150 motion-reduce:transition-none ${
                     isValidStart ? 'border-[var(--color-border)]' : 'border-red-400 bg-red-50'
                   }`}
                   maxLength={7}
-                  onFocus={() => setActiveGradientField('start')}
                 />
-                <div
-                  className="w-10 h-10 rounded-lg border-2 border-[var(--color-border)] cursor-pointer
-                    hover:border-[var(--color-primary)] transition-colors duration-150 motion-reduce:transition-none"
-                  style={{ backgroundColor: isValidStart ? gradientStart : '#fff' }}
-                  onClick={() => {
-                    setActiveGradientField('start');
-                    setShowPicker(!showPicker);
-                  }}
-                  title="Click to toggle color picker"
-                  aria-label={`${label} gradient start swatch`}
-                />
+                <Popover className="relative">
+                  <Popover.Button
+                    className="w-10 h-10 rounded-lg border-2 border-[var(--color-border)] cursor-pointer
+                      hover:border-[var(--color-primary)] transition-colors duration-150 motion-reduce:transition-none
+                      focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 shrink-0"
+                    style={{ backgroundColor: isValidStart ? gradientStart : '#fff' }}
+                  />
+                  <Popover.Panel className="absolute z-10 mt-2 right-0 bg-white rounded-lg shadow-lg border border-[var(--color-border)] p-3">
+                    <HexColorPicker color={gradientStart} onChange={onGradientStartChange} />
+                  </Popover.Panel>
+                </Popover>
               </div>
-              {!isValidStart && (
-                <p className="text-xs text-red-600">
-                  Enter a valid hex color (e.g., #FF0000 or #F00)
-                </p>
-              )}
             </div>
 
-            <div className="space-y-2">
-              <label className="block text-xs font-medium text-gray-600">End color</label>
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-gray-600">End</label>
               <div className="flex items-center gap-2">
                 <input
                   type="text"
                   value={gradientEnd}
                   onChange={(e) => handleGradientHexInput('end', e)}
                   placeholder="#333333"
-                  className={`flex-1 px-3 py-2 border rounded-lg font-mono text-sm text-gray-900
+                  className={`flex-1 px-2 py-1.5 h-10 border rounded-lg font-mono text-xs text-gray-900
                     focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]
                     transition-colors duration-150 motion-reduce:transition-none ${
                     isValidEnd ? 'border-[var(--color-border)]' : 'border-red-400 bg-red-50'
                   }`}
                   maxLength={7}
-                  onFocus={() => setActiveGradientField('end')}
                 />
-                <div
-                  className="w-10 h-10 rounded-lg border-2 border-[var(--color-border)] cursor-pointer
-                    hover:border-[var(--color-primary)] transition-colors duration-150 motion-reduce:transition-none"
-                  style={{ backgroundColor: isValidEnd ? gradientEnd : '#fff' }}
-                  onClick={() => {
-                    setActiveGradientField('end');
-                    setShowPicker(!showPicker);
-                  }}
-                  title="Click to toggle color picker"
-                  aria-label={`${label} gradient end swatch`}
-                />
+                <Popover className="relative">
+                  <Popover.Button
+                    className="w-10 h-10 rounded-lg border-2 border-[var(--color-border)] cursor-pointer
+                      hover:border-[var(--color-primary)] transition-colors duration-150 motion-reduce:transition-none
+                      focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 shrink-0"
+                    style={{ backgroundColor: isValidEnd ? gradientEnd : '#fff' }}
+                  />
+                  <Popover.Panel className="absolute z-10 mt-2 right-0 bg-white rounded-lg shadow-lg border border-[var(--color-border)] p-3">
+                    <HexColorPicker color={gradientEnd} onChange={onGradientEndChange} />
+                  </Popover.Panel>
+                </Popover>
               </div>
-              {!isValidEnd && (
-                <p className="text-xs text-red-600">
-                  Enter a valid hex color (e.g., #FF0000 or #F00)
-                </p>
-              )}
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="block text-xs font-medium text-gray-600">Gradient direction</label>
-            <div className="flex flex-wrap gap-2">
+          <div className="space-y-1.5">
+            <label className="block text-xs font-medium text-gray-600">Direction</label>
+            <div className="flex flex-wrap gap-1.5">
               {(['horizontal', 'vertical', 'diagonal', 'radial'] as GradientType[]).map((type) => (
                 <button
                   key={type}
                   type="button"
                   onClick={() => onGradientTypeChange(type)}
-                  className={`px-3 py-1 text-sm rounded-lg border transition-colors duration-150
+                  className={`px-2.5 py-1.5 text-xs rounded-lg border transition-colors duration-150
                     motion-reduce:transition-none ${
                     gradientType === type
                       ? 'bg-[var(--color-primary)] text-white border-[var(--color-primary)]'
@@ -252,19 +231,6 @@ export function GradientColorPicker({
               ))}
             </div>
           </div>
-
-          {showPicker && (
-            <div className="pt-2">
-              <HexColorPicker
-                color={activeGradientField === 'start' ? gradientStart : gradientEnd}
-                onChange={(color) =>
-                  activeGradientField === 'start'
-                    ? onGradientStartChange(color)
-                    : onGradientEndChange(color)
-                }
-              />
-            </div>
-          )}
         </div>
       )}
     </div>

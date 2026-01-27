@@ -75,10 +75,8 @@ export function ExportButton({
 
   return (
     <div className="space-y-3">
-      <label className="block text-sm font-medium">Export Settings</label>
-
-      <div className="flex flex-col gap-3">
-        <div className="flex gap-1 p-1 bg-gray-100 rounded-md w-fit">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex gap-1 p-1 bg-gray-100 rounded-md">
           <Button
             type="button"
             onClick={() => setFormat('png')}
@@ -99,64 +97,58 @@ export function ExportButton({
           </Button>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-3">
-          {/* DPI Selector */}
-          {format === 'png' && (
-            <select
-              value={selectedDpi}
-              onChange={(e) => setSelectedDpi(Number(e.target.value))}
-              disabled={disabled || isExporting}
-              className="px-3 py-2 border border-[var(--color-border)] rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-colors duration-150 disabled:bg-gray-100 disabled:cursor-not-allowed motion-reduce:transition-none"
-              aria-label="Select export quality"
-            >
-              {DPI_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label} - {option.pixels}
-                </option>
-              ))}
-            </select>
-          )}
-
-          {/* Export Button */}
-          <Button
-            onClick={handleExport}
+        {format === 'png' && (
+          <select
+            value={selectedDpi}
+            onChange={(e) => setSelectedDpi(Number(e.target.value))}
             disabled={disabled || isExporting}
-            loading={isExporting}
-            variant="primary"
-            size="md"
-            className="min-h-11"
-            aria-label={`Export QR code as ${format.toUpperCase()}`}
+            className="px-3 py-2 h-10 text-sm border border-[var(--color-border)] rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-colors duration-150 disabled:bg-gray-100 disabled:cursor-not-allowed motion-reduce:transition-none"
+            aria-label="Select export quality"
           >
-            {!isExporting && (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 inline-block mr-2"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            )}
-            Export {format.toUpperCase()}
-          </Button>
-        </div>
+            {DPI_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.value} DPI
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
-      {/* Error message */}
+      <Button
+        onClick={handleExport}
+        disabled={disabled || isExporting}
+        loading={isExporting}
+        variant="primary"
+        size="md"
+        className="w-full h-11"
+        aria-label={`Export QR code as ${format.toUpperCase()}`}
+      >
+        {!isExporting && (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5 inline-block mr-2"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+              clipRule="evenodd"
+            />
+          </svg>
+        )}
+        Export {format.toUpperCase()}
+      </Button>
+
       {error && (
         <p className="text-sm text-red-600" role="alert">
           {error}
         </p>
       )}
 
-      {/* Info text */}
       {format === 'png' && (
         <p className="text-xs text-gray-500">
-          Exports at 2&quot; x 2&quot; ({selectedDpi * 2}x{selectedDpi * 2} pixels)
+          {selectedDpi * 2}x{selectedDpi * 2}px at 2&quot; x 2&quot;
         </p>
       )}
     </div>

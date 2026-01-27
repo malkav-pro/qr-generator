@@ -50,7 +50,7 @@ export function ShareButton({ className = '' }: ShareButtonProps) {
     <button
       onClick={handleCopy}
       disabled={copied}
-      className={`px-4 py-2 rounded-lg font-medium transition-all duration-150 shadow-sm
+      className={`w-full h-11 px-4 py-2 rounded-lg font-medium transition-all duration-150 shadow-sm
         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
         active:scale-95 disabled:active:scale-100
         motion-reduce:transition-none motion-reduce:active:scale-100 ${
