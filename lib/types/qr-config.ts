@@ -1,7 +1,13 @@
 import { ColorValue, Gradient } from './gradient';
+import { QRTypeKey } from '@/lib/formatters';
 
-export type QRType = 'url' | 'text' | 'email';
+// QRType derived from formatters module (single source of truth)
+export type QRType = QRTypeKey;
 
+/**
+ * @deprecated Use EmailData from lib/formatters/email instead
+ * Kept for backward compatibility during Phase 5 migration
+ */
 export interface EmailData {
   to: string;
   subject?: string;
