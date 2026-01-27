@@ -65,8 +65,8 @@
 **Plans**: 2 plans
 
 Plans:
-- [ ] 05-01-PLAN.md — Install RHF+Zod, create Zod schemas and formatters for url/text/email
-- [ ] 05-02-PLAN.md — Create FormFieldSet, type-specific forms, registry, migrate page.tsx
+- [x] 05-01-PLAN.md — Install RHF+Zod, create Zod schemas and formatters for url/text/email
+- [x] 05-02-PLAN.md — Create FormFieldSet, type-specific forms, registry, migrate page.tsx
 
 #### Phase 6: Simple QR Types
 **Goal**: User can generate WhatsApp and WiFi QR codes
@@ -150,7 +150,7 @@ v1.1 phases execute sequentially: 5 -> 6 -> 7 -> 8 -> 9 (Phase 9 can run paralle
 | 2. Advanced Styling | v1.0 | 2/2 | Complete | 2026-01-27 |
 | 3. Configuration Sharing | v1.0 | 1/1 | Complete | 2026-01-27 |
 | 4. UI Polish | v1.0 | 1/1 | Complete | 2026-01-27 |
-| 5. Form System Foundation | v1.1 | 0/2 | Planned | - |
+| 5. Form System Foundation | v1.1 | 2/2 | Complete | 2026-01-27 |
 | 6. Simple QR Types | v1.1 | 0/TBD | Not started | - |
 | 7. Complex QR Types | v1.1 | 0/TBD | Not started | - |
 | 8. Event QR Codes | v1.1 | 0/TBD | Not started | - |
@@ -158,4 +158,4 @@ v1.1 phases execute sequentially: 5 -> 6 -> 7 -> 8 -> 9 (Phase 9 can run paralle
 
 ---
 *Roadmap created: 2026-01-27*
-*Last updated: 2026-01-27 (Phase 5 planned: 2 plans in 2 waves)*
+*Last updated: 2026-01-27 (Phase 5 complete: Form System Foundation)*
