@@ -2,13 +2,13 @@
 
 ## Milestones
 
-- ✅ **v1.0 MVP** - Phases 1-4 (shipped 2026-01-27)
-- 🚧 **v1.1 Extended Types** - Phases 5-9 (in progress)
+- **v1.0 MVP** - Phases 1-4 (shipped 2026-01-27)
+- **v1.1 Extended Types** - Phases 5-9 (in progress)
 
 ## Phases
 
 <details>
-<summary>✅ v1.0 MVP (Phases 1-4) - SHIPPED 2026-01-27</summary>
+<summary>v1.0 MVP (Phases 1-4) - SHIPPED 2026-01-27</summary>
 
 ### Phase 1: Core Generation
 **Goal**: User can generate basic QR codes with customization
@@ -47,7 +47,7 @@
 
 </details>
 
-### 🚧 v1.1 Extended Types (In Progress)
+### v1.1 Extended Types (In Progress)
 
 **Milestone Goal:** Add 5 new QR code types (vCard, WhatsApp, Telegram, Events, WiFi) with enhanced style system and logo library
 
@@ -62,11 +62,11 @@
   4. Component registry maps QR types to form components using data-driven lookup
   5. Type-specific formatters live in lib/formatters/ with co-located Zod schemas
   6. Existing QR types (URL, text, email) migrated to use React Hook Form pattern
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 05-01: TBD
-- [ ] 05-02: TBD
+- [ ] 05-01-PLAN.md — Install RHF+Zod, create Zod schemas and formatters for url/text/email
+- [ ] 05-02-PLAN.md — Create FormFieldSet, type-specific forms, registry, migrate page.tsx
 
 #### Phase 6: Simple QR Types
 **Goal**: User can generate WhatsApp and WiFi QR codes
@@ -142,7 +142,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-v1.1 phases execute sequentially: 5 → 6 → 7 → 8 → 9 (Phase 9 can run parallel after Phase 5)
+v1.1 phases execute sequentially: 5 -> 6 -> 7 -> 8 -> 9 (Phase 9 can run parallel after Phase 5)
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -150,7 +150,7 @@ v1.1 phases execute sequentially: 5 → 6 → 7 → 8 → 9 (Phase 9 can run par
 | 2. Advanced Styling | v1.0 | 2/2 | Complete | 2026-01-27 |
 | 3. Configuration Sharing | v1.0 | 1/1 | Complete | 2026-01-27 |
 | 4. UI Polish | v1.0 | 1/1 | Complete | 2026-01-27 |
-| 5. Form System Foundation | v1.1 | 0/TBD | Not started | - |
+| 5. Form System Foundation | v1.1 | 0/2 | Planned | - |
 | 6. Simple QR Types | v1.1 | 0/TBD | Not started | - |
 | 7. Complex QR Types | v1.1 | 0/TBD | Not started | - |
 | 8. Event QR Codes | v1.1 | 0/TBD | Not started | - |
@@ -158,4 +158,4 @@ v1.1 phases execute sequentially: 5 → 6 → 7 → 8 → 9 (Phase 9 can run par
 
 ---
 *Roadmap created: 2026-01-27*
-*Last updated: 2026-01-27 (v1.1 phases 5-9 added)*
+*Last updated: 2026-01-27 (Phase 5 planned: 2 plans in 2 waves)*
