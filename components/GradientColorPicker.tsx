@@ -105,131 +105,85 @@ export function GradientColorPicker({
       </div>
 
       {mode === 'solid' && (
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <input
-              type="text"
-              value={solidColor}
-              onChange={handleHexInput}
-              placeholder="#000000"
-              className={`flex-1 px-3 py-2 h-10 border rounded-lg font-mono text-sm text-gray-900
-                focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]
-                transition-colors duration-150 motion-reduce:transition-none ${
-                isValidSolid ? 'border-[var(--color-border)]' : 'border-red-400 bg-red-50'
-              }`}
-              maxLength={7}
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            value={solidColor}
+            onChange={handleHexInput}
+            placeholder="#000000"
+            className="flex-1 px-3 py-2 h-10 border border-[var(--color-border)] rounded-lg font-mono text-sm text-gray-900
+              focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]
+              transition-colors duration-150 motion-reduce:transition-none"
+            maxLength={7}
+          />
+
+          <Popover className="relative">
+            <Popover.Button
+              className="w-10 h-10 rounded-lg border-2 border-[var(--color-border)] cursor-pointer
+                hover:border-[var(--color-primary)] transition-colors duration-150 motion-reduce:transition-none
+                focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
+              style={previewStyle}
+              title="Click to open color picker"
             />
 
-            <Popover className="relative">
-              <Popover.Button
-                className="w-10 h-10 rounded-lg border-2 border-[var(--color-border)] cursor-pointer
-                  hover:border-[var(--color-primary)] transition-colors duration-150 motion-reduce:transition-none
-                  focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
-                style={previewStyle}
-                title="Click to open color picker"
-              />
-
-              <Popover.Panel className="absolute z-10 mt-2 right-0 bg-white rounded-lg shadow-lg border border-[var(--color-border)] p-3">
-                <HexColorPicker color={solidColor} onChange={onSolidChange} />
-              </Popover.Panel>
-            </Popover>
-          </div>
-
-          {!isValidSolid && (
-            <p className="text-xs text-red-600">
-              Enter a valid hex color (e.g., #FF0000 or #F00)
-            </p>
-          )}
+            <Popover.Panel className="absolute z-10 mt-2 right-0 bg-white rounded-lg shadow-lg border border-[var(--color-border)] p-3">
+              <HexColorPicker color={solidColor} onChange={onSolidChange} />
+            </Popover.Panel>
+          </Popover>
         </div>
       )}
 
       {mode === 'gradient' && (
-        <div className="space-y-3">
-          <div
-            className="w-full h-10 rounded-lg border-2 border-[var(--color-border)]"
-            style={previewStyle}
-            aria-label={`${label} gradient preview`}
-          />
+        <div className="space-y-2.5">
+          <div className="flex items-center gap-2">
+            <Popover className="relative">
+              <Popover.Button
+                className="w-12 h-10 rounded-lg border-2 border-[var(--color-border)] cursor-pointer shrink-0
+                  hover:border-[var(--color-primary)] transition-colors duration-150 motion-reduce:transition-none
+                  focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
+                style={{ backgroundColor: isValidStart ? gradientStart : '#000' }}
+                title="Start color"
+              />
+              <Popover.Panel className="absolute z-10 mt-2 left-0 bg-white rounded-lg shadow-lg border border-[var(--color-border)] p-3">
+                <HexColorPicker color={gradientStart} onChange={onGradientStartChange} />
+              </Popover.Panel>
+            </Popover>
 
-          <div className="grid grid-cols-2 gap-2">
-            <div className="space-y-1.5">
-              <label className="block text-xs font-medium text-gray-600">Start</label>
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  value={gradientStart}
-                  onChange={(e) => handleGradientHexInput('start', e)}
-                  placeholder="#000000"
-                  className={`flex-1 px-2 py-1.5 h-10 border rounded-lg font-mono text-xs text-gray-900
-                    focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]
-                    transition-colors duration-150 motion-reduce:transition-none ${
-                    isValidStart ? 'border-[var(--color-border)]' : 'border-red-400 bg-red-50'
-                  }`}
-                  maxLength={7}
-                />
-                <Popover className="relative">
-                  <Popover.Button
-                    className="w-10 h-10 rounded-lg border-2 border-[var(--color-border)] cursor-pointer
-                      hover:border-[var(--color-primary)] transition-colors duration-150 motion-reduce:transition-none
-                      focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 shrink-0"
-                    style={{ backgroundColor: isValidStart ? gradientStart : '#fff' }}
-                  />
-                  <Popover.Panel className="absolute z-10 mt-2 right-0 bg-white rounded-lg shadow-lg border border-[var(--color-border)] p-3">
-                    <HexColorPicker color={gradientStart} onChange={onGradientStartChange} />
-                  </Popover.Panel>
-                </Popover>
-              </div>
-            </div>
+            <div
+              className="flex-1 h-10 rounded-lg border-2 border-[var(--color-border)]"
+              style={previewStyle}
+            />
 
-            <div className="space-y-1.5">
-              <label className="block text-xs font-medium text-gray-600">End</label>
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  value={gradientEnd}
-                  onChange={(e) => handleGradientHexInput('end', e)}
-                  placeholder="#333333"
-                  className={`flex-1 px-2 py-1.5 h-10 border rounded-lg font-mono text-xs text-gray-900
-                    focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]
-                    transition-colors duration-150 motion-reduce:transition-none ${
-                    isValidEnd ? 'border-[var(--color-border)]' : 'border-red-400 bg-red-50'
-                  }`}
-                  maxLength={7}
-                />
-                <Popover className="relative">
-                  <Popover.Button
-                    className="w-10 h-10 rounded-lg border-2 border-[var(--color-border)] cursor-pointer
-                      hover:border-[var(--color-primary)] transition-colors duration-150 motion-reduce:transition-none
-                      focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 shrink-0"
-                    style={{ backgroundColor: isValidEnd ? gradientEnd : '#fff' }}
-                  />
-                  <Popover.Panel className="absolute z-10 mt-2 right-0 bg-white rounded-lg shadow-lg border border-[var(--color-border)] p-3">
-                    <HexColorPicker color={gradientEnd} onChange={onGradientEndChange} />
-                  </Popover.Panel>
-                </Popover>
-              </div>
-            </div>
+            <Popover className="relative">
+              <Popover.Button
+                className="w-12 h-10 rounded-lg border-2 border-[var(--color-border)] cursor-pointer shrink-0
+                  hover:border-[var(--color-primary)] transition-colors duration-150 motion-reduce:transition-none
+                  focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2"
+                style={{ backgroundColor: isValidEnd ? gradientEnd : '#333' }}
+                title="End color"
+              />
+              <Popover.Panel className="absolute z-10 mt-2 right-0 bg-white rounded-lg shadow-lg border border-[var(--color-border)] p-3">
+                <HexColorPicker color={gradientEnd} onChange={onGradientEndChange} />
+              </Popover.Panel>
+            </Popover>
           </div>
 
-          <div className="space-y-1.5">
-            <label className="block text-xs font-medium text-gray-600">Direction</label>
-            <div className="flex flex-wrap gap-1.5">
-              {(['horizontal', 'vertical', 'diagonal', 'radial'] as GradientType[]).map((type) => (
-                <button
-                  key={type}
-                  type="button"
-                  onClick={() => onGradientTypeChange(type)}
-                  className={`px-2.5 py-1.5 text-xs rounded-lg border transition-colors duration-150
-                    motion-reduce:transition-none ${
-                    gradientType === type
-                      ? 'bg-[var(--color-primary)] text-white border-[var(--color-primary)]'
-                      : 'bg-white text-gray-700 border-[var(--color-border)] hover:border-gray-400'
-                  }`}
-                >
-                  {type.charAt(0).toUpperCase() + type.slice(1)}
-                </button>
-              ))}
-            </div>
+          <div className="flex flex-wrap gap-1.5">
+            {(['horizontal', 'vertical', 'diagonal', 'radial'] as GradientType[]).map((type) => (
+              <button
+                key={type}
+                type="button"
+                onClick={() => onGradientTypeChange(type)}
+                className={`px-3 py-1.5 text-xs rounded-lg border transition-colors duration-150
+                  motion-reduce:transition-none ${
+                  gradientType === type
+                    ? 'bg-[var(--color-primary)] text-white border-[var(--color-primary)]'
+                    : 'bg-white text-gray-700 border-[var(--color-border)] hover:border-gray-400'
+                }`}
+              >
+                {type.charAt(0).toUpperCase() + type.slice(1)}
+              </button>
+            ))}
           </div>
         </div>
       )}
