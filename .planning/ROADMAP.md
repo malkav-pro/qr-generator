@@ -100,8 +100,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 07-01-PLAN.md — vCard QR type with vcards-js library, 8-field form, and character counter warnings
-- [ ] 07-02-PLAN.md — Telegram QR type with mode discriminated union (username/phone/bot) and t.me URL formatting
+- [x] 07-01-PLAN.md — vCard QR type with manual RFC 2426 implementation, 8-field form, and character counter warnings
+- [x] 07-02-PLAN.md — Telegram QR type with mode discriminated union (username/phone/bot) and t.me URL formatting
 
 #### Phase 8: Event QR Codes
 **Goal**: User can generate calendar event QR codes
@@ -151,10 +151,10 @@ v1.1 phases execute sequentially: 5 -> 6 -> 7 -> 8 -> 9 (Phase 9 can run paralle
 | 4. UI Polish | v1.0 | 1/1 | Complete | 2026-01-27 |
 | 5. Form System Foundation | v1.1 | 2/2 | Complete | 2026-01-27 |
 | 6. Simple QR Types | v1.1 | 2/2 | Complete | 2026-01-28 |
-| 7. Complex QR Types | v1.1 | 0/2 | Planned | - |
+| 7. Complex QR Types | v1.1 | 2/2 | Complete | 2026-01-28 |
 | 8. Event QR Codes | v1.1 | 0/TBD | Not started | - |
 | 9. Visual Enhancements | v1.1 | 0/TBD | Not started | - |
 
 ---
 *Roadmap created: 2026-01-27*
-*Last updated: 2026-01-28 (Phase 7 planned: Complex QR Types)*
+*Last updated: 2026-01-28 (Phase 7 complete: Complex QR Types)*

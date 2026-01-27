@@ -179,24 +179,24 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| VCARD-01 | Phase 7 | Pending |
-| VCARD-02 | Phase 7 | Pending |
-| VCARD-03 | Phase 7 | Pending |
-| VCARD-04 | Phase 7 | Pending |
-| VCARD-05 | Phase 7 | Pending |
-| VCARD-06 | Phase 7 | Pending |
-| VCARD-07 | Phase 7 | Pending |
-| VCARD-08 | Phase 7 | Pending |
-| VCARD-09 | Phase 7 | Pending |
-| VCARD-10 | Phase 7 | Pending |
+| VCARD-01 | Phase 7 | Complete |
+| VCARD-02 | Phase 7 | Complete |
+| VCARD-03 | Phase 7 | Complete |
+| VCARD-04 | Phase 7 | Complete |
+| VCARD-05 | Phase 7 | Complete |
+| VCARD-06 | Phase 7 | Complete |
+| VCARD-07 | Phase 7 | Complete |
+| VCARD-08 | Phase 7 | Complete |
+| VCARD-09 | Phase 7 | Complete |
+| VCARD-10 | Phase 7 | Complete |
 | WHATSAPP-01 | Phase 6 | Complete |
 | WHATSAPP-02 | Phase 6 | Complete |
 | WHATSAPP-03 | Phase 6 | Complete |
 | WHATSAPP-04 | Phase 6 | Complete |
-| TELEGRAM-01 | Phase 7 | Pending |
-| TELEGRAM-02 | Phase 7 | Pending |
-| TELEGRAM-03 | Phase 7 | Pending |
-| TELEGRAM-04 | Phase 7 | Pending |
+| TELEGRAM-01 | Phase 7 | Complete |
+| TELEGRAM-02 | Phase 7 | Complete |
+| TELEGRAM-03 | Phase 7 | Complete |
+| TELEGRAM-04 | Phase 7 | Complete |
 | EVENT-01 | Phase 8 | Pending |
 | EVENT-02 | Phase 8 | Pending |
 | EVENT-03 | Phase 8 | Pending |
