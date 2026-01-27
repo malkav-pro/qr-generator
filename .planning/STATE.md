@@ -8,19 +8,20 @@
 
 ## Current Position
 
-Phase: 6 of 9 (Simple QR Types - next)
-Plan: Ready to plan
-Status: Phase 5 complete
-Last activity: 2026-01-27 — Phase 5 complete (Form System Foundation)
+Phase: 6 of 9 (Simple QR Types)
+Plan: 1 of 2
+Status: In progress
+Last activity: 2026-01-28 — Completed 06-01-PLAN.md (WhatsApp QR Type)
 
-Progress: [█████░░░░░] 55% (5 phases complete)
+Progress: [█████░░░░░] 56% (5.5 phases complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9 (7 from v1.0, 2 from v1.1)
+- Total plans completed: 10 (7 from v1.0, 3 from v1.1)
 - v1.0 completion: 2026-01-27
 - v1.1 Phase 5 complete: 2026-01-27 (Form system foundation)
+- v1.1 Phase 6 in progress: 2026-01-28 (Simple QR Types)
 
 **By Phase:**
 
@@ -31,12 +32,14 @@ Progress: [█████░░░░░] 55% (5 phases complete)
 | 3. Configuration Sharing | 1 | Complete |
 | 4. UI Polish | 1 | Complete |
 | 5. Form System Foundation | 2/2 | Complete |
+| 6. Simple QR Types | 1/2 | In progress |
 
 **Recent Trend:**
 - v1.0 shipped successfully (2026-01-27)
 - v1.1 Phase 5 complete (2026-01-27)
 - 05-01: RHF+Zod foundation complete (3 min)
 - 05-02: Form registry and migration complete (4 min)
+- 06-01: WhatsApp QR type complete (4 min)
 
 *Updated after each plan completion*
 
@@ -65,6 +68,11 @@ Phase 5 Plan 02 decisions (form registry):
 - FormFieldSet encapsulates Controller pattern for consistent validation UX
 - Removed schema transforms from optional fields to preserve TypeScript optionality
 
+Phase 6 Plan 01 decisions (WhatsApp QR type):
+- E.164 validation regex: /^\+[1-9]\d{6,14}$/ (country codes never start with 0)
+- Only encode message parameter, not phone number or base URL
+- Character counter for message field (500 char limit)
+
 ### Pending Todos
 
 None yet.
@@ -78,10 +86,10 @@ Both blockers addressed through deeper research during phase planning (research 
 
 ## Session Continuity
 
-Last session: 2026-01-27
-Stopped at: Phase 5 complete (Form System Foundation)
-Resume with: `/gsd:discuss-phase 6` or `/gsd:plan-phase 6` to begin Simple QR Types (WhatsApp + WiFi)
+Last session: 2026-01-28
+Stopped at: Completed 06-01-PLAN.md (WhatsApp QR Type)
+Resume file: None
 
 ---
 *State initialized: 2026-01-27*
-*Last updated: 2026-01-27 (Phase 5 complete)*
+*Last updated: 2026-01-28 (06-01 complete)*
