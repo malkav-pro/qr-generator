@@ -3,15 +3,15 @@
 ## Project Reference
 
 **Core value:** Generate QR codes you actually own — data encoded directly, no redirect service dependency
-**Current focus:** Phase 5 - Form System Foundation (v1.1 milestone)
+**Current focus:** Phase 6 - Simple QR Types (v1.1 milestone)
 **Milestone:** v1.1 Extended Types (Phases 5-9)
 
 ## Current Position
 
-Phase: 6 of 9 (Simple QR Types)
-Plan: 2 of 2
-Status: Phase complete
-Last activity: 2026-01-28 — Completed 06-02-PLAN.md (WiFi QR Type)
+Phase: 7 of 9 (Complex QR Types - next)
+Plan: Ready to plan
+Status: Phase 6 complete
+Last activity: 2026-01-28 — Phase 6 complete (Simple QR Types)
 
 Progress: [██████░░░░] 67% (6 phases complete)
 

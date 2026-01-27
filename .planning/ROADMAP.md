@@ -151,11 +151,11 @@ v1.1 phases execute sequentially: 5 -> 6 -> 7 -> 8 -> 9 (Phase 9 can run paralle
 | 3. Configuration Sharing | v1.0 | 1/1 | Complete | 2026-01-27 |
 | 4. UI Polish | v1.0 | 1/1 | Complete | 2026-01-27 |
 | 5. Form System Foundation | v1.1 | 2/2 | Complete | 2026-01-27 |
-| 6. Simple QR Types | v1.1 | 0/2 | Planned | - |
+| 6. Simple QR Types | v1.1 | 2/2 | Complete | 2026-01-28 |
 | 7. Complex QR Types | v1.1 | 0/TBD | Not started | - |
 | 8. Event QR Codes | v1.1 | 0/TBD | Not started | - |
 | 9. Visual Enhancements | v1.1 | 0/TBD | Not started | - |
 
 ---
 *Roadmap created: 2026-01-27*
-*Last updated: 2026-01-27 (Phase 6 planned: Simple QR Types)*
+*Last updated: 2026-01-28 (Phase 6 complete: Simple QR Types)*
