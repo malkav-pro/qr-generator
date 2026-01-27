@@ -7,6 +7,13 @@
 
 Requirements for v1.1 release. Each maps to roadmap phases.
 
+**Stack additions for v1.1:**
+- `react-hook-form` - Complex form validation (E.164 phone, char limits, cross-field validation)
+- `zod` - Type-safe schema validation with transform/escape capabilities
+- `vcards-js` - vCard 3.0 generation library
+- `ics` - iCalendar format generation
+- `@icons-pack/react-simple-icons` - Standard logo library (3300+ brand icons)
+
 ### vCard QR Codes
 
 - [ ] **VCARD-01**: User can enter full name for vCard
@@ -168,15 +175,64 @@ Explicitly excluded. Documented to prevent scope creep.
 
 Which phases cover which requirements. Updated during roadmap creation.
 
+### v1.1 Requirements Mapping
+
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| *(Will be populated by roadmapper)* | | |
+| VCARD-01 | Phase 7 | Pending |
+| VCARD-02 | Phase 7 | Pending |
+| VCARD-03 | Phase 7 | Pending |
+| VCARD-04 | Phase 7 | Pending |
+| VCARD-05 | Phase 7 | Pending |
+| VCARD-06 | Phase 7 | Pending |
+| VCARD-07 | Phase 7 | Pending |
+| VCARD-08 | Phase 7 | Pending |
+| VCARD-09 | Phase 7 | Pending |
+| VCARD-10 | Phase 7 | Pending |
+| WHATSAPP-01 | Phase 6 | Pending |
+| WHATSAPP-02 | Phase 6 | Pending |
+| WHATSAPP-03 | Phase 6 | Pending |
+| WHATSAPP-04 | Phase 6 | Pending |
+| TELEGRAM-01 | Phase 7 | Pending |
+| TELEGRAM-02 | Phase 7 | Pending |
+| TELEGRAM-03 | Phase 7 | Pending |
+| TELEGRAM-04 | Phase 7 | Pending |
+| EVENT-01 | Phase 8 | Pending |
+| EVENT-02 | Phase 8 | Pending |
+| EVENT-03 | Phase 8 | Pending |
+| EVENT-04 | Phase 8 | Pending |
+| EVENT-05 | Phase 8 | Pending |
+| EVENT-06 | Phase 8 | Pending |
+| EVENT-07 | Phase 8 | Pending |
+| WIFI-01 | Phase 6 | Pending |
+| WIFI-02 | Phase 6 | Pending |
+| WIFI-03 | Phase 6 | Pending |
+| WIFI-04 | Phase 6 | Pending |
+| WIFI-05 | Phase 6 | Pending |
+| WIFI-06 | Phase 6 | Pending |
+| STYLE-08 | Phase 9 | Pending |
+| STYLE-09 | Phase 9 | Pending |
+| STYLE-10 | Phase 9 | Pending |
+| STYLE-11 | Phase 9 | Pending |
+| LOGO-01 | Phase 9 | Pending |
+| LOGO-02 | Phase 9 | Pending |
+| LOGO-03 | Phase 9 | Pending |
+| LOGO-04 | Phase 9 | Pending |
+| LOGO-05 | Phase 9 | Pending |
+| LOGO-06 | Phase 9 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 35 total
-- Mapped to phases: (pending roadmap)
-- Unmapped: (pending roadmap)
+- Mapped to phases: 35/35 (100%)
+- Unmapped: 0
+
+**Phase Distribution:**
+- Phase 5 (Foundation): Infrastructure (enables all other phases)
+- Phase 6 (Simple QR Types): 8 requirements (WHATSAPP + WIFI)
+- Phase 7 (Complex QR Types): 14 requirements (VCARD + TELEGRAM)
+- Phase 8 (Event QR Codes): 7 requirements (EVENT)
+- Phase 9 (Visual Enhancements): 10 requirements (STYLE + LOGO)
 
 ---
 *Requirements defined: 2026-01-27*
-*Last updated: 2026-01-27 (v1.1 initial definition)*
+*Last updated: 2026-01-27 (v1.1 traceability complete)*
