@@ -50,12 +50,15 @@ export function ShareButton({ className = '' }: ShareButtonProps) {
     <button
       onClick={handleCopy}
       disabled={copied}
-      className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+      className={`px-4 py-2 rounded-lg font-medium transition-all duration-150 shadow-sm
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
+        active:scale-95 disabled:active:scale-100
+        motion-reduce:transition-none motion-reduce:active:scale-100 ${
         copied
-          ? 'bg-green-600 text-white cursor-default'
+          ? 'bg-green-600 text-white cursor-default focus-visible:ring-green-600'
           : error
-            ? 'bg-red-600 text-white'
-            : 'bg-blue-600 hover:bg-blue-700 text-white'
+            ? 'bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-600'
+            : 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white focus-visible:ring-[var(--color-primary)]'
       } ${className}`}
     >
       {copied ? 'Copied!' : error ? error : 'Share URL'}

@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { exportQRCodePNG, downloadPNG } from '@/lib/png-export';
 import { exportQRCodeSVG } from '@/lib/svg-export';
 import type { QRConfig } from '@/lib/types/qr-config';
+import { Button } from '@/components/ui';
 
 interface ExportButtonProps {
   qrConfig: QRConfig;
@@ -78,30 +79,24 @@ export function ExportButton({
 
       <div className="flex flex-col gap-3">
         <div className="flex gap-1 p-1 bg-gray-100 rounded-md w-fit">
-          <button
+          <Button
             type="button"
             onClick={() => setFormat('png')}
             disabled={disabled || isExporting}
-            className={`px-3 py-1 text-sm rounded transition-colors ${
-              format === 'png'
-                ? 'bg-white text-gray-900 shadow-sm font-medium'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
+            variant={format === 'png' ? 'secondary' : 'ghost'}
+            size="sm"
           >
             PNG
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             onClick={() => setFormat('svg')}
             disabled={disabled || isExporting}
-            className={`px-3 py-1 text-sm rounded transition-colors ${
-              format === 'svg'
-                ? 'bg-white text-gray-900 shadow-sm font-medium'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
+            variant={format === 'svg' ? 'secondary' : 'ghost'}
+            size="sm"
           >
             SVG
-          </button>
+          </Button>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3">
@@ -111,7 +106,7 @@ export function ExportButton({
               value={selectedDpi}
               onChange={(e) => setSelectedDpi(Number(e.target.value))}
               disabled={disabled || isExporting}
-              className="px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+              className="px-3 py-2 border border-[var(--color-border)] rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-colors duration-150 disabled:bg-gray-100 disabled:cursor-not-allowed motion-reduce:transition-none"
               aria-label="Select export quality"
             >
               {DPI_OPTIONS.map((option) => (
@@ -123,54 +118,31 @@ export function ExportButton({
           )}
 
           {/* Export Button */}
-          <button
+          <Button
             onClick={handleExport}
             disabled={disabled || isExporting}
-            className="flex items-center justify-center gap-2 px-6 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors min-h-11"
+            loading={isExporting}
+            variant="primary"
+            size="md"
+            className="min-h-11"
             aria-label={`Export QR code as ${format.toUpperCase()}`}
           >
-            {isExporting ? (
-              <>
-                <svg
-                  className="animate-spin h-5 w-5"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-                Exporting...
-              </>
-            ) : (
-              <>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                Export {format.toUpperCase()}
-              </>
+            {!isExporting && (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 inline-block mr-2"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
             )}
-          </button>
+            Export {format.toUpperCase()}
+          </Button>
         </div>
       </div>
 
