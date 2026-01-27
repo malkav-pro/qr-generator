@@ -1,16 +1,22 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import type { QRConfig } from '@/lib/types/qr-config';
+import { encodeConfig, toShareableConfig } from '@/lib/url-state';
 
 interface ShareButtonProps {
+  qrConfig: QRConfig;
   className?: string;
 }
 
 /**
- * ShareButton - Copy current URL (including config hash) to clipboard
+ * ShareButton - Generate and copy shareable URL with QR config to clipboard
  *
  * Provides user feedback for successful copy and error states.
  * Uses Clipboard API which requires HTTPS or localhost.
+ *
+ * When clicked, encodes the current QR configuration into the URL hash
+ * and copies the full URL to clipboard.
  *
  * States:
  * - Default: "Share URL" (blue button)
@@ -18,18 +24,26 @@ interface ShareButtonProps {
  * - Error: Error message (red, 3s duration)
  *
  * @example
- * <ShareButton className="mt-4" />
+ * <ShareButton qrConfig={config} className="mt-4" />
  */
-export function ShareButton({ className = '' }: ShareButtonProps) {
+export function ShareButton({ qrConfig, className = '' }: ShareButtonProps) {
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleCopy = useCallback(async () => {
     try {
-      // Get current URL (includes hash)
-      const url = window.location.href;
+      // Encode current config into URL hash
+      const shareable = toShareableConfig(qrConfig);
+      const encoded = encodeConfig(shareable);
+      
+      // Update URL with hash (without triggering page reload)
+      const baseUrl = window.location.origin + window.location.pathname;
+      const url = `${baseUrl}#${encoded}`;
+      
+      // Update the browser URL
+      history.replaceState(null, '', url);
 
-      // Use Clipboard API (requires HTTPS or localhost)
+      // Copy to clipboard using Clipboard API (requires HTTPS or localhost)
       if (navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(url);
         setCopied(true);
@@ -44,7 +58,7 @@ export function ShareButton({ className = '' }: ShareButtonProps) {
       setError('Failed to copy URL');
       setTimeout(() => setError(null), 3000);
     }
-  }, []);
+  }, [qrConfig]);
 
   return (
     <button
