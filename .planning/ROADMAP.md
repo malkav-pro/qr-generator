@@ -104,7 +104,7 @@ Plans:
 - [x] 07-02-PLAN.md — Telegram QR type with mode discriminated union (username/phone/bot) and t.me URL formatting
 
 #### Phase 8: Event QR Codes
-**Goal**: User can generate calendar event QR codes
+**Goal**: User can generate calendar event QR codes with iCalendar format
 **Depends on**: Phase 7
 **Requirements**: EVENT-01, EVENT-02, EVENT-03, EVENT-04, EVENT-05, EVENT-06, EVENT-07
 **Success Criteria** (what must be TRUE):
@@ -113,11 +113,11 @@ Plans:
   3. Events import with correct times across different device timezones
   4. Timezone selector provides standard timezone list (America/New_York format)
   5. System prevents end time from being before start time
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 08-01: TBD
-- [ ] 08-02: TBD
+- [ ] 08-01-PLAN.md — Install ics + @vvo/tzdb, create event schema with cross-field date validation, iCalendar formatter
+- [ ] 08-02-PLAN.md — Create EventForm with datetime-local inputs, timezone selector, register in system
 
 #### Phase 9: Visual Enhancements
 **Goal**: Enhanced style system and standard logo library
@@ -152,9 +152,9 @@ v1.1 phases execute sequentially: 5 -> 6 -> 7 -> 8 -> 9 (Phase 9 can run paralle
 | 5. Form System Foundation | v1.1 | 2/2 | Complete | 2026-01-27 |
 | 6. Simple QR Types | v1.1 | 2/2 | Complete | 2026-01-28 |
 | 7. Complex QR Types | v1.1 | 2/2 | Complete | 2026-01-28 |
-| 8. Event QR Codes | v1.1 | 0/TBD | Not started | - |
+| 8. Event QR Codes | v1.1 | 0/2 | Not started | - |
 | 9. Visual Enhancements | v1.1 | 0/TBD | Not started | - |
 
 ---
 *Roadmap created: 2026-01-27*
-*Last updated: 2026-01-28 (Phase 7 complete: Complex QR Types)*
+*Last updated: 2026-01-28 (Phase 8 planned: Event QR Codes)*
