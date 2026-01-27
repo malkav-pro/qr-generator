@@ -12,9 +12,9 @@ type Props = {
 };
 
 export function EmailForm({ onDataChange, initialValue }: Props) {
-  const { control, watch } = useForm<EmailData>({
+  const { control, watch } = useForm({
     resolver: zodResolver(emailSchema),
-    mode: 'onBlur',
+    mode: 'onBlur' as const,
     defaultValues: {
       to: initialValue?.to || '',
       subject: initialValue?.subject || '',
