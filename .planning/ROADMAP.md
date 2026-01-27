@@ -82,8 +82,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 06-01-PLAN.md — WhatsApp QR type with E.164 phone validation and wa.me URL formatting
-- [ ] 06-02-PLAN.md — WiFi QR type with discriminated union schema and special character escaping
+- [x] 06-01-PLAN.md — WhatsApp QR type with E.164 phone validation and wa.me URL formatting
+- [x] 06-02-PLAN.md — WiFi QR type with discriminated union schema and special character escaping
 
 #### Phase 7: Complex QR Types
 **Goal**: User can generate vCard and Telegram QR codes
@@ -97,12 +97,11 @@ Plans:
   5. User can create Telegram QR in username, phone, or bot mode
   6. Telegram username mode auto-strips @ symbol and validates 5-32 characters
   7. System generates correct t.me/{username} or t.me/{phone} URL format
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 07-01: TBD
-- [ ] 07-02: TBD
-- [ ] 07-03: TBD
+- [ ] 07-01-PLAN.md — vCard QR type with vcards-js library, 8-field form, and character counter warnings
+- [ ] 07-02-PLAN.md — Telegram QR type with mode discriminated union (username/phone/bot) and t.me URL formatting
 
 #### Phase 8: Event QR Codes
 **Goal**: User can generate calendar event QR codes
@@ -152,10 +151,10 @@ v1.1 phases execute sequentially: 5 -> 6 -> 7 -> 8 -> 9 (Phase 9 can run paralle
 | 4. UI Polish | v1.0 | 1/1 | Complete | 2026-01-27 |
 | 5. Form System Foundation | v1.1 | 2/2 | Complete | 2026-01-27 |
 | 6. Simple QR Types | v1.1 | 2/2 | Complete | 2026-01-28 |
-| 7. Complex QR Types | v1.1 | 0/TBD | Not started | - |
+| 7. Complex QR Types | v1.1 | 0/2 | Planned | - |
 | 8. Event QR Codes | v1.1 | 0/TBD | Not started | - |
 | 9. Visual Enhancements | v1.1 | 0/TBD | Not started | - |
 
 ---
 *Roadmap created: 2026-01-27*
-*Last updated: 2026-01-28 (Phase 6 complete: Simple QR Types)*
+*Last updated: 2026-01-28 (Phase 7 planned: Complex QR Types)*
