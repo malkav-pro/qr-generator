@@ -79,11 +79,11 @@ Plans:
   4. User can create WiFi QR with SSID, password, encryption type, and hidden SSID toggle
   5. WiFi passwords with special characters (semicolons, backslashes) work correctly after scanning
   6. System generates correct WIFI:T:{type};S:{ssid};P:{pass};H:{hidden};; format with proper escaping
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 06-01: TBD
-- [ ] 06-02: TBD
+- [ ] 06-01-PLAN.md — WhatsApp QR type with E.164 phone validation and wa.me URL formatting
+- [ ] 06-02-PLAN.md — WiFi QR type with discriminated union schema and special character escaping
 
 #### Phase 7: Complex QR Types
 **Goal**: User can generate vCard and Telegram QR codes
@@ -151,11 +151,11 @@ v1.1 phases execute sequentially: 5 -> 6 -> 7 -> 8 -> 9 (Phase 9 can run paralle
 | 3. Configuration Sharing | v1.0 | 1/1 | Complete | 2026-01-27 |
 | 4. UI Polish | v1.0 | 1/1 | Complete | 2026-01-27 |
 | 5. Form System Foundation | v1.1 | 2/2 | Complete | 2026-01-27 |
-| 6. Simple QR Types | v1.1 | 0/TBD | Not started | - |
+| 6. Simple QR Types | v1.1 | 0/2 | Planned | - |
 | 7. Complex QR Types | v1.1 | 0/TBD | Not started | - |
 | 8. Event QR Codes | v1.1 | 0/TBD | Not started | - |
 | 9. Visual Enhancements | v1.1 | 0/TBD | Not started | - |
 
 ---
 *Roadmap created: 2026-01-27*
-*Last updated: 2026-01-27 (Phase 5 complete: Form System Foundation)*
+*Last updated: 2026-01-27 (Phase 6 planned: Simple QR Types)*
