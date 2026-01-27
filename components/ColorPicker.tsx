@@ -45,7 +45,7 @@ export function ColorPicker({
 
   return (
     <div className="space-y-2">
-      <label className="block text-sm font-medium text-gray-700">{label}</label>
+      <label className="block text-sm font-medium text-[var(--color-text)]">{label}</label>
 
       {/* Transparent option for background */}
       {allowTransparent && (
@@ -54,7 +54,7 @@ export function ColorPicker({
             type="checkbox"
             checked={isTransparent}
             onChange={handleTransparentToggle}
-            className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            className="w-4 h-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
           />
           <span>Transparent</span>
         </label>
@@ -68,13 +68,16 @@ export function ColorPicker({
             value={color}
             onChange={handleHexInput}
             placeholder="#000000"
-            className={`flex-1 px-3 py-2 border rounded-md font-mono text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              isValid ? 'border-gray-300' : 'border-red-400 bg-red-50'
+            className={`flex-1 px-3 py-2 border rounded-lg font-mono text-sm text-gray-900
+              focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]
+              transition-colors duration-150 motion-reduce:transition-none ${
+              isValid ? 'border-[var(--color-border)]' : 'border-red-400 bg-red-50'
             }`}
             maxLength={7}
           />
           <div
-            className="w-10 h-10 rounded-md border-2 border-gray-300 cursor-pointer hover:border-blue-400 transition-colors"
+            className="w-10 h-10 rounded-lg border-2 border-[var(--color-border)] cursor-pointer
+              hover:border-[var(--color-primary)] transition-colors duration-150 motion-reduce:transition-none"
             style={{ backgroundColor: isValid ? color : '#fff' }}
             onClick={() => setShowPicker(!showPicker)}
             title="Click to toggle color picker"

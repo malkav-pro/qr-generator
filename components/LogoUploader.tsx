@@ -99,7 +99,7 @@ export function LogoUploader({ logo, onLogoChange, qrSize = 300 }: LogoUploaderP
 
   return (
     <div className="space-y-2">
-      <label className="block text-sm font-medium text-gray-700">
+      <label className="block text-sm font-medium text-[var(--color-text)]">
         Logo (Optional)
       </label>
 
@@ -110,10 +110,12 @@ export function LogoUploader({ logo, onLogoChange, qrSize = 300 }: LogoUploaderP
           onDragLeave={handleDrag}
           onDragOver={handleDrag}
           onDrop={handleDrop}
-          className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
+          className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer
+            transition-colors duration-150 motion-reduce:transition-none
+            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 ${
             dragActive
-              ? 'border-blue-500 bg-blue-50'
-              : 'border-gray-300 hover:border-gray-400'
+              ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/5'
+              : 'border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)]/5'
           }`}
         >
           <div className="space-y-2">
@@ -133,7 +135,7 @@ export function LogoUploader({ logo, onLogoChange, qrSize = 300 }: LogoUploaderP
               </svg>
             </div>
             <div className="text-sm text-gray-600">
-              <span className="font-medium text-blue-600 hover:text-blue-700">
+              <span className="font-medium text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]">
                 Click to upload
               </span>
               {' or drag and drop'}
@@ -160,7 +162,9 @@ export function LogoUploader({ logo, onLogoChange, qrSize = 300 }: LogoUploaderP
             />
             <button
               onClick={handleRemove}
-              className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 transition-colors"
+              className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center
+                hover:bg-red-600 transition-colors duration-150 motion-reduce:transition-none
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
               title="Remove logo"
             >
               ×

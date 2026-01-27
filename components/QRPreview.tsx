@@ -12,10 +12,10 @@ export function QRPreview({
   error = null,
 }: QRPreviewProps) {
   return (
-    <div className="flex flex-col items-center justify-center p-6 border-2 border-gray-300 rounded-lg bg-white">
+    <div className="flex flex-col items-center justify-center p-6 border-2 border-[var(--color-border)] rounded-lg bg-white">
       {/* Loading indicator */}
       {isGenerating && (
-        <div className="mb-4 text-blue-600 flex items-center gap-2">
+        <div className="mb-4 text-[var(--color-primary)] flex items-center gap-2">
           <svg
             className="animate-spin h-5 w-5"
             xmlns="http://www.w3.org/2000/svg"
@@ -42,7 +42,7 @@ export function QRPreview({
 
       {/* Error message */}
       {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-300 rounded-md text-red-700 text-sm">
+        <div className="mb-4 p-3 bg-red-50 border border-red-300 rounded-lg text-red-700 text-sm">
           <strong>Error:</strong> {error}
         </div>
       )}
@@ -50,7 +50,7 @@ export function QRPreview({
       {/* Canvas element */}
       <canvas
         ref={canvasRef}
-        className="max-w-full h-auto border border-gray-200 rounded-md shadow-sm"
+        className="max-w-full h-auto border border-gray-200 rounded-lg shadow-sm"
         style={{ minWidth: '256px', minHeight: '256px' }}
       />
 

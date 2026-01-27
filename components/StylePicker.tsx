@@ -28,7 +28,7 @@ function StylePicker<T extends string>({
 }: StylePickerProps<T>) {
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
+      <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
         {label}
       </label>
       <div className="grid grid-cols-3 gap-2">
@@ -40,10 +40,12 @@ function StylePicker<T extends string>({
               type="button"
               onClick={() => onChange(option.value)}
               className={`
-                flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all
+                flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all duration-150
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2
+                motion-reduce:transition-none
                 ${isSelected
-                  ? 'ring-2 ring-blue-500 bg-blue-50 border-blue-500'
-                  : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                  ? 'ring-2 ring-[var(--color-primary)] bg-blue-50 border-[var(--color-primary)]'
+                  : 'border-[var(--color-border)] hover:border-gray-400 hover:bg-gray-50'
                 }
               `}
             >

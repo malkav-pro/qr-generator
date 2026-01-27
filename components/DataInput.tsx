@@ -40,7 +40,7 @@ export function DataInput({
 
     return (
       <div className="space-y-2">
-        <label htmlFor="url-input" className="block text-sm font-medium">
+        <label htmlFor="url-input" className="block text-sm font-medium text-[var(--color-text)]">
           URL
         </label>
         <input
@@ -49,7 +49,9 @@ export function DataInput({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="https://example.com"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg text-gray-900
+            focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]
+            transition-colors duration-150 motion-reduce:transition-none"
         />
         {showValidationHint && (
           <p className="text-sm text-amber-600">
@@ -63,7 +65,7 @@ export function DataInput({
   if (type === 'text') {
     return (
       <div className="space-y-2">
-        <label htmlFor="text-input" className="block text-sm font-medium">
+        <label htmlFor="text-input" className="block text-sm font-medium text-[var(--color-text)]">
           Text
         </label>
         <textarea
@@ -72,7 +74,9 @@ export function DataInput({
           onChange={(e) => onChange(e.target.value)}
           placeholder="Enter any text..."
           rows={4}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg text-gray-900
+            focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]
+            transition-colors duration-150 motion-reduce:transition-none"
         />
       </div>
     );
@@ -85,7 +89,7 @@ export function DataInput({
     return (
       <div className="space-y-4">
         <div className="space-y-2">
-          <label htmlFor="email-to" className="block text-sm font-medium">
+          <label htmlFor="email-to" className="block text-sm font-medium text-[var(--color-text)]">
             To <span className="text-red-500">*</span>
           </label>
           <input
@@ -94,7 +98,9 @@ export function DataInput({
             value={emailData?.to || ''}
             onChange={(e) => handleEmailFieldChange('to', e.target.value)}
             placeholder="recipient@example.com"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg text-gray-900
+              focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]
+              transition-colors duration-150 motion-reduce:transition-none"
           />
           {showEmailValidationHint && (
             <p className="text-sm text-amber-600">
@@ -104,7 +110,7 @@ export function DataInput({
         </div>
 
         <div className="space-y-2">
-          <label htmlFor="email-subject" className="block text-sm font-medium">
+          <label htmlFor="email-subject" className="block text-sm font-medium text-[var(--color-text)]">
             Subject <span className="text-gray-400 text-xs">(optional)</span>
           </label>
           <input
@@ -113,12 +119,14 @@ export function DataInput({
             value={emailData?.subject || ''}
             onChange={(e) => handleEmailFieldChange('subject', e.target.value)}
             placeholder="Email subject"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg text-gray-900
+              focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]
+              transition-colors duration-150 motion-reduce:transition-none"
           />
         </div>
 
         <div className="space-y-2">
-          <label htmlFor="email-body" className="block text-sm font-medium">
+          <label htmlFor="email-body" className="block text-sm font-medium text-[var(--color-text)]">
             Body <span className="text-gray-400 text-xs">(optional)</span>
           </label>
           <textarea
@@ -127,7 +135,9 @@ export function DataInput({
             onChange={(e) => handleEmailFieldChange('body', e.target.value)}
             placeholder="Email body"
             rows={4}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg text-gray-900
+              focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]
+              transition-colors duration-150 motion-reduce:transition-none"
           />
         </div>
       </div>

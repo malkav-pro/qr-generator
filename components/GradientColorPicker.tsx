@@ -82,14 +82,14 @@ export function GradientColorPicker({
 
   return (
     <div className="space-y-2">
-      <label className="block text-sm font-medium text-gray-700">{label}</label>
+      <label className="block text-sm font-medium text-[var(--color-text)]">{label}</label>
 
       {/* Mode toggle buttons */}
       <div className="flex gap-1 p-1 bg-gray-100 rounded-md w-fit">
         <button
           type="button"
           onClick={() => handleModeToggle('solid')}
-          className={`px-3 py-1 text-sm rounded transition-colors ${
+          className={`px-3 py-1 text-sm rounded transition-colors duration-150 motion-reduce:transition-none ${
             mode === 'solid'
               ? 'bg-white text-gray-900 shadow-sm font-medium'
               : 'text-gray-600 hover:text-gray-900'
@@ -100,7 +100,7 @@ export function GradientColorPicker({
         <button
           type="button"
           onClick={() => handleModeToggle('gradient')}
-          className={`px-3 py-1 text-sm rounded transition-colors ${
+          className={`px-3 py-1 text-sm rounded transition-colors duration-150 motion-reduce:transition-none ${
             mode === 'gradient'
               ? 'bg-white text-gray-900 shadow-sm font-medium'
               : 'text-gray-600 hover:text-gray-900'
@@ -119,13 +119,16 @@ export function GradientColorPicker({
               value={solidColor}
               onChange={handleHexInput}
               placeholder="#000000"
-              className={`flex-1 px-3 py-2 border rounded-md font-mono text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                isValidSolid ? 'border-gray-300' : 'border-red-400 bg-red-50'
+              className={`flex-1 px-3 py-2 border rounded-lg font-mono text-sm text-gray-900
+                focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]
+                transition-colors duration-150 motion-reduce:transition-none ${
+                isValidSolid ? 'border-[var(--color-border)]' : 'border-red-400 bg-red-50'
               }`}
               maxLength={7}
             />
             <div
-              className="w-10 h-10 rounded-md border-2 border-gray-300 cursor-pointer hover:border-blue-400 transition-colors"
+              className="w-10 h-10 rounded-lg border-2 border-[var(--color-border)] cursor-pointer
+                hover:border-[var(--color-primary)] transition-colors duration-150 motion-reduce:transition-none"
               style={previewStyle}
               onClick={() => setShowPicker(!showPicker)}
               title="Click to toggle color picker"
@@ -152,7 +155,7 @@ export function GradientColorPicker({
         <div className="space-y-2">
           {/* Preview swatch */}
           <div
-            className="w-full h-10 rounded-md border-2 border-gray-300"
+            className="w-full h-10 rounded-lg border-2 border-[var(--color-border)]"
             style={previewStyle}
             aria-label={`${label} gradient preview`}
           />
@@ -166,14 +169,17 @@ export function GradientColorPicker({
                   value={gradientStart}
                   onChange={(e) => handleGradientHexInput('start', e)}
                   placeholder="#000000"
-                  className={`flex-1 px-3 py-2 border rounded-md font-mono text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    isValidStart ? 'border-gray-300' : 'border-red-400 bg-red-50'
+                  className={`flex-1 px-3 py-2 border rounded-lg font-mono text-sm text-gray-900
+                    focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]
+                    transition-colors duration-150 motion-reduce:transition-none ${
+                    isValidStart ? 'border-[var(--color-border)]' : 'border-red-400 bg-red-50'
                   }`}
                   maxLength={7}
                   onFocus={() => setActiveGradientField('start')}
                 />
                 <div
-                  className="w-10 h-10 rounded-md border-2 border-gray-300 cursor-pointer hover:border-blue-400 transition-colors"
+                  className="w-10 h-10 rounded-lg border-2 border-[var(--color-border)] cursor-pointer
+                    hover:border-[var(--color-primary)] transition-colors duration-150 motion-reduce:transition-none"
                   style={{ backgroundColor: isValidStart ? gradientStart : '#fff' }}
                   onClick={() => {
                     setActiveGradientField('start');
@@ -198,14 +204,17 @@ export function GradientColorPicker({
                   value={gradientEnd}
                   onChange={(e) => handleGradientHexInput('end', e)}
                   placeholder="#333333"
-                  className={`flex-1 px-3 py-2 border rounded-md font-mono text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    isValidEnd ? 'border-gray-300' : 'border-red-400 bg-red-50'
+                  className={`flex-1 px-3 py-2 border rounded-lg font-mono text-sm text-gray-900
+                    focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]
+                    transition-colors duration-150 motion-reduce:transition-none ${
+                    isValidEnd ? 'border-[var(--color-border)]' : 'border-red-400 bg-red-50'
                   }`}
                   maxLength={7}
                   onFocus={() => setActiveGradientField('end')}
                 />
                 <div
-                  className="w-10 h-10 rounded-md border-2 border-gray-300 cursor-pointer hover:border-blue-400 transition-colors"
+                  className="w-10 h-10 rounded-lg border-2 border-[var(--color-border)] cursor-pointer
+                    hover:border-[var(--color-primary)] transition-colors duration-150 motion-reduce:transition-none"
                   style={{ backgroundColor: isValidEnd ? gradientEnd : '#fff' }}
                   onClick={() => {
                     setActiveGradientField('end');
@@ -231,10 +240,11 @@ export function GradientColorPicker({
                   key={type}
                   type="button"
                   onClick={() => onGradientTypeChange(type)}
-                  className={`px-3 py-1 text-sm rounded border transition-colors ${
+                  className={`px-3 py-1 text-sm rounded-lg border transition-colors duration-150
+                    motion-reduce:transition-none ${
                     gradientType === type
-                      ? 'bg-blue-600 text-white border-blue-600'
-                      : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
+                      ? 'bg-[var(--color-primary)] text-white border-[var(--color-primary)]'
+                      : 'bg-white text-gray-700 border-[var(--color-border)] hover:border-gray-400'
                   }`}
                 >
                   {type.charAt(0).toUpperCase() + type.slice(1)}

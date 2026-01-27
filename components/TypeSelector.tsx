@@ -14,7 +14,7 @@ const types: Array<{ value: QRType; label: string }> = [
 export function TypeSelector({ value, onChange }: TypeSelectorProps) {
   return (
     <div className="space-y-2">
-      <label className="block text-sm font-medium">QR Code Type</label>
+      <label className="block text-sm font-medium text-[var(--color-text)]">QR Code Type</label>
       <div className="flex gap-2" role="tablist">
         {types.map((type) => (
           <button
@@ -24,10 +24,12 @@ export function TypeSelector({ value, onChange }: TypeSelectorProps) {
             aria-label={`Select ${type.label} type`}
             aria-selected={value === type.value}
             onClick={() => onChange(type.value)}
-            className={`px-4 py-2 rounded-md font-medium transition-colors ${
+            className={`px-4 py-2 rounded-lg font-medium transition-all duration-150
+              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2
+              motion-reduce:transition-none ${
               value === type.value
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                ? 'bg-[var(--color-primary)] text-white border border-[var(--color-primary)]'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300 border border-transparent'
             }`}
           >
             {type.label}
