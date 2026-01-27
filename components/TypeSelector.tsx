@@ -10,6 +10,8 @@ const typeLabels: Record<QRTypeKey, string> = {
   url: 'URL',
   text: 'Text',
   email: 'Email',
+  whatsapp: 'WhatsApp',
+  wifi: 'WiFi',
 };
 
 export function TypeSelector({ value, onChange }: TypeSelectorProps) {

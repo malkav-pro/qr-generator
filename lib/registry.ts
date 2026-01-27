@@ -2,6 +2,8 @@ import { ComponentType } from 'react';
 import { UrlForm } from '@/components/forms/qr-forms/UrlForm';
 import { TextForm } from '@/components/forms/qr-forms/TextForm';
 import { EmailForm } from '@/components/forms/qr-forms/EmailForm';
+import { WhatsAppForm } from '@/components/forms/qr-forms/WhatsAppForm';
+import { WiFiForm } from '@/components/forms/qr-forms/WiFiForm';
 import { QRTypeKey } from './formatters';
 
 // Common props all QR form components accept
@@ -15,6 +17,8 @@ export const qrFormRegistry: Record<QRTypeKey, ComponentType<QRFormProps>> = {
   url: UrlForm,
   text: TextForm,
   email: EmailForm,
+  whatsapp: WhatsAppForm,
+  wifi: WiFiForm,
 };
 
 // Get form component for a QR type (type-safe lookup)
