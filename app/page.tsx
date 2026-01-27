@@ -14,7 +14,9 @@ import {
   CornerDotStylePicker,
   LogoUploader,
   ShareButton,
+  Footer,
 } from '@/components';
+import { ControlSection } from '@/components/ui';
 import { useQRCode } from '@/hooks/useQRCode';
 import { useURLState } from '@/hooks/useURLState';
 import { extractSolidColor, parseGradientCSS } from '@/lib/utils/gradient-parser';
@@ -168,74 +170,37 @@ export default function Home() {
   const canExport = hasData && !isGenerating && !error;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-[var(--color-surface)]">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200">
+      <header className="bg-[var(--color-surface-raised)] border-b border-[var(--color-border)]">
         <div className="max-w-6xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[var(--color-text)]">
             QR Code Generator
           </h1>
-          <p className="mt-1 text-sm sm:text-base text-gray-600">
+          <p className="mt-1 text-sm sm:text-base text-[var(--color-text-muted)]">
             Generate QR codes you own - no tracking, no redirects
           </p>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-        {/* Mobile Layout: Preview first, then controls */}
-        <div className="flex flex-col md:grid md:grid-cols-2 gap-6 lg:gap-8">
-          {/* QR Preview Section - Full width on mobile, right column on desktop */}
-          <section className="md:order-2" aria-labelledby="preview-heading">
-            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200 sticky top-6">
-              <h2 id="preview-heading" className="text-lg font-semibold mb-4 text-gray-900">
-                Preview
-              </h2>
-              <QRPreview
-                canvasRef={canvasRef}
-                isGenerating={isGenerating}
-                error={error}
+      <main className="max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8 flex-1">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Controls Section - Left column on desktop */}
+          <div className="lg:order-1 space-y-4">
+            <ControlSection title="Data Input" defaultOpen>
+              <TypeSelector value={qrType} onChange={handleTypeChange} />
+              <DataInput
+                type={qrType}
+                value={data}
+                emailData={emailData}
+                onChange={handleDataChange}
+                onEmailChange={handleEmailChange}
               />
-              <div className="mt-6 flex flex-col sm:flex-row gap-3">
-                <ExportButton
-                  qrConfig={qrConfig}
-                  disabled={!canExport}
-                  filename="qrcode"
-                />
-                <ShareButton className="w-full sm:w-auto" />
-              </div>
-            </div>
-          </section>
+            </ControlSection>
 
-          {/* Controls Section - Below preview on mobile, left column on desktop */}
-          <section className="md:order-1 space-y-6" aria-labelledby="controls-heading">
-            <h2 id="controls-heading" className="sr-only">
-              QR Code Configuration
-            </h2>
-
-            {/* Content Card */}
-            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-lg font-semibold mb-4 text-gray-900">
-                Content
-              </h3>
-              <div className="space-y-4">
-                <TypeSelector value={qrType} onChange={handleTypeChange} />
-                <DataInput
-                  type={qrType}
-                  value={data}
-                  emailData={emailData}
-                  onChange={handleDataChange}
-                  onEmailChange={handleEmailChange}
-                />
-              </div>
-            </div>
-
-            {/* Colors Card */}
-            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-lg font-semibold mb-4 text-gray-900">
-                Colors
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <ControlSection title="Colors">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <GradientColorPicker
                   label="Foreground"
                   solidColor={foreground}
@@ -256,25 +221,20 @@ export default function Home() {
                   allowTransparent
                 />
                 <ColorPicker
-                  label="Corner Square Color"
+                  label="Corner Square"
                   color={cornerSquareColor}
                   onChange={setCornerSquareColor}
                 />
                 <ColorPicker
-                  label="Corner Dot Color"
+                  label="Corner Dot"
                   color={cornerDotColor}
                   onChange={setCornerDotColor}
                 />
               </div>
-              
-            </div>
+            </ControlSection>
 
-            {/* Styles Card */}
-            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-lg font-semibold mb-4 text-gray-900">
-                Styles
-              </h3>
-              <div className="space-y-6">
+            <ControlSection title="Styles">
+              <div className="space-y-4">
                 <DotStylePicker value={dotsStyle} onChange={setDotsStyle} />
                 <CornerSquareStylePicker
                   value={cornersSquareStyle}
@@ -285,27 +245,36 @@ export default function Home() {
                   onChange={setCornersDotStyle}
                 />
               </div>
-            </div>
+            </ControlSection>
 
-            {/* Logo Card */}
-            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-lg font-semibold mb-4 text-gray-900">
-                Logo
-              </h3>
+            <ControlSection title="Logo">
               <LogoUploader logo={logo} onLogoChange={setLogo} qrSize={300} />
+            </ControlSection>
+          </div>
+
+          {/* Preview Section - Right column on desktop, sticky */}
+          <div className="lg:order-2 lg:sticky lg:top-8 lg:self-start">
+            <div className="bg-[var(--color-surface-raised)] rounded-lg shadow-sm border border-[var(--color-border)] p-6">
+              <h2 className="text-lg font-semibold mb-4">Preview</h2>
+              <QRPreview
+                canvasRef={canvasRef}
+                isGenerating={isGenerating}
+                error={error}
+              />
+              <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                <ExportButton
+                  qrConfig={qrConfig}
+                  disabled={!canExport}
+                  filename="qrcode"
+                />
+                <ShareButton className="w-full sm:w-auto" />
+              </div>
             </div>
-          </section>
+          </div>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="mt-12 border-t border-gray-200 bg-white">
-        <div className="max-w-6xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-          <p className="text-sm text-gray-500 text-center">
-            Client-side QR generation - your data never leaves your browser
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
