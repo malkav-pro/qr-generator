@@ -3,26 +3,27 @@
 ## Project Reference
 
 **Core value:** Generate QR codes you actually own — data encoded directly, no redirect service dependency
-**Current focus:** Phase 7 - Complex QR Types (v1.1 milestone)
+**Current focus:** Phase 8 - Event QR Codes (v1.1 milestone)
 **Milestone:** v1.1 Extended Types (Phases 5-9)
 
 ## Current Position
 
-Phase: 8 of 9 (Event QR Codes - next)
-Plan: Ready to plan
-Status: Phase 7 complete
-Last activity: 2026-01-28 — Phase 7 complete (Complex QR Types)
+Phase: 8 of 9 (Event QR Codes)
+Plan: 1 of 1 complete
+Status: Phase 8 complete
+Last activity: 2026-01-28 — Completed 08-01-PLAN.md (Event QR Type)
 
-Progress: [███████░░░] 78% (7 phases complete)
+Progress: [████████░░] 89% (8 phases complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 13 (7 from v1.0, 6 from v1.1)
+- Total plans completed: 14 (7 from v1.0, 7 from v1.1)
 - v1.0 completion: 2026-01-27
 - v1.1 Phase 5 complete: 2026-01-27 (Form system foundation)
 - v1.1 Phase 6 complete: 2026-01-28 (Simple QR Types)
 - v1.1 Phase 7 complete: 2026-01-28 (Complex QR Types)
+- v1.1 Phase 8 complete: 2026-01-28 (Event QR Codes)
 
 **By Phase:**
 
@@ -35,6 +36,7 @@ Progress: [███████░░░] 78% (7 phases complete)
 | 5. Form System Foundation | 2/2 | Complete |
 | 6. Simple QR Types | 2/2 | Complete |
 | 7. Complex QR Types | 2/2 | Complete |
+| 8. Event QR Codes | 1/1 | Complete |
 
 **Recent Trend:**
 - v1.0 shipped successfully (2026-01-27)
@@ -45,6 +47,7 @@ Progress: [███████░░░] 78% (7 phases complete)
 - 06-02: WiFi QR type complete (4 min)
 - 07-01: vCard QR type complete (5 min)
 - 07-02: Telegram QR type complete (9 min)
+- 08-01: Event QR type complete (7 min)
 
 *Updated after each plan completion*
 
@@ -98,22 +101,30 @@ Phase 7 Plan 02 decisions (Telegram QR type):
 - Bot username must end with 'bot' or '_bot' per Telegram conventions
 - Transform-then-pipe pattern: .transform().pipe(z.string().min()...) for multi-stage validation
 
+Phase 8 Plan 01 decisions (Event QR type):
+- UTC-only approach for iCalendar generation (no VTIMEZONE complexity)
+- Cross-field validation via .refine() for end-after-start check
+- @vvo/tzdb for timezone selection with friendly names and IANA compatibility
+- HTML5 datetime-local input for native browser date/time picker
+
 ### Pending Todos
 
 None yet.
 
 ### Blockers/Concerns
 
-**Phase 8 (Events):** Requires RFC 5545 timezone handling validation during implementation
+None currently identified.
 
-Note: Phase 7 (vCard) blocker resolved - manual RFC 2426 implementation successful.
+Notes:
+- Phase 7 (vCard) blocker resolved - manual RFC 2426 implementation successful
+- Phase 8 (Events) blocker resolved - UTC-only approach validated, RFC 5545 compliant
 
 ## Session Continuity
 
 Last session: 2026-01-28
-Stopped at: Completed 07-02-PLAN.md (Telegram QR Type) - Phase 7 complete
-Resume with: `/gsd:plan-phase 8` to begin Event QR types (iCalendar format)
+Stopped at: Completed 08-01-PLAN.md (Event QR Type) - Phase 8 complete
+Resume with: `/gsd:plan-phase 9` to begin Visual Enhancements (final phase of v1.1)
 
 ---
 *State initialized: 2026-01-27*
-*Last updated: 2026-01-28 (Phase 7 complete - Complex QR Types: vCard + Telegram)*
+*Last updated: 2026-01-28 (Phase 8 complete - Event QR Codes: iCalendar generation)*
