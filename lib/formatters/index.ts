@@ -19,6 +19,9 @@ export { vcardSchema, type VCardData, formatVCard, getVCardCharacterCount } from
 // Telegram type
 export { telegramSchema, type TelegramData, formatTelegram } from './telegram';
 
+// Event type
+export { eventSchema, type EventData, formatEvent, getEventCharacterCount } from './event';
+
 // QR type keys for registry (v1.0 types + v1.1 simple/complex types)
-export const QR_TYPES = ['url', 'text', 'email', 'whatsapp', 'wifi', 'vcard', 'telegram'] as const;
+export const QR_TYPES = ['url', 'text', 'email', 'whatsapp', 'wifi', 'vcard', 'telegram', 'event'] as const;
 export type QRTypeKey = typeof QR_TYPES[number];
