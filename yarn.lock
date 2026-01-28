@@ -685,6 +685,11 @@
     "@vitest/pretty-format" "4.0.18"
     tinyrainbow "^3.0.3"
 
+"@vvo/tzdb@^6.198.0":
+  version "6.198.0"
+  resolved "https://registry.npmjs.org/@vvo/tzdb/-/tzdb-6.198.0.tgz"
+  integrity sha512-bNRWBhWYl0edVgyX6AYbhoCM2tk2lXJjGCyO2VDc2xn6Dw8dLd7WGj2DDXkVOkmOIQTNjEAcxrEpIzz5pWVwFg==
+
 acorn-jsx@^5.3.2:
   version "5.3.2"
 
@@ -1551,6 +1556,15 @@ html2canvas@^1.4.1:
     css-line-break "^2.1.0"
     text-segmentation "^1.0.3"
 
+ics@^3.8.1:
+  version "3.8.1"
+  resolved "https://registry.npmjs.org/ics/-/ics-3.8.1.tgz"
+  integrity sha512-UqQlfkajfhrS4pUGQfGIJMYz/Jsl/ob3LqcfEhUmLbwumg+ZNkU0/6S734Vsjq3/FYNpEcZVKodLBoe+zBM69g==
+  dependencies:
+    nanoid "^3.1.23"
+    runes2 "^1.1.2"
+    yup "^1.2.0"
+
 ignore@^5.2.0:
   version "5.3.2"
 
@@ -1871,7 +1885,7 @@ mrmime@^2.0.0:
 ms@^2.1.1, ms@^2.1.3:
   version "2.1.3"
 
-nanoid@^3.3.11, nanoid@^3.3.6:
+nanoid@^3.1.23, nanoid@^3.3.11, nanoid@^3.3.6:
   version "3.3.11"
 
 napi-postinstall@^0.3.0:
@@ -2043,6 +2057,11 @@ prop-types@^15.8.1:
     object-assign "^4.1.1"
     react-is "^16.13.1"
 
+property-expr@^2.0.5:
+  version "2.0.6"
+  resolved "https://registry.npmjs.org/property-expr/-/property-expr-2.0.6.tgz"
+  integrity sha512-SVtmxhRE/CGkn3eZY1T6pC8Nln6Fr/lu1mKSgRud0eC73whjGfoAogbn78LkD8aFL0zz3bAFerKSnOl7NlErBA==
+
 punycode@^2.1.0:
   version "2.3.1"
 
@@ -2174,6 +2193,11 @@ run-parallel@^1.1.9:
   version "1.2.0"
   dependencies:
     queue-microtask "^1.2.2"
+
+runes2@^1.1.2:
+  version "1.1.4"
+  resolved "https://registry.npmjs.org/runes2/-/runes2-1.1.4.tgz"
+  integrity sha512-LNPnEDPOOU4ehF71m5JoQyzT2yxwD6ZreFJ7MxZUAoMKNMY1XrAo60H1CUoX5ncSm0rIuKlqn9JZNRrRkNou2g==
 
 safe-array-concat@^1.1.3:
   version "1.1.3"
@@ -2428,6 +2452,11 @@ text-segmentation@^1.0.3:
   dependencies:
     utrie "^1.0.2"
 
+tiny-case@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.npmjs.org/tiny-case/-/tiny-case-1.0.3.tgz"
+  integrity sha512-Eet/eeMhkO6TX8mnUteS9zgPbUMQa4I6Kkp5ORiBD5476/m+PIRiumP5tmh5ioJpH7k51Kehawy2UDfsnxxY8Q==
+
 tinybench@^2.9.0:
   version "2.9.0"
 
@@ -2451,6 +2480,11 @@ to-regex-range@^5.0.1:
   dependencies:
     is-number "^7.0.0"
 
+toposort@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.npmjs.org/toposort/-/toposort-2.0.2.tgz"
+  integrity sha512-0a5EOkAUp8D4moMi2W8ZF8jcga7BgZd91O/yabJCFY8az+XSzeGyTKs0Aoo897iV1Nj6guFq8orWDS96z91oGg==
+
 totalist@^3.0.0:
   version "3.0.1"
 
@@ -2472,6 +2506,11 @@ type-check@^0.4.0, type-check@~0.4.0:
   version "0.4.0"
   dependencies:
     prelude-ls "^1.2.1"
+
+type-fest@^2.19.0:
+  version "2.19.0"
+  resolved "https://registry.npmjs.org/type-fest/-/type-fest-2.19.0.tgz"
+  integrity sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA==
 
 typed-array-buffer@^1.0.3:
   version "1.0.3"
@@ -2690,6 +2729,16 @@ yallist@^3.0.2:
 
 yocto-queue@^0.1.0:
   version "0.1.0"
+
+yup@^1.2.0:
+  version "1.7.1"
+  resolved "https://registry.npmjs.org/yup/-/yup-1.7.1.tgz"
+  integrity sha512-GKHFX2nXul2/4Dtfxhozv701jLQHdf6J34YDh2cEkpqoo8le5Mg6/LrdseVLrFarmFygZTlfIhHx/QKfb/QWXw==
+  dependencies:
+    property-expr "^2.0.5"
+    tiny-case "^1.0.3"
+    toposort "^2.0.2"
+    type-fest "^2.19.0"
 
 "zod-validation-error@^3.5.0 || ^4.0.0":
   version "4.0.2"
