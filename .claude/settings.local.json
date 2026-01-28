@@ -18,7 +18,9 @@
       "Bash(corepack prepare:*)",
       "Bash(yarn set:*)",
       "Bash(yarn install)",
-      "Bash(yarn test:run:*)"
+      "Bash(yarn test:run:*)",
+      "WebFetch(domain:liquid-js.github.io)",
+      "WebFetch(domain:gist.github.com)"
     ]
   }
 }
