@@ -98,6 +98,77 @@ export function CornerSquarePreview({ style, color = 'currentColor' }: PreviewPr
           />
         );
 
+      case 'dots':
+        return (
+          <circle
+            cx={offset + size / 2}
+            cy={offset + size / 2}
+            r={size / 2}
+            fill="none"
+            stroke={color}
+            strokeWidth={4}
+          />
+        );
+
+      case 'rounded':
+        return (
+          <rect
+            x={offset}
+            y={offset}
+            width={size}
+            height={size}
+            rx={3}
+            ry={3}
+            fill="none"
+            stroke={color}
+            strokeWidth={4}
+          />
+        );
+
+      case 'classy':
+        return (
+          <g>
+            <rect
+              x={offset}
+              y={offset}
+              width={size}
+              height={size}
+              fill="none"
+              stroke={color}
+              strokeWidth={4}
+            />
+            <circle
+              cx={offset + size / 2}
+              cy={offset + size / 2}
+              r={size * 0.15}
+              fill="white"
+            />
+          </g>
+        );
+
+      case 'classy-rounded':
+        return (
+          <g>
+            <rect
+              x={offset}
+              y={offset}
+              width={size}
+              height={size}
+              rx={3}
+              ry={3}
+              fill="none"
+              stroke={color}
+              strokeWidth={4}
+            />
+            <circle
+              cx={offset + size / 2}
+              cy={offset + size / 2}
+              r={size * 0.15}
+              fill="white"
+            />
+          </g>
+        );
+
       case 'extra-rounded':
         return (
           <rect
@@ -159,6 +230,79 @@ export function CornerDotPreview({ style, color = 'currentColor' }: PreviewProps
             cx={16}
             cy={16}
             r={8}
+            fill={color}
+          />
+        );
+
+      case 'dots':
+        return (
+          <circle
+            cx={16}
+            cy={16}
+            r={8}
+            fill={color}
+          />
+        );
+
+      case 'rounded':
+        return (
+          <rect
+            x={8}
+            y={8}
+            width={16}
+            height={16}
+            rx={2}
+            ry={2}
+            fill={color}
+          />
+        );
+
+      case 'classy':
+        return (
+          <g>
+            <rect
+              x={8}
+              y={8}
+              width={16}
+              height={16}
+              fill={color}
+            />
+            <circle
+              cx={16}
+              cy={16}
+              r={3}
+              fill="white"
+            />
+          </g>
+        );
+
+      case 'classy-rounded':
+        return (
+          <g>
+            <rect
+              x={8}
+              y={8}
+              width={16}
+              height={16}
+              rx={2}
+              ry={2}
+              fill={color}
+            />
+            <circle
+              cx={16}
+              cy={16}
+              r={3}
+              fill="white"
+            />
+          </g>
+        );
+
+      case 'extra-rounded':
+        return (
+          <circle
+            cx={16}
+            cy={16}
+            r={9}
             fill={color}
           />
         );
