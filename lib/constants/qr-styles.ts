@@ -18,6 +18,10 @@ export const DOT_STYLES: Array<{ value: DotType; label: string }> = [
 export const CORNER_SQUARE_STYLES: Array<{ value: CornerSquareType; label: string }> = [
   { value: 'square', label: 'Square' },
   { value: 'dot', label: 'Dot' },
+  { value: 'dots', label: 'Dots' },
+  { value: 'rounded', label: 'Rounded' },
+  { value: 'classy', label: 'Classy' },
+  { value: 'classy-rounded', label: 'Classy Rounded' },
   { value: 'extra-rounded', label: 'Extra Rounded' },
 ];
 
@@ -27,4 +31,9 @@ export const CORNER_SQUARE_STYLES: Array<{ value: CornerSquareType; label: strin
 export const CORNER_DOT_STYLES: Array<{ value: CornerDotType; label: string }> = [
   { value: 'square', label: 'Square' },
   { value: 'dot', label: 'Dot' },
+  { value: 'dots', label: 'Dots' },
+  { value: 'rounded', label: 'Rounded' },
+  { value: 'classy', label: 'Classy' },
+  { value: 'classy-rounded', label: 'Classy Rounded' },
+  { value: 'extra-rounded', label: 'Extra Rounded' },
 ];

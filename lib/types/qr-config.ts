@@ -20,14 +20,14 @@ export interface EmailData {
 export type DotType = 'square' | 'dots' | 'rounded' | 'classy' | 'classy-rounded' | 'extra-rounded';
 
 /**
- * Corner square style types
+ * Corner square style types - includes all DotType options plus 'dot'
  */
-export type CornerSquareType = 'square' | 'dot' | 'extra-rounded';
+export type CornerSquareType = 'dot' | DotType;
 
 /**
- * Corner dot style types
+ * Corner dot style types - includes all DotType options plus 'dot'
  */
-export type CornerDotType = 'square' | 'dot';
+export type CornerDotType = 'dot' | DotType;
 
 /**
  * Logo configuration for QR code overlay

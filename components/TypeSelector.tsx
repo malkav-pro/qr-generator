@@ -23,7 +23,7 @@ export function TypeSelector({ value, onChange }: TypeSelectorProps) {
       <label className="block text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">
         QR Code Type
       </label>
-      <div className="flex gap-2" role="tablist">
+      <div className="flex flex-wrap gap-2" role="tablist">
         {QR_TYPES.map((type) => (
           <button
             key={type}
