@@ -11,7 +11,7 @@ import {
   DotStylePicker,
   CornerSquareStylePicker,
   CornerDotStylePicker,
-  LogoUploader,
+  LogoPicker,
   ShareButton,
   Footer,
 } from '@/components';
@@ -57,6 +57,7 @@ export default function Home() {
 
   // Logo overlay
   const [logo, setLogo] = useState<string | null>(null);
+  const [logoSize, setLogoSize] = useState<number>(0.2); // Default 20%, standard logos use 33%
 
   // Handle type changes - clear data when switching types
   const handleTypeChange = useCallback((newType: QRTypeKey) => {
@@ -97,7 +98,7 @@ export default function Home() {
     logo: logo
       ? {
           image: logo,
-          size: 0.33,
+          size: logoSize,
           margin: 0,
           hideBackgroundDots: true,
         }
@@ -109,7 +110,7 @@ export default function Home() {
     // Preserve existing logo when restoring from URL
     const fullConfig = fromShareableConfig(restored, logo ? {
       image: logo,
-      size: 0.33,
+      size: logoSize,
       margin: 0,
       hideBackgroundDots: true,
     } : undefined);
@@ -252,7 +253,12 @@ export default function Home() {
             </ControlSection>
 
             <ControlSection title="Logo">
-              <LogoUploader logo={logo} onLogoChange={setLogo} qrSize={300} />
+              <LogoPicker
+                logo={logo}
+                onLogoChange={setLogo}
+                onLogoSizeChange={setLogoSize}
+                qrSize={300}
+              />
             </ControlSection>
           </div>
 
