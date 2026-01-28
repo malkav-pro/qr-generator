@@ -1,4 +1,4 @@
-import QRCodeStyling from 'qr-code-styling';
+import { QRCodeStyling, browserUtils } from '@liquid-js/qr-code-styling';
 import type { QRConfig } from '@/lib/types/qr-config';
 import { isGradient } from '@/lib/types/gradient';
 
@@ -42,17 +42,19 @@ export function createQRCode(config: QRConfig): QRCodeStyling {
     width: size,
     height: size,
     data: config.data || '',
-    margin: 4 * (config.scale || 10), // TECH-02: 4-module quiet zone scaled
     qrOptions: {
+      typeNumber: 0 as const, // Auto-detect
       errorCorrectionLevel: 'H' as const, // TECH-01: Always use highest error correction (30% recovery)
     },
     dotsOptions: {
+      size: 10,
       color: dotsColor,
       gradient: dotsGradient,
       type: config.dotsStyle || 'square',
     },
     backgroundOptions: {
       color: config.background === 'transparent' ? 'transparent' : config.background,
+      margin: 4 * (config.scale || 10), // TECH-02: 4-module quiet zone scaled
     },
     cornersSquareOptions: {
       color: config.cornersSquareColor || config.foreground,
@@ -84,7 +86,7 @@ export function createQRCodeWithSize(
   config: QRConfig,
   sizePx: number
 ): QRCodeStyling {
-  const margin = Math.round((sizePx * 4) / 25);
+  const backgroundMargin = Math.round((sizePx * 4) / 25);
   const dotsColor = config.foregroundGradient && isGradient(config.foregroundGradient)
     ? undefined
     : config.foreground;
@@ -92,27 +94,24 @@ export function createQRCodeWithSize(
     ? config.foregroundGradient
     : undefined;
   const logo = config.logo && typeof config.logo === 'object' ? config.logo : undefined;
-  const imageOptions = logo ? {
-    hideBackgroundDots: logo.hideBackgroundDots ?? true,
-    imageSize: logo.size ?? 0.2,
-    margin: logo.margin ?? 0,
-  } : undefined;
 
   return new QRCodeStyling({
     width: sizePx,
     height: sizePx,
     data: config.data || '',
-    margin,
     qrOptions: {
+      typeNumber: 0 as const,
       errorCorrectionLevel: 'H' as const,
     },
     dotsOptions: {
+      size: 10,
       color: dotsColor,
       gradient: dotsGradient,
       type: config.dotsStyle || 'square',
     },
     backgroundOptions: {
       color: config.background === 'transparent' ? 'transparent' : config.background,
+      margin: backgroundMargin,
     },
     cornersSquareOptions: {
       color: config.cornersSquareColor || config.foreground,
@@ -125,7 +124,14 @@ export function createQRCodeWithSize(
     ...(logo
       ? {
           image: logo.image,
-          imageOptions,
+          imageOptions: {
+            mode: 'center' as const,
+            fill: {
+              color: 'rgba(255,255,255,0.75)',
+            },
+            imageSize: logo.size ?? 0.2,
+            margin: logo.margin ?? 0,
+          },
         }
       : {}),
   });
@@ -176,21 +182,22 @@ export async function generateQRCode(
     const margin = Math.round((size * 4) / 25);
 
     const qrCode = new QRCodeStyling({
-      type: 'canvas',
       width: size,
       height: size,
       data: config.data || '',
-      margin,
       qrOptions: {
+        typeNumber: 0 as const,
         errorCorrectionLevel: 'H' as const,
       },
       dotsOptions: {
+        size: 10,
         color: dotsColor,
         gradient: dotsGradient,
         type: config.dotsStyle || 'square',
       },
       backgroundOptions: {
         color: config.background === 'transparent' ? 'transparent' : config.background,
+        margin,
       },
       cornersSquareOptions: {
         color: config.cornersSquareColor || config.foreground,
@@ -203,7 +210,14 @@ export async function generateQRCode(
       ...(logo
         ? {
             image: logo.image,
-            imageOptions,
+            imageOptions: {
+              mode: 'center' as const,
+              fill: {
+                color: 'rgba(255,255,255,0.75)',
+              },
+              imageSize: logo.size ?? 0.2,
+              margin: logo.margin ?? 0,
+            },
           }
         : {}),
     });
@@ -237,24 +251,28 @@ export async function generateQRDataURL(
   try {
     const size = width || (config.scale || 10) * 25;
 
-    // Use createQRCode for consistent styling with advanced options
-    const configWithSize = { ...config, scale: Math.round(size / 25) };
-    const qrCode = createQRCode(configWithSize);
+    // Use createQRCodeWithSize for consistent styling
+    const qrCode = createQRCodeWithSize(config, size);
 
-    const rawData = await qrCode.getRawData('png');
-    if (!rawData) {
-      throw new Error('Failed to generate QR code blob');
+    // Draw to canvas using browser utils
+    if (!browserUtils) {
+      throw new Error('Browser utils not available');
     }
 
-    // In browser environment, rawData is a Blob
-    const blob = rawData as Blob;
+    const result = browserUtils.drawToCanvas(qrCode);
+    if (!result) {
+      throw new Error('Failed to draw QR code to canvas');
+    }
 
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result as string);
-      reader.onerror = () => reject(new Error('Failed to convert blob to data URL'));
-      reader.readAsDataURL(blob);
-    });
+    const { canvas, canvasDrawingPromise } = result;
+
+    // Wait for drawing to complete
+    if (canvasDrawingPromise) {
+      await canvasDrawingPromise;
+    }
+
+    // Convert canvas to data URL
+    return canvas.toDataURL('image/png');
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     throw new Error(`Failed to generate QR code data URL: ${message}`);

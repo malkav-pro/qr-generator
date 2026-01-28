@@ -15,19 +15,38 @@ export interface EmailData {
 }
 
 /**
- * Dot style types from qr-code-styling library
+ * Dot style types from @liquid-js/qr-code-styling library
+ * Includes 22 built-in styles
  */
-export type DotType = 'square' | 'dots' | 'rounded' | 'classy' | 'classy-rounded' | 'extra-rounded';
+export type DotType =
+  // Basic styles
+  | 'square' | 'dot' | 'rounded' | 'extra-rounded' | 'classy' | 'classy-rounded'
+  // Geometric shapes
+  | 'diamond' | 'heart' | 'star' | 'pentagon' | 'hexagon'
+  // Minimal/Modern
+  | 'small-square' | 'tiny-square'
+  // Line patterns
+  | 'vertical-line' | 'horizontal-line'
+  // Organic/Pattern styles
+  | 'random-dot' | 'wave' | 'weave' | 'zebra-horizontal' | 'zebra-vertical'
+  | 'blocks-horizontal' | 'blocks-vertical';
 
 /**
- * Corner square style types - includes all DotType options plus 'dot'
+ * Corner square style types from @liquid-js/qr-code-styling library
+ * Includes 7 built-in styles
  */
-export type CornerSquareType = 'dot' | DotType;
+export type CornerSquareType =
+  | 'square' | 'dot' | 'extra-rounded' | 'classy'
+  | 'inpoint' | 'outpoint' | 'center-circle';
 
 /**
- * Corner dot style types - includes all DotType options plus 'dot'
+ * Corner dot style types from @liquid-js/qr-code-styling library
+ * Includes 11 built-in styles
  */
-export type CornerDotType = 'dot' | DotType;
+export type CornerDotType =
+  | 'square' | 'dot' | 'extra-rounded' | 'classy'
+  | 'heart' | 'star' | 'pentagon' | 'hexagon' | 'diamond'
+  | 'inpoint' | 'outpoint';
 
 /**
  * Logo configuration for QR code overlay

@@ -1,4 +1,4 @@
-import QRCodeStyling from 'qr-code-styling';
+import { QRCodeStyling } from '@liquid-js/qr-code-styling';
 import type { QRConfig } from '@/lib/types/qr-config';
 import { isGradient } from '@/lib/types/gradient';
 
@@ -30,29 +30,23 @@ function createSVGQRCode(config: QRConfig): QRCodeStyling {
 
   const logo = config.logo && typeof config.logo === 'object' ? config.logo : undefined;
 
-  // Build image options if logo is provided
-  const imageOptions = logo ? {
-    hideBackgroundDots: logo.hideBackgroundDots ?? true,
-    imageSize: logo.size ?? 0.2,
-    margin: logo.margin ?? 0,
-  } : undefined;
-
   const baseOptions = {
-    type: 'svg' as const,
     width: size,
     height: size,
     data: config.data || '',
-    margin: 4 * (config.scale || 10),
     qrOptions: {
+      typeNumber: 0 as const,
       errorCorrectionLevel: 'H' as const,
     },
     dotsOptions: {
+      size: 10,
       color: dotsColor,
       gradient: dotsGradient,
       type: config.dotsStyle || 'square',
     },
     backgroundOptions: {
       color: config.background === 'transparent' ? 'transparent' : config.background,
+      margin: 4 * (config.scale || 10),
     },
     cornersSquareOptions: {
       color: config.cornersSquareColor || config.foreground,
@@ -69,7 +63,14 @@ function createSVGQRCode(config: QRConfig): QRCodeStyling {
     ...(logo
       ? {
           image: logo.image,
-          imageOptions,
+          imageOptions: {
+            mode: 'center' as const,
+            fill: {
+              color: 'rgba(255,255,255,0.75)',
+            },
+            imageSize: logo.size ?? 0.2,
+            margin: logo.margin ?? 0,
+          },
         }
       : {}),
   });
@@ -89,13 +90,13 @@ export async function getQRCodeSVGBlob(config: QRConfig): Promise<Blob> {
 
   try {
     const qrCode = createSVGQRCode(config);
-    const rawData = await qrCode.getRawData('svg');
+    const svgString = await qrCode.serialize();
 
-    if (!rawData) {
-      throw new Error('Failed to generate QR code SVG blob');
+    if (!svgString) {
+      throw new Error('Failed to generate QR code SVG string');
     }
 
-    return rawData as Blob;
+    return new Blob([svgString], { type: 'image/svg+xml' });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     throw new Error(`Failed to generate QR code SVG blob: ${message}`);

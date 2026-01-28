@@ -12,6 +12,7 @@
 
 import type { QRConfig } from '@/lib/types/qr-config';
 import { createQRCodeWithSize } from '@/lib/qr-generation';
+import { browserUtils } from '@liquid-js/qr-code-styling';
 
 export interface ExportOptions {
   /** Target DPI for export (default: 300) */
@@ -120,13 +121,38 @@ export async function exportQRCodePNG(
 
   try {
     const qrCode = createQRCodeWithSize(config, sizePx);
-    const rawData = await qrCode.getRawData('png');
 
-    if (!rawData) {
-      throw new Error('Failed to generate QR code PNG blob');
+    if (!browserUtils) {
+      throw new Error('Browser utils not available');
     }
 
-    return rawData as Blob;
+    const result = browserUtils.drawToCanvas(qrCode);
+
+    if (!result) {
+      throw new Error('Failed to generate QR code canvas');
+    }
+
+    const { canvas, canvasDrawingPromise } = result;
+
+    // Wait for drawing to complete
+    if (canvasDrawingPromise) {
+      await canvasDrawingPromise;
+    }
+
+    // Convert canvas to PNG blob
+    return new Promise((resolve, reject) => {
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            resolve(blob);
+          } else {
+            reject(new Error('Failed to generate QR code PNG blob'));
+          }
+        },
+        'image/png',
+        1.0 // Maximum quality
+      );
+    });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     throw new Error(`Failed to export QR code PNG: ${message}`);
