@@ -50,7 +50,7 @@ export function QRPreview({
       {/* QR Code container - library renders canvas directly here */}
       <div
         ref={containerRef}
-        className="relative rounded-xl overflow-hidden border-2 border-[var(--border-medium)] bg-[var(--surface-elevated)] transition-all duration-300 hover:border-[var(--border-strong)] aspect-square flex items-center justify-center [&>canvas]:w-full [&>canvas]:h-full"
+        className="relative rounded-xl overflow-hidden border-2 border-[var(--border-medium)] bg-[var(--surface-elevated)] transition-all duration-300 hover:border-[var(--border-strong)] aspect-square flex items-center justify-center"
         style={{ boxShadow: 'var(--shadow-md)' }}
       />
     </div>

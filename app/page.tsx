@@ -88,7 +88,7 @@ export default function Home() {
     foreground: effectiveForeground,
     background: background,
     errorCorrectionLevel: 'H',  // TECH-01: Always use highest error correction
-    scale: 10,
+    scale: 14, // 14 * 25 = 350px, fills preview container nicely
     foregroundGradient,
     dotsStyle,
     cornersSquareStyle,
@@ -154,8 +154,8 @@ export default function Home() {
   useURLState(handleRestore);
 
   // Use the QR code hook with 300ms debounce (PREVIEW-02)
-  // Generate at 400px for crisp display without scaling artifacts
-  const { containerRef, isGenerating, error } = useQRCode(qrConfig, 300, 400);
+  // Auto-size based on scale (10 * 25 = 250px base size)
+  const { containerRef, isGenerating, error } = useQRCode(qrConfig, 300);
 
   // Check contrast for export button disabled state
   const hasData = data.trim().length > 0;

@@ -33,20 +33,26 @@ export type DotType =
 
 /**
  * Corner square style types from @liquid-js/qr-code-styling library
- * Includes 7 built-in styles
+ * Library accepts DotType union per cornersSquareOptions.type definition
  */
 export type CornerSquareType =
+  // Library's CornerSquareType enum
   | 'square' | 'dot' | 'extra-rounded' | 'classy'
-  | 'inpoint' | 'outpoint' | 'center-circle';
+  | 'inpoint' | 'outpoint' | 'center-circle'
+  // DotType values also work (union type in library)
+  | DotType;
 
 /**
  * Corner dot style types from @liquid-js/qr-code-styling library
- * Includes 11 built-in styles
+ * Library accepts DotType union per cornersDotOptions.type definition
  */
 export type CornerDotType =
+  // Library's CornerDotType enum
   | 'square' | 'dot' | 'extra-rounded' | 'classy'
   | 'heart' | 'star' | 'pentagon' | 'hexagon' | 'diamond'
-  | 'inpoint' | 'outpoint';
+  | 'inpoint' | 'outpoint'
+  // DotType values also work (union type in library)
+  | DotType;
 
 /**
  * Logo configuration for QR code overlay

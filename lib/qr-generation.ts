@@ -54,7 +54,7 @@ export function createQRCode(config: QRConfig): QRCodeStyling {
     },
     backgroundOptions: {
       color: config.background === 'transparent' ? 'transparent' : config.background,
-      margin: 4 * (config.scale || 10), // TECH-02: 4-module quiet zone scaled
+      margin: 4, // TECH-02: 4-module quiet zone (in blocks, not pixels)
     },
     cornersSquareOptions: {
       color: config.cornersSquareColor || config.foreground,
@@ -86,7 +86,6 @@ export function createQRCodeWithSize(
   config: QRConfig,
   sizePx: number
 ): QRCodeStyling {
-  const backgroundMargin = Math.round((sizePx * 4) / 25);
   const dotsColor = config.foregroundGradient && isGradient(config.foregroundGradient)
     ? undefined
     : config.foreground;
@@ -111,7 +110,7 @@ export function createQRCodeWithSize(
     },
     backgroundOptions: {
       color: config.background === 'transparent' ? 'transparent' : config.background,
-      margin: backgroundMargin,
+      margin: 4, // 4-module quiet zone (in blocks, not pixels)
     },
     cornersSquareOptions: {
       color: config.cornersSquareColor || config.foreground,
@@ -178,9 +177,6 @@ export async function generateQRCode(
       margin: logo.margin ?? 0,
     } : undefined;
 
-    // Calculate margin proportionally
-    const margin = Math.round((size * 4) / 25);
-
     const qrCode = new QRCodeStyling({
       width: size,
       height: size,
@@ -197,7 +193,7 @@ export async function generateQRCode(
       },
       backgroundOptions: {
         color: config.background === 'transparent' ? 'transparent' : config.background,
-        margin,
+        margin: 4, // 4-module quiet zone (in blocks, not pixels)
       },
       cornersSquareOptions: {
         color: config.cornersSquareColor || config.foreground,

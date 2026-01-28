@@ -50,6 +50,9 @@ export const CORNER_SQUARE_STYLES: Array<{ value: CornerSquareType; label: strin
   { value: 'inpoint', label: 'Inpoint' },
   { value: 'outpoint', label: 'Outpoint' },
   { value: 'center-circle', label: 'Center Circle' },
+  { value: 'weave', label: 'Weave' },
+  { value: 'diamond', label: 'Diamond' },
+  { value: 'random-dot', label: 'Random Dot' },
 ];
 
 /**
@@ -68,4 +71,8 @@ export const CORNER_DOT_STYLES: Array<{ value: CornerDotType; label: string }> =
   { value: 'diamond', label: 'Diamond' },
   { value: 'inpoint', label: 'Inpoint' },
   { value: 'outpoint', label: 'Outpoint' },
+  { value: 'zebra-vertical', label: 'Zebra Vertical' },
+  { value: 'zebra-horizontal', label: 'Zebra Horizontal' },
+  { value: 'blocks-vertical', label: 'Blocks Vertical' },
+  { value: 'blocks-horizontal', label: 'Blocks Horizontal' },
 ];
