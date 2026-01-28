@@ -120,23 +120,24 @@ Plans:
 - [x] 08-02-PLAN.md — Create EventForm with datetime-local inputs, timezone selector, register in system
 
 #### Phase 9: Visual Enhancements
-**Goal**: Enhanced style system and standard logo library
+**Goal**: Extensible custom style system and standard logo library
 **Depends on**: Phase 5 (can run parallel with Phases 6-8)
 **Requirements**: STYLE-08, STYLE-09, STYLE-10, STYLE-11, LOGO-01, LOGO-02, LOGO-03, LOGO-04, LOGO-05, LOGO-06
 **Success Criteria** (what must be TRUE):
-  1. User can select from 15-20 total dot/module style options (5-10 new + existing)
-  2. User can select from 15-20 total corner style options (5-10 new + existing)
+  1. User can select from 15-20 dot/module style options (6 native + 9-14 custom)
+  2. User can select from 15-20 corner style options (14 native + 1-6 custom)
   3. Style picker displays visual thumbnail preview for each style option
-  4. New styles can be added via config file without code changes
-  5. User can select from 10-15 standard logos (brands and generic icons)
-  6. Logo library includes WhatsApp, Telegram, PayPal, Stripe, and generic icons (user, calendar, WiFi, email, phone, link)
-  7. Logo picker coexists with existing custom upload option
-  8. Standard logos enforce 33% of QR dimension size limit
-**Plans**: TBD
+  4. Custom styles can be added via config/plugin system without modifying core code
+  5. Custom style rendering works correctly in QR code preview and export
+  6. User can select from 10-15 standard logos (brands and generic icons)
+  7. Logo library includes WhatsApp, Telegram, PayPal, Stripe, and generic icons (user, calendar, WiFi, email, phone, link)
+  8. Logo picker coexists with existing custom upload option
+  9. Standard logos enforce 33% of QR dimension size limit
+**Plans**: 2 plans
 
 Plans:
-- [ ] 09-01: TBD
-- [ ] 09-02: TBD
+- [ ] 09-01-PLAN.md — Expand corner square and corner dot styles to all library-supported options with SVG previews
+- [ ] 09-02-PLAN.md — Standard logo library with 16 icons (brand + generic) and unified LogoPicker component
 
 ## Progress
 
@@ -153,8 +154,8 @@ v1.1 phases execute sequentially: 5 -> 6 -> 7 -> 8 -> 9 (Phase 9 can run paralle
 | 6. Simple QR Types | v1.1 | 2/2 | Complete | 2026-01-28 |
 | 7. Complex QR Types | v1.1 | 2/2 | Complete | 2026-01-28 |
 | 8. Event QR Codes | v1.1 | 2/2 | Complete | 2026-01-28 |
-| 9. Visual Enhancements | v1.1 | 0/TBD | Not started | - |
+| 9. Visual Enhancements | v1.1 | 0/2 | Not started | - |
 
 ---
 *Roadmap created: 2026-01-27*
-*Last updated: 2026-01-28 (Phase 8 complete: Event QR Codes)*
+*Last updated: 2026-01-28 (Phase 9 planned: Visual Enhancements)*

@@ -62,10 +62,10 @@ Requirements for v1.1 release. Each maps to roadmap phases.
 
 ### Style System Enhancement
 
-- [ ] **STYLE-08**: User can select from 5-10 additional dot/module style options
-- [ ] **STYLE-09**: User can select from 5-10 additional corner style options
+- [ ] **STYLE-08**: User can select from 15-20 dot/module style options (including custom styles beyond library's 6 native options)
+- [ ] **STYLE-09**: User can select from 15-20 corner style options (including custom styles beyond library's 14 native options)
 - [ ] **STYLE-10**: Style picker displays visual preview thumbnail for each option
-- [ ] **STYLE-11**: Style system is config-driven (new styles added via config, not code changes)
+- [ ] **STYLE-11**: Style system is extensible (new custom styles added via config/plugins, not code changes to core)
 
 ### Logo Library
 
