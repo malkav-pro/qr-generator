@@ -16,6 +16,15 @@ type Props = {
 const timezones = getTimeZones();
 
 export function EventForm({ onDataChange, initialValue }: Props) {
+  // Get browser timezone as default
+  const browserTimezone = useMemo(() => {
+    try {
+      return Intl.DateTimeFormat().resolvedOptions().timeZone;
+    } catch {
+      return 'America/New_York'; // Fallback if browser timezone detection fails
+    }
+  }, []);
+
   const { control, watch } = useForm({
     resolver: zodResolver(eventSchema),
     mode: 'onChange' as const,
@@ -25,7 +34,7 @@ export function EventForm({ onDataChange, initialValue }: Props) {
       description: initialValue?.description || '',
       startDate: initialValue?.startDate || '',
       endDate: initialValue?.endDate || '',
-      timezone: initialValue?.timezone || 'America/New_York',
+      timezone: initialValue?.timezone || browserTimezone,
     },
   });
 
@@ -33,6 +42,14 @@ export function EventForm({ onDataChange, initialValue }: Props) {
 
   // Real-time character counter
   const charCount = useMemo(() => getEventCharacterCount(formData), [formData]);
+
+  // Warning levels for QR code size (same as VCardForm)
+  const getWarningLevel = (count: number) => {
+    if (count >= 1500) return 'critical';  // Red
+    if (count >= 1400) return 'warning';   // Amber
+    return 'normal';                       // Default
+  };
+  const warningLevel = getWarningLevel(charCount);
 
   // Update QR preview on valid data
   useEffect(() => {
@@ -169,10 +186,26 @@ export function EventForm({ onDataChange, initialValue }: Props) {
         />
       </div>
 
-      {/* Character counter */}
+      {/* Character counter with warnings */}
       <div className="pt-4 border-t border-[var(--border-subtle)]">
-        <div className="text-sm text-[var(--text-secondary)] font-medium">
-          Event size: {charCount} characters
+        <div className="text-sm space-y-1">
+          <div className={`font-medium ${
+            warningLevel === 'critical' ? 'text-red-600' :
+            warningLevel === 'warning' ? 'text-amber-600' :
+            'text-[var(--text-secondary)]'
+          }`}>
+            Event size: {charCount} characters
+          </div>
+          {warningLevel === 'warning' && (
+            <div className="text-xs text-amber-600">
+              Approaching QR code size limit. Consider shortening description.
+            </div>
+          )}
+          {warningLevel === 'critical' && (
+            <div className="text-xs text-red-600">
+              QR code may be difficult to scan. Shorten description or location.
+            </div>
+          )}
         </div>
       </div>
     </div>
