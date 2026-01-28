@@ -68,12 +68,14 @@ export function DotStylePreview({ style, color = 'currentColor' }: PreviewProps)
  * Shows a single corner finder pattern outer square
  */
 export function CornerSquarePreview({ style, color = 'currentColor' }: PreviewProps) {
-  const size = 24;
-  const offset = 4;
+  const size = 20;
+  const offset = 6;
+  const strokeW = 3;
 
   const renderCornerSquare = () => {
     switch (style as CornerSquareType) {
       case 'square':
+        // Sharp corners
         return (
           <rect
             x={offset}
@@ -82,11 +84,12 @@ export function CornerSquarePreview({ style, color = 'currentColor' }: PreviewPr
             height={size}
             fill="none"
             stroke={color}
-            strokeWidth={4}
+            strokeWidth={strokeW}
           />
         );
 
       case 'dot':
+        // Perfect circle
         return (
           <circle
             cx={offset + size / 2}
@@ -94,93 +97,85 @@ export function CornerSquarePreview({ style, color = 'currentColor' }: PreviewPr
             r={size / 2}
             fill="none"
             stroke={color}
-            strokeWidth={4}
+            strokeWidth={strokeW}
           />
         );
 
       case 'dots':
+        // Small circular dots in corners
         return (
-          <circle
-            cx={offset + size / 2}
-            cy={offset + size / 2}
-            r={size / 2}
-            fill="none"
-            stroke={color}
-            strokeWidth={4}
-          />
+          <g>
+            <circle cx={offset + 2} cy={offset + 2} r={2} fill={color} />
+            <circle cx={offset + size - 2} cy={offset + 2} r={2} fill={color} />
+            <circle cx={offset + 2} cy={offset + size - 2} r={2} fill={color} />
+            <circle cx={offset + size - 2} cy={offset + size - 2} r={2} fill={color} />
+          </g>
         );
 
       case 'rounded':
+        // Slightly rounded corners
         return (
           <rect
             x={offset}
             y={offset}
             width={size}
             height={size}
-            rx={3}
-            ry={3}
+            rx={2.5}
+            ry={2.5}
             fill="none"
             stroke={color}
-            strokeWidth={4}
+            strokeWidth={strokeW}
           />
         );
 
       case 'classy':
+        // Square with rounded inner corners
         return (
-          <g>
-            <rect
-              x={offset}
-              y={offset}
-              width={size}
-              height={size}
-              fill="none"
-              stroke={color}
-              strokeWidth={4}
-            />
-            <circle
-              cx={offset + size / 2}
-              cy={offset + size / 2}
-              r={size * 0.15}
-              fill="white"
-            />
-          </g>
+          <path
+            d={`M ${offset},${offset + 3} 
+                Q ${offset},${offset} ${offset + 3},${offset}
+                L ${offset + size - 3},${offset}
+                Q ${offset + size},${offset} ${offset + size},${offset + 3}
+                L ${offset + size},${offset + size - 3}
+                Q ${offset + size},${offset + size} ${offset + size - 3},${offset + size}
+                L ${offset + 3},${offset + size}
+                Q ${offset},${offset + size} ${offset},${offset + size - 3}
+                Z`}
+            fill="none"
+            stroke={color}
+            strokeWidth={strokeW}
+          />
         );
 
       case 'classy-rounded':
-        return (
-          <g>
-            <rect
-              x={offset}
-              y={offset}
-              width={size}
-              height={size}
-              rx={3}
-              ry={3}
-              fill="none"
-              stroke={color}
-              strokeWidth={4}
-            />
-            <circle
-              cx={offset + size / 2}
-              cy={offset + size / 2}
-              r={size * 0.15}
-              fill="white"
-            />
-          </g>
-        );
-
-      case 'extra-rounded':
+        // Rounded square with extra rounded inner corners
         return (
           <rect
             x={offset}
             y={offset}
             width={size}
             height={size}
-            rx={8}
-            ry={8}
+            rx={4}
+            ry={4}
             fill="none"
             stroke={color}
-            strokeWidth={4}
+            strokeWidth={strokeW}
+          />
+        );
+
+      case 'extra-rounded':
+        // Very rounded corners
+        return (
+          <rect
+            x={offset}
+            y={offset}
+            width={size}
+            height={size}
+            rx={6}
+            ry={6}
+            fill="none"
+            stroke={color}
+            strokeWidth={strokeW}
           />
         );
 
@@ -193,7 +188,7 @@ export function CornerSquarePreview({ style, color = 'currentColor' }: PreviewPr
             height={size}
             fill="none"
             stroke={color}
-            strokeWidth={4}
+            strokeWidth={strokeW}
           />
         );
     }
@@ -212,45 +207,58 @@ export function CornerSquarePreview({ style, color = 'currentColor' }: PreviewPr
  */
 export function CornerDotPreview({ style, color = 'currentColor' }: PreviewProps) {
   const renderCornerDot = () => {
+    const size = 14;
+    const center = 16;
+    const half = size / 2;
+
     switch (style as CornerDotType) {
       case 'square':
+        // Sharp square
         return (
           <rect
-            x={8}
-            y={8}
-            width={16}
-            height={16}
+            x={center - half}
+            y={center - half}
+            width={size}
+            height={size}
             fill={color}
           />
         );
 
       case 'dot':
+        // Perfect circle
         return (
           <circle
-            cx={16}
-            cy={16}
-            r={8}
+            cx={center}
+            cy={center}
+            r={half}
             fill={color}
           />
         );
 
       case 'dots':
+        // Grid of small dots
         return (
-          <circle
-            cx={16}
-            cy={16}
-            r={8}
-            fill={color}
-          />
+          <g>
+            <circle cx={center - 4} cy={center - 4} r={1.5} fill={color} />
+            <circle cx={center} cy={center - 4} r={1.5} fill={color} />
+            <circle cx={center + 4} cy={center - 4} r={1.5} fill={color} />
+            <circle cx={center - 4} cy={center} r={1.5} fill={color} />
+            <circle cx={center} cy={center} r={1.5} fill={color} />
+            <circle cx={center + 4} cy={center} r={1.5} fill={color} />
+            <circle cx={center - 4} cy={center + 4} r={1.5} fill={color} />
+            <circle cx={center} cy={center + 4} r={1.5} fill={color} />
+            <circle cx={center + 4} cy={center + 4} r={1.5} fill={color} />
+          </g>
         );
 
       case 'rounded':
+        // Slightly rounded square
         return (
           <rect
-            x={8}
-            y={8}
-            width={16}
-            height={16}
+            x={center - half}
+            y={center - half}
+            width={size}
+            height={size}
             rx={2}
             ry={2}
             fill={color}
@@ -258,51 +266,46 @@ export function CornerDotPreview({ style, color = 'currentColor' }: PreviewProps
         );
 
       case 'classy':
+        // Square with rounded inner corners
         return (
-          <g>
-            <rect
-              x={8}
-              y={8}
-              width={16}
-              height={16}
-              fill={color}
-            />
-            <circle
-              cx={16}
-              cy={16}
-              r={3}
-              fill="white"
-            />
-          </g>
+          <path
+            d={`M ${center - half},${center - half + 2} 
+                Q ${center - half},${center - half} ${center - half + 2},${center - half}
+                L ${center + half - 2},${center - half}
+                Q ${center + half},${center - half} ${center + half},${center - half + 2}
+                L ${center + half},${center + half - 2}
+                Q ${center + half},${center + half} ${center + half - 2},${center + half}
+                L ${center - half + 2},${center + half}
+                Q ${center - half},${center + half} ${center - half},${center + half - 2}
+                Z`}
+            fill={color}
+          />
         );
 
       case 'classy-rounded':
+        // More rounded square
         return (
-          <g>
-            <rect
-              x={8}
-              y={8}
-              width={16}
-              height={16}
-              rx={2}
-              ry={2}
-              fill={color}
-            />
-            <circle
-              cx={16}
-              cy={16}
-              r={3}
-              fill="white"
-            />
-          </g>
+          <rect
+            x={center - half}
+            y={center - half}
+            width={size}
+            height={size}
+            rx={3.5}
+            ry={3.5}
+            fill={color}
+          />
         );
 
       case 'extra-rounded':
+        // Almost circular, very rounded
         return (
-          <circle
-            cx={16}
-            cy={16}
-            r={9}
+          <rect
+            x={center - half}
+            y={center - half}
+            width={size}
+            height={size}
+            rx={5}
+            ry={5}
             fill={color}
           />
         );
@@ -310,10 +313,10 @@ export function CornerDotPreview({ style, color = 'currentColor' }: PreviewProps
       default:
         return (
           <rect
-            x={8}
-            y={8}
-            width={16}
-            height={16}
+            x={center - half}
+            y={center - half}
+            width={size}
+            height={size}
             fill={color}
           />
         );
