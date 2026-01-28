@@ -5,3 +5,4 @@ export { WhatsAppForm } from './WhatsAppForm';
 export { WiFiForm } from './WiFiForm';
 export { VCardForm } from './VCardForm';
 export { TelegramForm } from './TelegramForm';
+export { EventForm } from './EventForm';
