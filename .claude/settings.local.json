@@ -21,7 +21,10 @@
       "Bash(yarn test:run:*)",
       "WebFetch(domain:liquid-js.github.io)",
       "WebFetch(domain:gist.github.com)",
-      "Bash(yarn dev)"
+      "Bash(yarn dev)",
+      "Bash(xargs:*)",
+      "Bash(node:*)",
+      "Bash(node -e:*)"
     ]
   }
 }
