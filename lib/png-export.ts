@@ -126,7 +126,7 @@ export async function exportQRCodePNG(
       throw new Error('Browser utils not available');
     }
 
-    const result = browserUtils.drawToCanvas(qrCode);
+    const result = browserUtils.drawToCanvas(qrCode, { width: sizePx, height: sizePx });
 
     if (!result) {
       throw new Error('Failed to generate QR code canvas');

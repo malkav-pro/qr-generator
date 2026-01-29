@@ -46,7 +46,7 @@ export function LogoPicker({ logo, onLogoChange, onLogoSizeChange, qrSize = 300 
     }
     // Standard logos use 33% size
     if (onLogoSizeChange) {
-      onLogoSizeChange(0.33);
+      onLogoSizeChange(0.4);
     }
   };
 
@@ -78,9 +78,9 @@ export function LogoPicker({ logo, onLogoChange, onLogoSizeChange, qrSize = 300 
       setSelectedLogo('upload');
       // Then notify parent
       onLogoChange(dataURL);
-      // Custom logos use default 20% size
+      // Custom logos use same size as standard logos
       if (onLogoSizeChange) {
-        onLogoSizeChange(0.2);
+        onLogoSizeChange(0.4);
       }
     };
     reader.readAsDataURL(file);

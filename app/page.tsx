@@ -57,7 +57,7 @@ export default function Home() {
 
   // Logo overlay
   const [logo, setLogo] = useState<string | null>(null);
-  const [logoSize, setLogoSize] = useState<number>(0.2); // Default 20%, standard logos use 33%
+  const [logoSize, setLogoSize] = useState<number>(0.4);
 
   // Handle type changes - clear data when switching types
   const handleTypeChange = useCallback((newType: QRTypeKey) => {

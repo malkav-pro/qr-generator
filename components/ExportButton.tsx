@@ -12,11 +12,10 @@ interface ExportButtonProps {
   filename?: string;
 }
 
-const DPI_OPTIONS = [
-  { value: 150, label: '150 DPI (Web)', pixels: '300x300px' },
-  { value: 300, label: '300 DPI (Print)', pixels: '600x600px' },
-  { value: 512, label: '512 DPI (QR.io)', pixels: '1024x1024px' },
-  { value: 600, label: '600 DPI (High-res)', pixels: '1200x1200px' },
+const SIZE_OPTIONS = [
+  { value: 1024, label: '1024px (Web)' },
+  { value: 2048, label: '2048px (Print)' },
+  { value: 4096, label: '4096px (High-res)' },
 ] as const;
 
 export function ExportButton({
@@ -25,7 +24,7 @@ export function ExportButton({
   filename = 'qrcode.png',
 }: ExportButtonProps) {
   const [isExporting, setIsExporting] = useState(false);
-  const [selectedDpi, setSelectedDpi] = useState<number>(512);
+  const [selectedSize, setSelectedSize] = useState<number>(2048);
   const [format, setFormat] = useState<'png' | 'svg'>('png');
   const [error, setError] = useState<string | null>(null);
 
@@ -58,7 +57,7 @@ export function ExportButton({
 
     try {
       if (format === 'png') {
-        const sizePx = Math.round(selectedDpi * 2);
+        const sizePx = selectedSize;
         const blob = await exportQRCodePNG(qrConfig, { sizePx, filename: exportFilename });
 
         downloadPNG(blob, exportFilename);
@@ -99,8 +98,8 @@ export function ExportButton({
 
         {format === 'png' && (
           <select
-            value={selectedDpi}
-            onChange={(e) => setSelectedDpi(Number(e.target.value))}
+            value={selectedSize}
+            onChange={(e) => setSelectedSize(Number(e.target.value))}
             disabled={disabled || isExporting}
             className="px-3.5 py-2.5 h-11 text-sm border rounded-lg font-medium
               transition-all duration-200
@@ -108,9 +107,9 @@ export function ExportButton({
               disabled:opacity-40 disabled:cursor-not-allowed"
             aria-label="Select export quality"
           >
-            {DPI_OPTIONS.map((option) => (
+            {SIZE_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
-                {option.value} DPI
+                {option.label}
               </option>
             ))}
           </select>
@@ -151,7 +150,7 @@ export function ExportButton({
 
       {format === 'png' && (
         <p className="text-xs text-[var(--text-muted)] font-medium">
-          {selectedDpi * 2}x{selectedDpi * 2}px at 2&quot; x 2&quot;
+          {selectedSize}x{selectedSize}px
         </p>
       )}
     </div>

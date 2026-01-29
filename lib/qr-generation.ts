@@ -34,7 +34,7 @@ export function createQRCode(config: QRConfig): QRCodeStyling {
   // Build image options if logo is provided
   const imageOptions = logo ? {
     hideBackgroundDots: logo.hideBackgroundDots ?? true,
-    imageSize: logo.size ?? 0.2,
+    imageSize: logo.size ?? 0.4,
     margin: logo.margin ?? 0,
   } : undefined;
 
@@ -128,7 +128,7 @@ export function createQRCodeWithSize(
             fill: {
               color: 'rgba(255,255,255,0.75)',
             },
-            imageSize: logo.size ?? 0.2,
+            imageSize: logo.size ?? 0.4,
             margin: logo.margin ?? 0,
           },
         }
@@ -173,7 +173,7 @@ export async function generateQRCode(
     const logo = config.logo && typeof config.logo === 'object' ? config.logo : undefined;
     const imageOptions = logo ? {
       hideBackgroundDots: logo.hideBackgroundDots ?? true,
-      imageSize: logo.size ?? 0.2,
+      imageSize: logo.size ?? 0.4,
       margin: logo.margin ?? 0,
     } : undefined;
 
@@ -211,7 +211,7 @@ export async function generateQRCode(
               fill: {
                 color: 'rgba(255,255,255,0.75)',
               },
-              imageSize: logo.size ?? 0.2,
+              imageSize: logo.size ?? 0.4,
               margin: logo.margin ?? 0,
             },
           }
@@ -255,7 +255,7 @@ export async function generateQRDataURL(
       throw new Error('Browser utils not available');
     }
 
-    const result = browserUtils.drawToCanvas(qrCode);
+    const result = browserUtils.drawToCanvas(qrCode, { width: size, height: size });
     if (!result) {
       throw new Error('Failed to draw QR code to canvas');
     }

@@ -17,7 +17,7 @@ import { isGradient } from '@/lib/types/gradient';
  * @returns QRCodeStyling instance configured for SVG
  */
 function createSVGQRCode(config: QRConfig): QRCodeStyling {
-  const size = (config.scale || 10) * 25;
+  const size = 1024;
 
   // Determine dot color/gradient
   const dotsColor = config.foregroundGradient && isGradient(config.foregroundGradient)
@@ -46,7 +46,7 @@ function createSVGQRCode(config: QRConfig): QRCodeStyling {
     },
     backgroundOptions: {
       color: config.background === 'transparent' ? 'transparent' : config.background,
-      margin: 4 * (config.scale || 10),
+      margin: 4,
     },
     cornersSquareOptions: {
       color: config.cornersSquareColor || config.foreground,
@@ -68,7 +68,7 @@ function createSVGQRCode(config: QRConfig): QRCodeStyling {
             fill: {
               color: 'rgba(255,255,255,0.75)',
             },
-            imageSize: logo.size ?? 0.2,
+            imageSize: logo.size ?? 0.4,
             margin: logo.margin ?? 0,
           },
         }
