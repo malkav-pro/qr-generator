@@ -34,6 +34,7 @@ function createSVGQRCode(config: QRConfig): QRCodeStyling {
     width: size,
     height: size,
     data: config.data || '',
+    shape: config.shape || 'square' as const,
     qrOptions: {
       typeNumber: 0 as const,
       errorCorrectionLevel: 'H' as const,

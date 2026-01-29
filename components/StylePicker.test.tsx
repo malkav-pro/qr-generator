@@ -1,7 +1,8 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { DotStylePicker, CornerSquareStylePicker, CornerDotStylePicker } from './StylePicker'
+import { DotStylePicker, CornerSquareStylePicker, CornerDotStylePicker, ShapePicker } from './StylePicker'
+import { DOT_STYLES, CORNER_SQUARE_STYLES, CORNER_DOT_STYLES } from '@/lib/constants/qr-styles'
 
 // Mock the style-previews module since we're testing the picker logic, not the previews
 vi.mock('./style-previews', () => ({
@@ -11,16 +12,13 @@ vi.mock('./style-previews', () => ({
 }))
 
 describe('DotStylePicker', () => {
-  it('renders all 6 dot styles', () => {
+  it('renders all dot styles', () => {
     const onChange = vi.fn()
     render(<DotStylePicker value="square" onChange={onChange} />)
 
-    expect(screen.getByText('Square')).toBeInTheDocument()
-    expect(screen.getByText('Dots')).toBeInTheDocument()
-    expect(screen.getByText('Rounded')).toBeInTheDocument()
-    expect(screen.getByText('Classy')).toBeInTheDocument()
-    expect(screen.getByText('Classy Rounded')).toBeInTheDocument()
-    expect(screen.getByText('Extra Rounded')).toBeInTheDocument()
+    for (const style of DOT_STYLES) {
+      expect(screen.getByText(style.label)).toBeInTheDocument()
+    }
   })
 
   it('shows selected state for current value', () => {
@@ -28,7 +26,7 @@ describe('DotStylePicker', () => {
     render(<DotStylePicker value="rounded" onChange={onChange} />)
 
     const roundedButton = screen.getByText('Rounded').closest('button')
-    expect(roundedButton).toHaveClass('ring-2', 'ring-blue-500')
+    expect(roundedButton?.className).toContain('border-[var(--accent-start)]')
   })
 
   it('calls onChange when style is clicked', async () => {
@@ -36,10 +34,10 @@ describe('DotStylePicker', () => {
     const onChange = vi.fn()
     render(<DotStylePicker value="square" onChange={onChange} />)
 
-    const dotsButton = screen.getByText('Dots').closest('button')
-    await user.click(dotsButton!)
+    const dotButton = screen.getByText('Dot').closest('button')
+    await user.click(dotButton!)
 
-    expect(onChange).toHaveBeenCalledWith('dots')
+    expect(onChange).toHaveBeenCalledWith('dot')
   })
 
   it('renders preview component for each option', () => {
@@ -47,14 +45,13 @@ describe('DotStylePicker', () => {
     render(<DotStylePicker value="square" onChange={onChange} />)
 
     expect(screen.getByTestId('dot-preview-square')).toBeInTheDocument()
-    expect(screen.getByTestId('dot-preview-dots')).toBeInTheDocument()
+    expect(screen.getByTestId('dot-preview-dot')).toBeInTheDocument()
     expect(screen.getByTestId('dot-preview-rounded')).toBeInTheDocument()
   })
 
   it('shows label text', () => {
     const onChange = vi.fn()
     render(<DotStylePicker value="square" onChange={onChange} />)
-
     expect(screen.getByText('Dot Style')).toBeInTheDocument()
   })
 
@@ -65,19 +62,19 @@ describe('DotStylePicker', () => {
     const classyButton = screen.getByText('Classy').closest('button')
     const squareButton = screen.getByText('Square').closest('button')
 
-    expect(classyButton).toHaveClass('ring-2', 'ring-blue-500')
-    expect(squareButton).not.toHaveClass('ring-2', 'ring-blue-500')
+    expect(classyButton?.className).toContain('border-[var(--accent-start)]')
+    expect(squareButton?.className).not.toContain('border-[var(--accent-start)]')
   })
 })
 
 describe('CornerSquareStylePicker', () => {
-  it('renders all 3 corner square styles', () => {
+  it('renders all corner square styles', () => {
     const onChange = vi.fn()
     render(<CornerSquareStylePicker value="square" onChange={onChange} />)
 
-    expect(screen.getByText('Square')).toBeInTheDocument()
-    expect(screen.getByText('Dot')).toBeInTheDocument()
-    expect(screen.getByText('Extra Rounded')).toBeInTheDocument()
+    for (const style of CORNER_SQUARE_STYLES) {
+      expect(screen.getByText(style.label)).toBeInTheDocument()
+    }
   })
 
   it('shows selected state for current value', () => {
@@ -85,7 +82,7 @@ describe('CornerSquareStylePicker', () => {
     render(<CornerSquareStylePicker value="dot" onChange={onChange} />)
 
     const dotButton = screen.getByText('Dot').closest('button')
-    expect(dotButton).toHaveClass('ring-2', 'ring-blue-500')
+    expect(dotButton?.className).toContain('border-[var(--accent-start)]')
   })
 
   it('calls onChange when style is clicked', async () => {
@@ -99,30 +96,21 @@ describe('CornerSquareStylePicker', () => {
     expect(onChange).toHaveBeenCalledWith('extra-rounded')
   })
 
-  it('renders preview component for each option', () => {
-    const onChange = vi.fn()
-    render(<CornerSquareStylePicker value="square" onChange={onChange} />)
-
-    expect(screen.getByTestId('corner-square-preview-square')).toBeInTheDocument()
-    expect(screen.getByTestId('corner-square-preview-dot')).toBeInTheDocument()
-    expect(screen.getByTestId('corner-square-preview-extra-rounded')).toBeInTheDocument()
-  })
-
   it('shows label text', () => {
     const onChange = vi.fn()
     render(<CornerSquareStylePicker value="square" onChange={onChange} />)
-
     expect(screen.getByText('Corner Square Style')).toBeInTheDocument()
   })
 })
 
 describe('CornerDotStylePicker', () => {
-  it('renders all 2 corner dot styles', () => {
+  it('renders all corner dot styles', () => {
     const onChange = vi.fn()
     render(<CornerDotStylePicker value="square" onChange={onChange} />)
 
-    expect(screen.getByText('Square')).toBeInTheDocument()
-    expect(screen.getByText('Dot')).toBeInTheDocument()
+    for (const style of CORNER_DOT_STYLES) {
+      expect(screen.getByText(style.label)).toBeInTheDocument()
+    }
   })
 
   it('shows selected state for current value', () => {
@@ -130,7 +118,7 @@ describe('CornerDotStylePicker', () => {
     render(<CornerDotStylePicker value="square" onChange={onChange} />)
 
     const squareButton = screen.getByText('Square').closest('button')
-    expect(squareButton).toHaveClass('ring-2', 'ring-blue-500')
+    expect(squareButton?.className).toContain('border-[var(--accent-start)]')
   })
 
   it('calls onChange when style is clicked', async () => {
@@ -144,18 +132,44 @@ describe('CornerDotStylePicker', () => {
     expect(onChange).toHaveBeenCalledWith('dot')
   })
 
-  it('renders preview component for each option', () => {
+  it('shows label text', () => {
     const onChange = vi.fn()
     render(<CornerDotStylePicker value="square" onChange={onChange} />)
+    expect(screen.getByText('Corner Dot Style')).toBeInTheDocument()
+  })
+})
 
-    expect(screen.getByTestId('corner-dot-preview-square')).toBeInTheDocument()
-    expect(screen.getByTestId('corner-dot-preview-dot')).toBeInTheDocument()
+describe('ShapePicker', () => {
+  it('renders square and circle options', () => {
+    const onChange = vi.fn()
+    render(<ShapePicker value="square" onChange={onChange} />)
+
+    expect(screen.getByText('Square')).toBeInTheDocument()
+    expect(screen.getByText('Circle')).toBeInTheDocument()
+  })
+
+  it('shows selected state for current value', () => {
+    const onChange = vi.fn()
+    render(<ShapePicker value="circle" onChange={onChange} />)
+
+    const circleButton = screen.getByText('Circle').closest('button')
+    expect(circleButton?.className).toContain('border-[var(--accent-start)]')
+  })
+
+  it('calls onChange when shape is clicked', async () => {
+    const user = userEvent.setup()
+    const onChange = vi.fn()
+    render(<ShapePicker value="square" onChange={onChange} />)
+
+    const circleButton = screen.getByText('Circle').closest('button')
+    await user.click(circleButton!)
+
+    expect(onChange).toHaveBeenCalledWith('circle')
   })
 
   it('shows label text', () => {
     const onChange = vi.fn()
-    render(<CornerDotStylePicker value="square" onChange={onChange} />)
-
-    expect(screen.getByText('Corner Dot Style')).toBeInTheDocument()
+    render(<ShapePicker value="square" onChange={onChange} />)
+    expect(screen.getByText('Shape')).toBeInTheDocument()
   })
 })

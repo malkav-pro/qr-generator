@@ -46,6 +46,11 @@ export type CornerSquareType =
  * Corner dot style types from @liquid-js/qr-code-styling library
  * Library accepts DotType union per cornersDotOptions.type definition
  */
+/**
+ * QR code shape type from @liquid-js/qr-code-styling library
+ */
+export type ShapeType = 'square' | 'circle';
+
 export type CornerDotType =
   // Library's CornerDotType enum
   | 'square' | 'dot' | 'extra-rounded' | 'classy'
@@ -71,6 +76,8 @@ export interface QRConfig {
   background: string;     // Hex color for light modules
   errorCorrectionLevel: 'L' | 'M' | 'Q' | 'H';
   scale: number;          // Module size multiplier
+  // Shape
+  shape?: ShapeType;                      // Overall QR shape (default: 'square')
   // Advanced styling options
   foregroundGradient?: Gradient;         // Alternative to solid foreground color
   dotsStyle?: DotType;                   // Dot appearance style (default: 'square')

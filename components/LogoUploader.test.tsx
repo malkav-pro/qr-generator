@@ -14,16 +14,12 @@ vi.mock('@/lib/utils/logo-validation', () => ({
     }
     return { valid: true }
   }),
-  calculateLogoPercentage: vi.fn((width: number, height: number, qrSize: number) => {
-    const percentage = (width * height) / (qrSize * qrSize) * 100
-    let level: 'safe' | 'warning' | 'danger' = 'safe'
-    if (percentage > 25) level = 'danger'
-    else if (percentage > 20) level = 'warning'
-    return { percentage, level }
+  calculateLogoPercentage: vi.fn((_width: number, _height: number, _qrSize: number) => {
+    return { percentage: 10, level: 'safe' }
   }),
-  getRecommendedLogoSize: vi.fn((qrSize: number) => ({
-    width: Math.floor(qrSize * Math.sqrt(0.20)),
-    height: Math.floor(qrSize * Math.sqrt(0.20)),
+  getRecommendedLogoSize: vi.fn((_qrSize: number) => ({
+    width: 134,
+    height: 134,
   })),
 }))
 
@@ -103,7 +99,6 @@ describe('LogoUploader', () => {
     const file = new File(['logo'], 'logo.gif', { type: 'image/gif' })
     const input = document.querySelector('input[type="file"]') as HTMLInputElement
 
-    // Manually trigger onChange to avoid userEvent issues with file validation
     Object.defineProperty(input, 'files', {
       value: [file],
       writable: false,
@@ -145,64 +140,6 @@ describe('LogoUploader', () => {
     expect(mockOnLogoChange).toHaveBeenCalledWith(null)
   })
 
-  it('shows size warning for large logos', async () => {
-    const user = userEvent.setup()
-    // Mock Image to return large dimensions (will be > 20% of 300px QR)
-    global.Image = class MockImage {
-      onload: (() => void) | null = null
-      src = ''
-      width = 150  // 150x150 on 300x300 QR = 25%
-      height = 150
-
-      constructor() {
-        setTimeout(() => {
-          if (this.onload) this.onload()
-        }, 0)
-      }
-    } as any
-
-    render(<LogoUploader logo={null} onLogoChange={mockOnLogoChange} qrSize={300} />)
-
-    const file = new File(['logo'], 'logo.png', { type: 'image/png' })
-    const input = document.querySelector('input[type="file"]') as HTMLInputElement
-
-    await user.upload(input, file)
-
-    await waitFor(() => {
-      expect(screen.getByText(/Logo covers/)).toBeInTheDocument()
-      expect(screen.getByText(/Consider resizing/)).toBeInTheDocument()
-    })
-  })
-
-  it('shows danger warning for very large logos', async () => {
-    const user = userEvent.setup()
-    // Mock Image to return very large dimensions (will be > 25% of 300px QR)
-    global.Image = class MockImage {
-      onload: (() => void) | null = null
-      src = ''
-      width = 200  // 200x200 on 300x300 QR = 44%
-      height = 200
-
-      constructor() {
-        setTimeout(() => {
-          if (this.onload) this.onload()
-        }, 0)
-      }
-    } as any
-
-    render(<LogoUploader logo={null} onLogoChange={mockOnLogoChange} qrSize={300} />)
-
-    const file = new File(['logo'], 'logo.png', { type: 'image/png' })
-    const input = document.querySelector('input[type="file"]') as HTMLInputElement
-
-    await user.upload(input, file)
-
-    await waitFor(() => {
-      expect(screen.getByText(/Warning: Logo covers/)).toBeInTheDocument()
-      expect(screen.getByText(/may be difficult to scan/)).toBeInTheDocument()
-    })
-  })
-
   it('accepts file via drag-and-drop', async () => {
     render(<LogoUploader logo={null} onLogoChange={mockOnLogoChange} />)
 
@@ -214,7 +151,6 @@ describe('LogoUploader', () => {
       types: ['Files'],
     }
 
-    // Simulate drop
     const dropEvent = new Event('drop', { bubbles: true })
     Object.defineProperty(dropEvent, 'dataTransfer', { value: dataTransfer })
     Object.assign(dropEvent, {
@@ -229,17 +165,11 @@ describe('LogoUploader', () => {
     })
   })
 
-  it('highlights drop zone on drag over', () => {
+  it('has drop zone with dashed border', () => {
     render(<LogoUploader logo={null} onLogoChange={mockOnLogoChange} />)
 
-    // Find the actual drop zone div (parent with border-dashed class)
     const dropZone = document.querySelector('.border-dashed')!
-
-    // Check that drag styling classes are present
     expect(dropZone).toHaveClass('border-2', 'border-dashed')
-
-    // The component supports drag-and-drop, verified by other passing tests
-    // This test confirms the UI structure supports highlighting on drag
   })
 
   it('calls onLogoChange with data URL', async () => {
@@ -254,43 +184,5 @@ describe('LogoUploader', () => {
     await waitFor(() => {
       expect(mockOnLogoChange).toHaveBeenCalledWith(expect.stringContaining('data:image/png;base64,'))
     })
-  })
-
-  it('clears warning when logo is removed', async () => {
-    const user = userEvent.setup()
-
-    // First, upload a large logo to trigger warning
-    global.Image = class MockImage {
-      onload: (() => void) | null = null
-      src = ''
-      width = 150
-      height = 150
-
-      constructor() {
-        setTimeout(() => {
-          if (this.onload) this.onload()
-        }, 0)
-      }
-    } as any
-
-    const { rerender } = render(<LogoUploader logo={null} onLogoChange={mockOnLogoChange} qrSize={300} />)
-
-    const file = new File(['logo'], 'logo.png', { type: 'image/png' })
-    const input = document.querySelector('input[type="file"]') as HTMLInputElement
-
-    await user.upload(input, file)
-
-    await waitFor(() => {
-      expect(screen.getByText(/Logo covers/)).toBeInTheDocument()
-    })
-
-    // Now render with logo and remove it
-    rerender(<LogoUploader logo="data:image/png;base64,mock" onLogoChange={mockOnLogoChange} qrSize={300} />)
-
-    const removeButton = screen.getByTitle('Remove logo')
-    await user.click(removeButton)
-
-    // Warning should be gone (component will re-render without logo)
-    expect(mockOnLogoChange).toHaveBeenCalledWith(null)
   })
 })

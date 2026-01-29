@@ -19,6 +19,7 @@ export {
 export type {
   QRType,
   EmailData,
+  ShapeType,
   DotType,
   CornerSquareType,
   CornerDotType,

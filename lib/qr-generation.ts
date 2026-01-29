@@ -42,6 +42,7 @@ export function createQRCode(config: QRConfig): QRCodeStyling {
     width: size,
     height: size,
     data: config.data || '',
+    shape: config.shape || 'square' as const,
     qrOptions: {
       typeNumber: 0 as const, // Auto-detect
       errorCorrectionLevel: 'H' as const, // TECH-01: Always use highest error correction (30% recovery)
@@ -98,6 +99,7 @@ export function createQRCodeWithSize(
     width: sizePx,
     height: sizePx,
     data: config.data || '',
+    shape: config.shape || 'square',
     qrOptions: {
       typeNumber: 0 as const,
       errorCorrectionLevel: 'H' as const,
@@ -181,6 +183,7 @@ export async function generateQRCode(
       width: size,
       height: size,
       data: config.data || '',
+      shape: config.shape || 'square',
       qrOptions: {
         typeNumber: 0 as const,
         errorCorrectionLevel: 'H' as const,

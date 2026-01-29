@@ -11,6 +11,7 @@ import {
   DotStylePicker,
   CornerSquareStylePicker,
   CornerDotStylePicker,
+  ShapePicker,
   LogoPicker,
   ShareButton,
   Footer,
@@ -24,6 +25,7 @@ import { getQRForm } from '@/lib/registry';
 import { type QRTypeKey } from '@/lib/formatters';
 import type {
   QRConfig,
+  ShapeType,
   DotType,
   CornerSquareType,
   CornerDotType,
@@ -49,6 +51,7 @@ export default function Home() {
   const [cornerDotColor, setCornerDotColor] = useState('#000000');
 
   // Style customization
+  const [shape, setShape] = useState<ShapeType>('square');
   const [dotsStyle, setDotsStyle] = useState<DotType>('square');
   const [cornersSquareStyle, setCornersSquareStyle] =
     useState<CornerSquareType>('square');
@@ -89,6 +92,7 @@ export default function Home() {
     background: background,
     errorCorrectionLevel: 'H',  // TECH-01: Always use highest error correction
     scale: 14, // 14 * 25 = 350px, fills preview container nicely
+    shape,
     foregroundGradient,
     dotsStyle,
     cornersSquareStyle,
@@ -240,6 +244,7 @@ export default function Home() {
 
             <ControlSection title="Styles">
               <div className="space-y-4">
+                <ShapePicker value={shape} onChange={setShape} />
                 <DotStylePicker value={dotsStyle} onChange={setDotsStyle} />
                 <CornerSquareStylePicker
                   value={cornersSquareStyle}
