@@ -79,7 +79,11 @@ export interface QRConfig {
   // Shape
   shape?: ShapeType;                      // Overall QR shape (default: 'square')
   // Advanced styling options
-  foregroundGradient?: Gradient;         // Alternative to solid foreground color
+  foregroundGradient?: Gradient;         // Alternative to solid foreground color (deprecated - use dotsGradient)
+  dotsGradient?: Gradient;               // Gradient for dot modules (takes precedence over foregroundGradient)
+  cornersSquareGradient?: Gradient;      // Gradient for corner square elements
+  cornersDotGradient?: Gradient;         // Gradient for corner dot elements
+  backgroundGradient?: Gradient;         // Gradient for background
   dotsStyle?: DotType;                   // Dot appearance style (default: 'square')
   cornersSquareStyle?: CornerSquareType; // Corner square style (default: 'square')
   cornersDotStyle?: CornerDotType;       // Corner dot style (default: 'square')
