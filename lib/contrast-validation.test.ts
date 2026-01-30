@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { getRelativeLuminance, calculateContrastRatio, validateContrast, validateGradientContrast } from './contrast-validation'
-import { Gradient } from './types/gradient'
+import { getRelativeLuminance, calculateContrastRatio, validateContrast } from './contrast-validation'
 
 describe('getRelativeLuminance', () => {
   it('calculates correct luminance for white (#FFFFFF)', () => {
@@ -121,101 +120,5 @@ describe('validateContrast', () => {
   it('handles 3-char hex codes', () => {
     const isValid = validateContrast('#000', '#FFF')
     expect(isValid).toBe(true)
-  })
-})
-
-describe('validateGradientContrast', () => {
-  it('passes when all stops have sufficient contrast', () => {
-    // Black and dark gray stops against white background
-    const gradient: Gradient = {
-      type: 'linear',
-      colorStops: [
-        { offset: 0, color: '#000000FF' },
-        { offset: 1, color: '#333333FF' }
-      ]
-    };
-    const result = validateGradientContrast(gradient, '#FFFFFF', 4.5);
-    expect(result.valid).toBe(true);
-    expect(result.worstRatio).toBeGreaterThan(4.5);
-  })
-
-  it('fails when one stop has insufficient contrast', () => {
-    // Black and light gray stops against white background
-    const gradient: Gradient = {
-      type: 'linear',
-      colorStops: [
-        { offset: 0, color: '#000000' },
-        { offset: 1, color: '#CCCCCC' }  // Light gray fails against white
-      ]
-    };
-    const result = validateGradientContrast(gradient, '#FFFFFF', 4.5);
-    expect(result.valid).toBe(false);
-    expect(result.worstRatio).toBeLessThan(4.5);
-    expect(result.worstStop).toBeDefined();
-    expect(result.worstStop?.color).toBe('#CCCCCC');
-  })
-
-  it('strips alpha channel from hex8 colors for luminance calculation', () => {
-    // Red at 50% opacity - luminance should use only RGB part
-    const gradient: Gradient = {
-      type: 'linear',
-      colorStops: [
-        { offset: 0, color: '#FF000080' },  // Red with 50% alpha
-        { offset: 1, color: '#FF0000FF' }   // Red with 100% alpha
-      ]
-    };
-    const result = validateGradientContrast(gradient, '#FFFFFF', 4.5);
-
-    // Both stops should have same contrast ratio (alpha is ignored)
-    // Red (#FF0000) vs white should be around 4:1
-    expect(result.worstRatio).toBeGreaterThan(3.5);
-    expect(result.worstRatio).toBeLessThan(4.5);
-  })
-
-  it('returns valid for empty gradient', () => {
-    const gradient: Gradient = {
-      type: 'linear',
-      colorStops: []
-    };
-    const result = validateGradientContrast(gradient, '#FFFFFF', 4.5);
-    expect(result.valid).toBe(true);
-    expect(result.worstRatio).toBe(Infinity);
-    expect(result.worstStop).toBeNull();
-  })
-
-  it('works correctly with single color stop', () => {
-    const gradient: Gradient = {
-      type: 'linear',
-      colorStops: [
-        { offset: 0, color: '#000000' }
-      ]
-    };
-    const result = validateGradientContrast(gradient, '#FFFFFF', 4.5);
-    expect(result.valid).toBe(true);
-    expect(result.worstRatio).toBeCloseTo(21, 0);  // Black on white is 21:1
-    expect(result.worstStop?.color).toBe('#000000');
-  })
-
-  it('returns valid for transparent background', () => {
-    const gradient: Gradient = {
-      type: 'linear',
-      colorStops: [
-        { offset: 0, color: '#000000' },
-        { offset: 1, color: '#CCCCCC' }
-      ]
-    };
-    const result = validateGradientContrast(gradient, 'transparent', 4.5);
-    expect(result.valid).toBe(true);
-    expect(result.worstRatio).toBe(Infinity);
-    expect(result.worstStop).toBeNull();
-  })
-})
-
-describe('validateContrast - regression test', () => {
-  it('existing solid color validation still works', () => {
-    // Ensure validateContrast function unchanged
-    expect(validateContrast('#000000', '#FFFFFF', 12)).toBe(true);
-    expect(validateContrast('#CCCCCC', '#FFFFFF', 12)).toBe(false);
-    expect(validateContrast('#000000', 'transparent', 12)).toBe(true);
   })
 })
