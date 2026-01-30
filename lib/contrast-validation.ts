@@ -4,20 +4,30 @@
  * https://www.w3.org/TR/WCAG20/#relativeluminancedef
  */
 
+import { Gradient, GradientColorStop } from '@/lib/types/gradient';
+
 /**
  * Parse hex color to RGB values
- * Handles both 3-char (#FFF) and 6-char (#FFFFFF) formats
+ * Handles 3-char (#FFF), 6-char (#FFFFFF), and 8-char (#FFFFFFFF with alpha) formats
+ * Alpha channel is stripped - only RGB is used for luminance calculation
  */
 function hexToRgb(hex: string): [number, number, number] {
   // Remove # if present
   const cleanHex = hex.replace(/^#/, '');
 
   // Handle 3-char format (#FFF -> #FFFFFF)
-  const fullHex = cleanHex.length === 3
-    ? cleanHex.split('').map(char => char + char).join('')
-    : cleanHex;
+  // Handle 8-char format (#RRGGBBAA -> #RRGGBB, strip alpha)
+  let rgbHex: string;
+  if (cleanHex.length === 3) {
+    rgbHex = cleanHex.split('').map(char => char + char).join('');
+  } else if (cleanHex.length === 8) {
+    // Strip alpha channel (last 2 chars)
+    rgbHex = cleanHex.substring(0, 6);
+  } else {
+    rgbHex = cleanHex;
+  }
 
-  const num = parseInt(fullHex, 16);
+  const num = parseInt(rgbHex, 16);
   const r = (num >> 16) & 255;
   const g = (num >> 8) & 255;
   const b = num & 255;
@@ -74,4 +84,67 @@ export function validateContrast(
   }
   const ratio = calculateContrastRatio(fg, bg);
   return ratio >= minRatio;
+}
+
+/**
+ * Validate that all color stops in a gradient meet minimum contrast ratio against background
+ * Default minimum is 4.5:1 (WCAG AA standard)
+ * Returns validation result with worst-case stop info
+ */
+export function validateGradientContrast(
+  gradient: Gradient,
+  background: string,
+  minRatio: number = 4.5
+): { valid: boolean; worstRatio: number; worstStop: GradientColorStop | null } {
+  // Transparent backgrounds can't be validated - allow export
+  if (background === 'transparent') {
+    return { valid: true, worstRatio: Infinity, worstStop: null };
+  }
+
+  // Empty gradient is considered valid
+  if (gradient.colorStops.length === 0) {
+    return { valid: true, worstRatio: Infinity, worstStop: null };
+  }
+
+  // Check all stops and track worst case
+  let worstRatio = Infinity;
+  let worstStop: GradientColorStop | null = null;
+
+  for (const stop of gradient.colorStops) {
+    const ratio = calculateContrastRatio(stop.color, background);
+    if (ratio < worstRatio) {
+      worstRatio = ratio;
+      worstStop = stop;
+    }
+  }
+
+  return {
+    valid: worstRatio >= minRatio,
+    worstRatio,
+    worstStop
+  };
+}
+
+/**
+ * Validate all gradients in a QR config against the background
+ * Returns array of validation failures with details
+ */
+export function validateAllGradients(config: {
+  foregroundGradient?: Gradient;
+  background: string;
+}): Array<{ field: string; worstRatio: number; worstStop: GradientColorStop }> {
+  const failures: Array<{ field: string; worstRatio: number; worstStop: GradientColorStop }> = [];
+
+  if (config.foregroundGradient) {
+    const result = validateGradientContrast(config.foregroundGradient, config.background);
+    if (!result.valid && result.worstStop) {
+      failures.push({
+        field: 'foregroundGradient',
+        worstRatio: result.worstRatio,
+        worstStop: result.worstStop
+      });
+    }
+  }
+
+  return failures;
 }
