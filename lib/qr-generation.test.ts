@@ -181,3 +181,143 @@ describe('generateQRDataURL', () => {
     expect(dataURL).toBe('data:image/png;base64,mock-data')
   })
 })
+
+describe('Per-element gradient wiring', () => {
+  it('dotsGradient takes precedence over foregroundGradient', () => {
+    const config: QRConfig = {
+      ...baseConfig,
+      dotsGradient: {
+        type: 'linear',
+        rotation: 0,
+        colorStops: [
+          { offset: 0, color: '#FF0000FF' },
+          { offset: 1, color: '#00FF00FF' },
+        ],
+      },
+      foregroundGradient: {
+        type: 'linear',
+        rotation: Math.PI,
+        colorStops: [
+          { offset: 0, color: '#0000FFFF' },
+          { offset: 1, color: '#FFFF00FF' },
+        ],
+      },
+    }
+    const qr = createQRCode(config)
+    expect(qr._options.dotsOptions.gradient).toBe(config.dotsGradient)
+    expect(qr._options.dotsOptions.color).toBeUndefined()
+  })
+
+  it('foregroundGradient used when dotsGradient not set', () => {
+    const config: QRConfig = {
+      ...baseConfig,
+      foregroundGradient: {
+        type: 'radial',
+        rotation: 0,
+        colorStops: [
+          { offset: 0, color: '#FF00FFFF' },
+          { offset: 1, color: '#00FFFFFF' },
+        ],
+      },
+    }
+    const qr = createQRCode(config)
+    expect(qr._options.dotsOptions.gradient).toBe(config.foregroundGradient)
+    expect(qr._options.dotsOptions.color).toBeUndefined()
+  })
+
+  it('cornersSquareGradient wired correctly', () => {
+    const config: QRConfig = {
+      ...baseConfig,
+      cornersSquareGradient: {
+        type: 'linear',
+        rotation: Math.PI / 4,
+        colorStops: [
+          { offset: 0, color: '#AA0000FF' },
+          { offset: 0.5, color: '#00AA00FF' },
+          { offset: 1, color: '#0000AAFF' },
+        ],
+      },
+    }
+    const qr = createQRCode(config)
+    expect(qr._options.cornersSquareOptions.gradient).toBe(config.cornersSquareGradient)
+    expect(qr._options.cornersSquareOptions.color).toBeUndefined()
+  })
+
+  it('cornersDotGradient wired correctly', () => {
+    const config: QRConfig = {
+      ...baseConfig,
+      cornersDotGradient: {
+        type: 'radial',
+        rotation: 0,
+        colorStops: [
+          { offset: 0, color: '#FFFFFFFF' },
+          { offset: 1, color: '#000000FF' },
+        ],
+      },
+    }
+    const qr = createQRCode(config)
+    expect(qr._options.cornersDotOptions.gradient).toBe(config.cornersDotGradient)
+    expect(qr._options.cornersDotOptions.color).toBeUndefined()
+  })
+
+  it('backgroundGradient wired correctly', () => {
+    const config: QRConfig = {
+      ...baseConfig,
+      backgroundGradient: {
+        type: 'linear',
+        rotation: Math.PI / 2,
+        colorStops: [
+          { offset: 0, color: '#FFFFFFFF' },
+          { offset: 0.25, color: '#CCCCCCFF' },
+          { offset: 0.75, color: '#999999FF' },
+          { offset: 1, color: '#666666FF' },
+        ],
+      },
+    }
+    const qr = createQRCode(config)
+    expect(qr._options.backgroundOptions.gradient).toBe(config.backgroundGradient)
+    expect(qr._options.backgroundOptions.color).toBeUndefined()
+  })
+
+  it('no gradients: solid colors set correctly', () => {
+    const config: QRConfig = {
+      ...baseConfig,
+      foreground: '#123456',
+      background: '#FEDCBA',
+      cornersSquareColor: '#AABBCC',
+      cornersDotColor: '#DDEEFF',
+    }
+    const qr = createQRCode(config)
+    expect(qr._options.dotsOptions.color).toBe('#123456')
+    expect(qr._options.dotsOptions.gradient).toBeUndefined()
+    expect(qr._options.backgroundOptions.color).toBe('#FEDCBA')
+    expect(qr._options.backgroundOptions.gradient).toBeUndefined()
+    expect(qr._options.cornersSquareOptions.color).toBe('#AABBCC')
+    expect(qr._options.cornersSquareOptions.gradient).toBeUndefined()
+    expect(qr._options.cornersDotOptions.color).toBe('#DDEEFF')
+    expect(qr._options.cornersDotOptions.gradient).toBeUndefined()
+  })
+
+  it('mixed: dotsGradient with solid corner colors', () => {
+    const config: QRConfig = {
+      ...baseConfig,
+      dotsGradient: {
+        type: 'linear',
+        rotation: 0,
+        colorStops: [
+          { offset: 0, color: '#FF0000FF' },
+          { offset: 1, color: '#0000FFFF' },
+        ],
+      },
+      cornersSquareColor: '#00FF00',
+      cornersDotColor: '#FFFF00',
+    }
+    const qr = createQRCode(config)
+    expect(qr._options.dotsOptions.gradient).toBe(config.dotsGradient)
+    expect(qr._options.dotsOptions.color).toBeUndefined()
+    expect(qr._options.cornersSquareOptions.color).toBe('#00FF00')
+    expect(qr._options.cornersSquareOptions.gradient).toBeUndefined()
+    expect(qr._options.cornersDotOptions.color).toBe('#FFFF00')
+    expect(qr._options.cornersDotOptions.gradient).toBeUndefined()
+  })
+})
