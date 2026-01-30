@@ -75,7 +75,7 @@ export function parseGradientCSS(cssGradient: string): Gradient | null {
   }
 
   const colorStops: GradientColorStop[] = [];
-  const stopRegex = /(rgba?\([^)]+\)|#[0-9a-fA-F]{6,8})\s+([\d.]+)%/g;
+  const stopRegex = /(rgba?\([^)]+\)|#[0-9a-fA-F]{6,8})\s+(-?[\d.]+)%/g;
   let match;
 
   while ((match = stopRegex.exec(colorStopString)) !== null) {
