@@ -51,7 +51,13 @@ export function parseGradientCSS(cssGradient: string): Gradient | null {
   const isLinear = cssGradient.startsWith('linear-gradient');
   const type: 'linear' | 'radial' = isLinear ? 'linear' : 'radial';
 
-  const content = cssGradient.match(/\(([^)]+)\)/)?.[ 1];
+  // Extract content between first ( and last ) to handle nested rgba() parentheses
+  const firstParen = cssGradient.indexOf('(');
+  const lastParen = cssGradient.lastIndexOf(')');
+  if (firstParen === -1 || lastParen === -1 || firstParen >= lastParen) {
+    return null;
+  }
+  const content = cssGradient.substring(firstParen + 1, lastParen);
   if (!content) {
     return null;
   }
@@ -74,7 +80,7 @@ export function parseGradientCSS(cssGradient: string): Gradient | null {
 
   while ((match = stopRegex.exec(colorStopString)) !== null) {
     const colorStr = match[1];
-    const offset = parseFloat(match[2]) / 100;
+    const offset = Math.max(0, Math.min(1, parseFloat(match[2]) / 100));
 
     let color: string;
 

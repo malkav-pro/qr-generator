@@ -167,6 +167,93 @@ describe('parseGradientCSS', () => {
     expect(gradient!.colorStops[1].offset).toBe(0.5)
     expect(gradient!.colorStops[1].color).toBe('#00FF00FF')
   })
+
+  it('parses standard linear-gradient from picker with spaces in rgba', () => {
+    const css = 'linear-gradient(90deg, rgba(96, 93, 93, 1) 0%, rgba(255, 255, 255, 1) 100%)'
+    const gradient = parseGradientCSS(css)
+
+    expect(gradient).not.toBeNull()
+    expect(gradient!.type).toBe('linear')
+    expect(gradient!.rotation).toBeCloseTo(Math.PI / 2, 2)
+    expect(gradient!.colorStops).toHaveLength(2)
+    expect(gradient!.colorStops[0].color).toBe('#605d5dff')
+    expect(gradient!.colorStops[0].offset).toBe(0)
+    expect(gradient!.colorStops[1].color).toBe('#ffffffff')
+    expect(gradient!.colorStops[1].offset).toBe(1)
+  })
+
+  it('parses radial gradient with 3 stops', () => {
+    const css = 'radial-gradient(circle, rgba(0, 0, 0, 1) 0%, rgba(255, 0, 0, 1) 50%, rgba(255, 255, 255, 1) 100%)'
+    const gradient = parseGradientCSS(css)
+
+    expect(gradient).not.toBeNull()
+    expect(gradient!.type).toBe('radial')
+    expect(gradient!.colorStops).toHaveLength(3)
+    expect(gradient!.colorStops[0].offset).toBe(0)
+    expect(gradient!.colorStops[1].offset).toBe(0.5)
+    expect(gradient!.colorStops[2].offset).toBe(1)
+  })
+
+  it('clamps offset above 100% to 1.0', () => {
+    const css = 'linear-gradient(90deg, #FF0000FF 0%, #0000FFFF 150%)'
+    const gradient = parseGradientCSS(css)
+
+    expect(gradient).not.toBeNull()
+    expect(gradient!.colorStops[1].offset).toBe(1.0)
+  })
+
+  it('clamps offset below 0% to 0.0', () => {
+    const css = 'linear-gradient(90deg, #FF0000FF -10%, #0000FFFF 100%)'
+    const gradient = parseGradientCSS(css)
+
+    expect(gradient).not.toBeNull()
+    expect(gradient!.colorStops[0].offset).toBe(0.0)
+  })
+
+  it('converts rgba to hex8 format correctly', () => {
+    const css = 'linear-gradient(90deg, rgba(255, 0, 0, 0.5) 0%, rgba(0, 255, 0, 1) 100%)'
+    const gradient = parseGradientCSS(css)
+
+    expect(gradient).not.toBeNull()
+    expect(gradient!.colorStops[0].color).toBe('#ff000080')
+    expect(gradient!.colorStops[1].color).toBe('#00ff00ff')
+  })
+
+  it('round-trips parseGradientCSS -> gradientToCSS -> parseGradientCSS', () => {
+    const originalCSS = 'linear-gradient(90deg, rgba(96, 93, 93, 1) 0%, rgba(255, 255, 255, 1) 100%)'
+    const parsed1 = parseGradientCSS(originalCSS)
+    expect(parsed1).not.toBeNull()
+
+    if (parsed1) {
+      const regeneratedCSS = gradientToCSS(parsed1)
+      const parsed2 = parseGradientCSS(regeneratedCSS)
+
+      expect(parsed2).not.toBeNull()
+      expect(parsed2!.type).toBe(parsed1.type)
+      expect(parsed2!.colorStops.length).toBe(parsed1.colorStops.length)
+      expect(parsed2!.colorStops[0].offset).toBe(parsed1.colorStops[0].offset)
+      expect(parsed2!.colorStops[1].offset).toBe(parsed1.colorStops[1].offset)
+      // Colors should match (normalized to hex8)
+      expect(parsed2!.colorStops[0].color.toLowerCase()).toBe(parsed1.colorStops[0].color.toLowerCase())
+      expect(parsed2!.colorStops[1].color.toLowerCase()).toBe(parsed1.colorStops[1].color.toLowerCase())
+    }
+  })
+
+  it('returns null for non-gradient input', () => {
+    expect(parseGradientCSS('#FF0000')).toBeNull()
+    expect(parseGradientCSS('rgba(255, 0, 0, 1)')).toBeNull()
+    expect(parseGradientCSS('red')).toBeNull()
+  })
+
+  it('returns null for empty input', () => {
+    expect(parseGradientCSS('')).toBeNull()
+  })
+
+  it('returns null for malformed gradient input', () => {
+    expect(parseGradientCSS('linear-gradient(invalid)')).toBeNull()
+    expect(parseGradientCSS('linear-gradient()')).toBeNull()
+    expect(parseGradientCSS('radial-gradient(no-colors-here)')).toBeNull()
+  })
 })
 
 describe('gradientToCSS', () => {
