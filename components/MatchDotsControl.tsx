@@ -86,7 +86,7 @@ export function MatchDotsControl({
       onModeChange={onModeChange}
       onSolidColorChange={onSolidColorChange}
       onGradientChange={onGradientChange}
-      disabled={matchDots}
+      hidden={matchDots}
       headerAction={checkboxAction}
     />
   );
