@@ -14,14 +14,11 @@ import {
   CornerDotStylePicker,
   ShapePicker,
   LogoPicker,
-  ShareButton,
   Footer,
   BackgroundImagePicker,
 } from '@/components';
 import { ControlSection } from '@/components/ui';
 import { useQRCode } from '@/hooks/useQRCode';
-import { useURLState } from '@/hooks/useURLState';
-import { fromShareableConfig, type ShareableConfig } from '@/lib/url-state';
 import { getQRForm } from '@/lib/registry';
 import { type QRTypeKey } from '@/lib/formatters';
 import type {
@@ -126,66 +123,6 @@ export default function Home() {
         }
       : undefined,
   };
-
-  // URL state synchronization - restore config from URL on mount
-  const handleRestore = useCallback((restored: ShareableConfig) => {
-    // Preserve existing logo when restoring from URL
-    const fullConfig = fromShareableConfig(restored, logo ? {
-      image: logo,
-      size: logoSize,
-      margin: 0,
-      hideBackgroundDots: true,
-    } : undefined);
-
-    // Restore all state from config
-    setQrType(fullConfig.type);
-    setData(fullConfig.data);
-
-    // Restore dots element
-    if (fullConfig.dotsGradient) {
-      setDotsMode('gradient');
-      setDotsGradient(fullConfig.dotsGradient);
-    } else {
-      setDotsMode('solid');
-      setDotsSolidColor(fullConfig.foreground);
-    }
-
-    // Restore corner squares
-    if (fullConfig.cornersSquareGradient) {
-      setCornersSquareMode('gradient');
-      setCornersSquareGradient(fullConfig.cornersSquareGradient);
-    } else if (fullConfig.cornersSquareColor) {
-      setCornersSquareMode('solid');
-      setCornersSquareSolidColor(fullConfig.cornersSquareColor);
-    }
-    setCornersSquareMatchDots(false); // Default to false on restore
-
-    // Restore corner dots
-    if (fullConfig.cornersDotGradient) {
-      setCornersDotMode('gradient');
-      setCornersDotGradient(fullConfig.cornersDotGradient);
-    } else if (fullConfig.cornersDotColor) {
-      setCornersDotMode('solid');
-      setCornersDotSolidColor(fullConfig.cornersDotColor);
-    }
-    setCornersDotMatchDots(false); // Default to false on restore
-
-    // Restore background
-    if (fullConfig.backgroundGradient) {
-      setBackgroundMode('gradient');
-      setBackgroundGradient(fullConfig.backgroundGradient);
-    } else {
-      setBackgroundMode('solid');
-      setBackgroundSolidColor(fullConfig.background);
-    }
-
-    // Restore styles
-    if (fullConfig.dotsStyle) setDotsStyle(fullConfig.dotsStyle);
-    if (fullConfig.cornersSquareStyle) setCornersSquareStyle(fullConfig.cornersSquareStyle);
-    if (fullConfig.cornersDotStyle) setCornersDotStyle(fullConfig.cornersDotStyle);
-  }, [logo, logoSize]);
-
-  useURLState(handleRestore);
 
   // Use the QR code hook with 300ms debounce (PREVIEW-02)
   // Auto-size based on scale (10 * 25 = 250px base size)
@@ -355,7 +292,7 @@ export default function Home() {
                 backgroundOpacity={backgroundOpacity}
                 shape={shape}
               />
-              <div className="mt-8 flex flex-col gap-3">
+              <div className="mt-8">
                 <ExportButton
                   qrConfig={qrConfig}
                   disabled={!canExport}
@@ -364,7 +301,6 @@ export default function Home() {
                   backgroundOpacity={backgroundOpacity}
                   shape={shape}
                 />
-                <ShareButton qrConfig={qrConfig} className="w-full" />
               </div>
             </div>
           </div>

@@ -13,7 +13,6 @@ export { ExportButton } from './ExportButton';
 export { LogoUploader } from './LogoUploader';
 export { LogoPicker } from './LogoPicker';
 export { BackgroundImagePicker } from './BackgroundImagePicker';
-export { ShareButton } from './ShareButton';
 export { DotStylePicker, CornerSquareStylePicker, CornerDotStylePicker, ShapePicker } from './StylePicker';
 export { DotStylePreview, CornerSquarePreview, CornerDotPreview } from './style-previews';
 export { Footer } from './Footer';
