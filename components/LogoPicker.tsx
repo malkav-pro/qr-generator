@@ -137,13 +137,9 @@ export function LogoPicker({ logo, onLogoChange, onLogoSizeChange, qrSize = 300 
 
   return (
     <div className="space-y-2.5">
-      <label className="block text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">
-        Logo (Optional)
-      </label>
-
       {/* Logo Color Picker */}
       <ColorPicker
-        label="Logo Color"
+        label="Color"
         color={logoColor}
         onChange={handleLogoColorChange}
         allowTransparent={false}

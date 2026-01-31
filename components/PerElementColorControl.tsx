@@ -2,6 +2,7 @@
 
 import { ColorPicker } from '@/components';
 import { MultiStopGradientPicker } from './MultiStopGradientPicker';
+import { SectionHeader } from './SectionHeader';
 import { Gradient } from '@/lib/types/gradient';
 
 interface PerElementColorControlProps {
@@ -14,6 +15,7 @@ interface PerElementColorControlProps {
   onGradientChange: (gradient: Gradient | null) => void;
   disabled?: boolean;
   allowTransparent?: boolean;
+  headerAction?: React.ReactNode;
 }
 
 export function PerElementColorControl({
@@ -26,6 +28,7 @@ export function PerElementColorControl({
   onGradientChange,
   disabled = false,
   allowTransparent = false,
+  headerAction,
 }: PerElementColorControlProps) {
   const handleModeToggle = (newMode: 'solid' | 'gradient') => {
     if (newMode !== mode && !disabled) {
@@ -36,12 +39,8 @@ export function PerElementColorControl({
   return (
     <div className={disabled ? 'opacity-50 pointer-events-none' : ''}>
       <div className="space-y-2.5">
-        {/* Label */}
-        <label className="block text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">
-          {label}
-        </label>
+        <SectionHeader label={label} action={headerAction} />
 
-        {/* Solid/Gradient Toggle */}
         <div className="flex gap-1 p-1 bg-[var(--surface-base)] rounded-lg border border-[var(--border-medium)] w-fit">
           <button
             type="button"
@@ -69,7 +68,6 @@ export function PerElementColorControl({
           </button>
         </div>
 
-        {/* Color Picker */}
         {mode === 'solid' ? (
           <ColorPicker
             label=""
