@@ -22,7 +22,6 @@ Static QR code generator built with Next.js 16 (App Router), React 19, TypeScrip
 **Key areas:**
 - `app/page.tsx` — Central state, assembles all UI sections
 - `hooks/useQRCode.ts` — Debounced QR generation and canvas rendering
-- `hooks/useURLState.ts` — Compresses config into URL hash (lz-string) for shareable links
 - `lib/formatters/` — Convert structured input to QR payloads (URL, vCard, iCalendar, mailto, WiFi, etc.)
 - `lib/registry.ts` — Maps payload types to their formatter and form component
 - `lib/types/qr-config.ts` — `QRConfig` interface (central type)
