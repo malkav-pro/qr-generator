@@ -30,6 +30,12 @@ export interface QRExportOptions {
   sizePx?: number;
   /** Filename for download (default: 'qrcode.png') */
   filename?: string;
+  /** Background image data URL to composite behind QR code */
+  backgroundImage?: string;
+  /** Background image opacity (0-1, default: 1) */
+  backgroundOpacity?: number;
+  /** QR code shape for clipping background */
+  shape?: 'square' | 'circle';
 }
 
 /**
@@ -108,12 +114,13 @@ export async function exportPNG(
  * Export a QR code directly from configuration as a high-resolution PNG blob.
  *
  * Avoids canvas scaling artifacts by rendering at the target size.
+ * Supports background image compositing with optional circular clipping.
  */
 export async function exportQRCodePNG(
   config: QRConfig,
   options?: QRExportOptions
 ): Promise<Blob> {
-  const { sizePx = 1024 } = options || {};
+  const { sizePx = 1024, backgroundImage, backgroundOpacity = 1.0, shape = 'square' } = options || {};
 
   if (!config.data || config.data.trim() === '') {
     throw new Error('Cannot export QR code PNG: data is empty');
@@ -132,16 +139,74 @@ export async function exportQRCodePNG(
       throw new Error('Failed to generate QR code canvas');
     }
 
-    const { canvas, canvasDrawingPromise } = result;
+    const { canvas: qrCanvas, canvasDrawingPromise } = result;
 
     // Wait for drawing to complete
     if (canvasDrawingPromise) {
       await canvasDrawingPromise;
     }
 
-    // Convert canvas to PNG blob
+    // If no background image, return QR canvas directly (no compositing overhead)
+    if (!backgroundImage) {
+      return new Promise((resolve, reject) => {
+        qrCanvas.toBlob(
+          (blob) => {
+            if (blob) {
+              resolve(blob);
+            } else {
+              reject(new Error('Failed to generate QR code PNG blob'));
+            }
+          },
+          'image/png',
+          1.0 // Maximum quality
+        );
+      });
+    }
+
+    // Composite background image behind QR code
+    const exportCanvas = document.createElement('canvas');
+    exportCanvas.width = sizePx;
+    exportCanvas.height = sizePx;
+
+    const ctx = exportCanvas.getContext('2d');
+    if (!ctx) {
+      throw new Error('Failed to get canvas context for export');
+    }
+
+    // Apply circular clipping if shape is circle
+    if (shape === 'circle') {
+      ctx.save();
+      ctx.beginPath();
+      const centerX = sizePx / 2;
+      const centerY = sizePx / 2;
+      const radius = sizePx / 2;
+      ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+      ctx.clip();
+    }
+
+    // Draw background image
+    const img = new Image();
+    await new Promise<void>((resolve, reject) => {
+      img.onload = () => resolve();
+      img.onerror = () => reject(new Error('Failed to load background image'));
+      img.src = backgroundImage;
+    });
+
+    ctx.globalAlpha = backgroundOpacity;
+    ctx.drawImage(img, 0, 0, sizePx, sizePx);
+
+    // Reset alpha and draw QR code on top
+    ctx.globalAlpha = 1.0;
+    ctx.drawImage(qrCanvas, 0, 0, sizePx, sizePx);
+
+    // Restore context if clipping was applied
+    if (shape === 'circle') {
+      ctx.restore();
+    }
+
+    // Convert final canvas to PNG blob
     return new Promise((resolve, reject) => {
-      canvas.toBlob(
+      exportCanvas.toBlob(
         (blob) => {
           if (blob) {
             resolve(blob);
