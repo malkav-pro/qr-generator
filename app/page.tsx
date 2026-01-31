@@ -3,10 +3,8 @@
 import { useState, useCallback } from 'react';
 import {
   TypeSelector,
-  ColorPicker,
   PerElementColorControl,
   MatchDotsControl,
-  ContrastWarning,
   QRPreview,
   ExportButton,
   DotStylePicker,
