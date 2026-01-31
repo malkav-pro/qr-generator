@@ -156,9 +156,8 @@ textarea::placeholder {
 }
 
 /* Color picker slider spacing */
-.color-picker-spaced .react-colorful__hue {
-  margin-top: 12px;
-}
-.color-picker-spaced .react-colorful__alpha {
-  margin-top: 8px;
+.color-picker-spaced .react-colorful {
+  gap: 12px;
+  display: flex;
+  flex-direction: column;
 }
