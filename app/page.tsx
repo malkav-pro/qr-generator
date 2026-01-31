@@ -353,6 +353,7 @@ export default function Home() {
                 error={error}
                 backgroundImage={backgroundImage}
                 backgroundOpacity={backgroundOpacity}
+                shape={shape}
               />
               <div className="mt-8 flex flex-col gap-3">
                 <ExportButton

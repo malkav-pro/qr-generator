@@ -1,4 +1,5 @@
 import React from 'react';
+import type { ShapeType } from '@/lib/types/qr-config';
 
 interface QRPreviewProps {
   containerRef: React.RefObject<HTMLDivElement | null>;
@@ -6,6 +7,7 @@ interface QRPreviewProps {
   error?: string | null;
   backgroundImage?: string | null;
   backgroundOpacity?: number;
+  shape?: ShapeType;
 }
 
 export function QRPreview({
@@ -14,6 +16,7 @@ export function QRPreview({
   error = null,
   backgroundImage = null,
   backgroundOpacity = 1.0,
+  shape = 'square',
 }: QRPreviewProps) {
   return (
     <div className="flex flex-col rounded-lg">
@@ -53,7 +56,7 @@ export function QRPreview({
 
       {/* QR Code container with background image layering */}
       <div
-        className="relative rounded-xl overflow-hidden border-2 border-[var(--border-medium)] bg-[var(--surface-elevated)] transition-all duration-300 hover:border-[var(--border-strong)] aspect-square"
+        className={`relative overflow-hidden border-2 border-[var(--border-medium)] bg-[var(--surface-elevated)] transition-all duration-300 hover:border-[var(--border-strong)] aspect-square ${shape === 'circle' ? 'rounded-full' : 'rounded-xl'}`}
         style={{ boxShadow: 'var(--shadow-md)' }}
       >
         {/* Background image layer - z-index: 0 */}
