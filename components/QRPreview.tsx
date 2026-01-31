@@ -4,12 +4,16 @@ interface QRPreviewProps {
   containerRef: React.RefObject<HTMLDivElement | null>;
   isGenerating?: boolean;
   error?: string | null;
+  backgroundImage?: string | null;
+  backgroundOpacity?: number;
 }
 
 export function QRPreview({
   containerRef,
   isGenerating = false,
   error = null,
+  backgroundImage = null,
+  backgroundOpacity = 1.0,
 }: QRPreviewProps) {
   return (
     <div className="flex flex-col rounded-lg">
@@ -47,12 +51,31 @@ export function QRPreview({
         </div>
       )}
 
-      {/* QR Code container - library renders canvas directly here */}
+      {/* QR Code container with background image layering */}
       <div
-        ref={containerRef}
-        className="relative rounded-xl overflow-hidden border-2 border-[var(--border-medium)] bg-[var(--surface-elevated)] transition-all duration-300 hover:border-[var(--border-strong)] aspect-square flex items-center justify-center"
+        className="relative rounded-xl overflow-hidden border-2 border-[var(--border-medium)] bg-[var(--surface-elevated)] transition-all duration-300 hover:border-[var(--border-strong)] aspect-square"
         style={{ boxShadow: 'var(--shadow-md)' }}
-      />
+      >
+        {/* Background image layer - z-index: 0 */}
+        {backgroundImage && (
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `url(${backgroundImage})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              opacity: backgroundOpacity,
+              zIndex: 0
+            }}
+          />
+        )}
+
+        {/* QR canvas layer - z-index: 1 */}
+        <div
+          ref={containerRef}
+          className="relative z-10 w-full h-full flex items-center justify-center"
+        />
+      </div>
     </div>
   );
 }
