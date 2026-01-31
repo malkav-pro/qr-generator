@@ -261,7 +261,7 @@ export function GradientEditor({ value, onChange, disabled = false }: GradientEd
                 max="360"
                 value={rotationDegrees}
                 onChange={e => handleRotationChange(parseInt(e.target.value))}
-                className="w-16 px-2 py-1 text-xs font-mono text-center border rounded
+                className="w-20 px-2 py-1 text-xs font-mono text-center border rounded
                   border-[var(--border-medium)] bg-[var(--surface-elevated)]
                   focus:border-[var(--accent-start)] focus:outline-none"
               />
@@ -332,35 +332,14 @@ export function GradientEditor({ value, onChange, disabled = false }: GradientEd
                   className="absolute z-[100] mt-2 right-0 bg-[var(--surface-elevated)] rounded-xl border border-[var(--border-strong)] p-4"
                   style={{ boxShadow: 'var(--shadow-lg)' }}
                 >
-                  <HexAlphaColorPicker
-                    color={stopToRgbaString(selectedStop.color)}
-                    onChange={handleFullColorChange}
-                  />
+                  <div className="color-picker-spaced">
+                    <HexAlphaColorPicker
+                      color={stopToRgbaString(selectedStop.color)}
+                      onChange={handleFullColorChange}
+                    />
+                  </div>
                 </Popover.Panel>
               </Popover>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <label className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] min-w-[60px]">
-                Position
-              </label>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={Math.round(selectedStop.offset * 100)}
-                onChange={e => updateStop(selectedStopIndex, { offset: parseInt(e.target.value) / 100 })}
-                className="flex-1 h-1.5 bg-[var(--surface-elevated)] rounded-lg appearance-none cursor-pointer
-                  [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3
-                  [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[var(--accent-start)]
-                  [&::-webkit-slider-thumb]:cursor-pointer
-                  [&::-moz-range-thumb]:w-3 [&::-moz-range-thumb]:h-3 [&::-moz-range-thumb]:rounded-full
-                  [&::-moz-range-thumb]:bg-[var(--accent-start)] [&::-moz-range-thumb]:border-0
-                  [&::-moz-range-thumb]:cursor-pointer"
-              />
-              <span className="text-xs text-[var(--text-secondary)] font-mono min-w-[42px] text-right">
-                {Math.round(selectedStop.offset * 100)}%
-              </span>
             </div>
           </div>
         )}

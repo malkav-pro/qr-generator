@@ -154,3 +154,11 @@ textarea::placeholder {
   background: var(--accent-glow);
   color: var(--accent-start);
 }
+
+/* Color picker slider spacing */
+.color-picker-spaced .react-colorful__hue {
+  margin-top: 12px;
+}
+.color-picker-spaced .react-colorful__alpha {
+  margin-top: 8px;
+}

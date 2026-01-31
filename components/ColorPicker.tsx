@@ -112,7 +112,9 @@ export function ColorPicker({
 
             <Popover.Panel className="absolute z-[100] mt-2 right-0 bg-[var(--surface-elevated)] rounded-xl border border-[var(--border-strong)] p-4"
                             style={{ boxShadow: 'var(--shadow-lg)' }}>
-              <HexAlphaColorPicker color={displayColor} onChange={handleColorPickerChange} />
+              <div className="color-picker-spaced">
+                <HexAlphaColorPicker color={displayColor} onChange={handleColorPickerChange} />
+              </div>
             </Popover.Panel>
           </Popover>
         </div>
