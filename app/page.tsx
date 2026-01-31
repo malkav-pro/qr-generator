@@ -4,7 +4,8 @@ import { useState, useCallback } from 'react';
 import {
   TypeSelector,
   ColorPicker,
-  GradientColorPicker,
+  PerElementColorControl,
+  MatchDotsControl,
   ContrastWarning,
   QRPreview,
   ExportButton,
@@ -19,7 +20,6 @@ import {
 import { ControlSection } from '@/components/ui';
 import { useQRCode } from '@/hooks/useQRCode';
 import { useURLState } from '@/hooks/useURLState';
-import { extractSolidColor, parseGradientCSS } from '@/lib/utils/gradient-parser';
 import { fromShareableConfig, type ShareableConfig } from '@/lib/url-state';
 import { getQRForm } from '@/lib/registry';
 import { type QRTypeKey } from '@/lib/formatters';
@@ -30,6 +30,7 @@ import type {
   CornerSquareType,
   CornerDotType,
 } from '@/lib/types/qr-config';
+import type { Gradient } from '@/lib/types/gradient';
 
 export default function Home() {
   // QR Type state
@@ -38,17 +39,28 @@ export default function Home() {
   // Data state (raw input for URL/text, formatted mailto for email)
   const [data, setData] = useState('');
 
-  // Color customization
-  const [foreground, setForeground] = useState('#000000');
-  const [background, setBackground] = useState('#ffffff');
-  const [colorMode, setColorMode] = useState<'solid' | 'gradient'>('solid');
-  const [gradientStart, setGradientStart] = useState('#000000');
-  const [gradientEnd, setGradientEnd] = useState('#333333');
-  const [gradientType, setGradientType] = useState<'horizontal' | 'vertical' | 'diagonal' | 'radial'>(
-    'horizontal'
-  );
-  const [cornerSquareColor, setCornerSquareColor] = useState('#000000');
-  const [cornerDotColor, setCornerDotColor] = useState('#000000');
+  // Per-element color state
+  // Dots element
+  const [dotsMode, setDotsMode] = useState<'solid' | 'gradient'>('solid');
+  const [dotsSolidColor, setDotsSolidColor] = useState('#000000');
+  const [dotsGradient, setDotsGradient] = useState<Gradient | null>(null);
+
+  // Corner squares
+  const [cornersSquareMode, setCornersSquareMode] = useState<'solid' | 'gradient'>('solid');
+  const [cornersSquareSolidColor, setCornersSquareSolidColor] = useState('#000000');
+  const [cornersSquareGradient, setCornersSquareGradient] = useState<Gradient | null>(null);
+  const [cornersSquareMatchDots, setCornersSquareMatchDots] = useState(false);
+
+  // Corner dots
+  const [cornersDotMode, setCornersDotMode] = useState<'solid' | 'gradient'>('solid');
+  const [cornersDotSolidColor, setCornersDotSolidColor] = useState('#000000');
+  const [cornersDotGradient, setCornersDotGradient] = useState<Gradient | null>(null);
+  const [cornersDotMatchDots, setCornersDotMatchDots] = useState(false);
+
+  // Background
+  const [backgroundMode, setBackgroundMode] = useState<'solid' | 'gradient'>('solid');
+  const [backgroundSolidColor, setBackgroundSolidColor] = useState('#ffffff');
+  const [backgroundGradient, setBackgroundGradient] = useState<Gradient | null>(null);
 
   // Style customization
   const [shape, setShape] = useState<ShapeType>('square');
@@ -74,31 +86,31 @@ export default function Home() {
   }, []);
 
   // Build QR config from state
-  const gradientCSS =
-    colorMode === 'gradient'
-      ? buildGradientCSS(gradientType, gradientStart, gradientEnd)
-      : '';
-  const foregroundGradient =
-    colorMode === 'gradient' ? parseGradientCSS(gradientCSS) ?? undefined : undefined;
-  const effectiveForeground =
-    colorMode === 'gradient' ? extractSolidColor(gradientCSS) : foreground;
-  const contrastForeground =
-    effectiveForeground.length === 9 ? effectiveForeground.slice(0, 7) : effectiveForeground;
-
   const qrConfig: QRConfig = {
     type: qrType,
     data: data,
-    foreground: effectiveForeground,
-    background: background,
+    foreground: dotsMode === 'solid' ? dotsSolidColor : '#000000',
+    dotsGradient: dotsMode === 'gradient' ? dotsGradient ?? undefined : undefined,
+    background: backgroundMode === 'solid' ? backgroundSolidColor : '#ffffff',
+    backgroundGradient: backgroundMode === 'gradient' ? backgroundGradient ?? undefined : undefined,
     errorCorrectionLevel: 'H',  // TECH-01: Always use highest error correction
     scale: 14, // 14 * 25 = 350px, fills preview container nicely
     shape,
-    foregroundGradient,
     dotsStyle,
     cornersSquareStyle,
     cornersDotStyle,
-    cornersSquareColor: cornerSquareColor,
-    cornersDotColor: cornerDotColor,
+    cornersSquareColor: cornersSquareMatchDots
+      ? (dotsMode === 'solid' ? dotsSolidColor : undefined)
+      : (cornersSquareMode === 'solid' ? cornersSquareSolidColor : undefined),
+    cornersSquareGradient: cornersSquareMatchDots
+      ? (dotsMode === 'gradient' ? dotsGradient ?? undefined : undefined)
+      : (cornersSquareMode === 'gradient' ? cornersSquareGradient ?? undefined : undefined),
+    cornersDotColor: cornersDotMatchDots
+      ? (dotsMode === 'solid' ? dotsSolidColor : undefined)
+      : (cornersDotMode === 'solid' ? cornersDotSolidColor : undefined),
+    cornersDotGradient: cornersDotMatchDots
+      ? (dotsMode === 'gradient' ? dotsGradient ?? undefined : undefined)
+      : (cornersDotMode === 'gradient' ? cornersDotGradient ?? undefined : undefined),
     logo: logo
       ? {
           image: logo,
@@ -122,38 +134,50 @@ export default function Home() {
     // Restore all state from config
     setQrType(fullConfig.type);
     setData(fullConfig.data);
-    setBackground(fullConfig.background);
 
-    // Restore gradient or solid foreground
-    if (fullConfig.foregroundGradient) {
-      setColorMode('gradient');
-      const gradient = fullConfig.foregroundGradient;
-      setGradientStart(gradient.colorStops[0].color);
-      setGradientEnd(gradient.colorStops[1].color);
-
-      // Determine gradient type from rotation
-      const rotation = gradient.rotation;
-      if (gradient.type === 'radial') {
-        setGradientType('radial');
-      } else if (rotation === Math.PI / 2) {
-        setGradientType('vertical');
-      } else if (rotation === (3 * Math.PI) / 4) {
-        setGradientType('diagonal');
-      } else {
-        setGradientType('horizontal');
-      }
+    // Restore dots element
+    if (fullConfig.dotsGradient) {
+      setDotsMode('gradient');
+      setDotsGradient(fullConfig.dotsGradient);
     } else {
-      setColorMode('solid');
-      setForeground(fullConfig.foreground);
+      setDotsMode('solid');
+      setDotsSolidColor(fullConfig.foreground);
+    }
+
+    // Restore corner squares
+    if (fullConfig.cornersSquareGradient) {
+      setCornersSquareMode('gradient');
+      setCornersSquareGradient(fullConfig.cornersSquareGradient);
+    } else if (fullConfig.cornersSquareColor) {
+      setCornersSquareMode('solid');
+      setCornersSquareSolidColor(fullConfig.cornersSquareColor);
+    }
+    setCornersSquareMatchDots(false); // Default to false on restore
+
+    // Restore corner dots
+    if (fullConfig.cornersDotGradient) {
+      setCornersDotMode('gradient');
+      setCornersDotGradient(fullConfig.cornersDotGradient);
+    } else if (fullConfig.cornersDotColor) {
+      setCornersDotMode('solid');
+      setCornersDotSolidColor(fullConfig.cornersDotColor);
+    }
+    setCornersDotMatchDots(false); // Default to false on restore
+
+    // Restore background
+    if (fullConfig.backgroundGradient) {
+      setBackgroundMode('gradient');
+      setBackgroundGradient(fullConfig.backgroundGradient);
+    } else {
+      setBackgroundMode('solid');
+      setBackgroundSolidColor(fullConfig.background);
     }
 
     // Restore styles
     if (fullConfig.dotsStyle) setDotsStyle(fullConfig.dotsStyle);
     if (fullConfig.cornersSquareStyle) setCornersSquareStyle(fullConfig.cornersSquareStyle);
     if (fullConfig.cornersDotStyle) setCornersDotStyle(fullConfig.cornersDotStyle);
-    if (fullConfig.cornersSquareColor) setCornerSquareColor(fullConfig.cornersSquareColor);
-    if (fullConfig.cornersDotColor) setCornerDotColor(fullConfig.cornersDotColor);
-  }, [logo]);
+  }, [logo, logoSize]);
 
   useURLState(handleRestore);
 
@@ -209,35 +233,53 @@ export default function Home() {
             </ControlSection>
 
             <ControlSection title="Colors">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <GradientColorPicker
-                  label="Foreground"
-                  solidColor={foreground}
-                  gradientStart={gradientStart}
-                  gradientEnd={gradientEnd}
-                  gradientType={gradientType}
-                  mode={colorMode}
-                  onSolidChange={setForeground}
-                  onGradientStartChange={setGradientStart}
-                  onGradientEndChange={setGradientEnd}
-                  onGradientTypeChange={setGradientType}
-                  onModeChange={setColorMode}
+              <div className="space-y-6">
+                <PerElementColorControl
+                  label="Dots"
+                  mode={dotsMode}
+                  solidColor={dotsSolidColor}
+                  gradient={dotsGradient}
+                  onModeChange={setDotsMode}
+                  onSolidColorChange={setDotsSolidColor}
+                  onGradientChange={setDotsGradient}
                 />
-                <ColorPicker
+                <MatchDotsControl
+                  label="Corner Squares"
+                  matchDots={cornersSquareMatchDots}
+                  onMatchDotsChange={setCornersSquareMatchDots}
+                  dotsMode={dotsMode}
+                  dotsSolidColor={dotsSolidColor}
+                  dotsGradient={dotsGradient}
+                  mode={cornersSquareMode}
+                  solidColor={cornersSquareSolidColor}
+                  gradient={cornersSquareGradient}
+                  onModeChange={setCornersSquareMode}
+                  onSolidColorChange={setCornersSquareSolidColor}
+                  onGradientChange={setCornersSquareGradient}
+                />
+                <MatchDotsControl
+                  label="Corner Dots"
+                  matchDots={cornersDotMatchDots}
+                  onMatchDotsChange={setCornersDotMatchDots}
+                  dotsMode={dotsMode}
+                  dotsSolidColor={dotsSolidColor}
+                  dotsGradient={dotsGradient}
+                  mode={cornersDotMode}
+                  solidColor={cornersDotSolidColor}
+                  gradient={cornersDotGradient}
+                  onModeChange={setCornersDotMode}
+                  onSolidColorChange={setCornersDotSolidColor}
+                  onGradientChange={setCornersDotGradient}
+                />
+                <PerElementColorControl
                   label="Background"
-                  color={background}
-                  onChange={setBackground}
-                  allowTransparent
-                />
-                <ColorPicker
-                  label="Corner Square"
-                  color={cornerSquareColor}
-                  onChange={setCornerSquareColor}
-                />
-                <ColorPicker
-                  label="Corner Dot"
-                  color={cornerDotColor}
-                  onChange={setCornerDotColor}
+                  mode={backgroundMode}
+                  solidColor={backgroundSolidColor}
+                  gradient={backgroundGradient}
+                  onModeChange={setBackgroundMode}
+                  onSolidColorChange={setBackgroundSolidColor}
+                  onGradientChange={setBackgroundGradient}
+                  allowTransparent={true}
                 />
               </div>
             </ControlSection>
@@ -295,22 +337,4 @@ export default function Home() {
       <Footer />
     </div>
   );
-}
-
-function buildGradientCSS(
-  type: 'horizontal' | 'vertical' | 'diagonal' | 'radial',
-  start: string,
-  end: string
-): string {
-  switch (type) {
-    case 'vertical':
-      return `linear-gradient(180deg, ${start} 0%, ${end} 100%)`;
-    case 'diagonal':
-      return `linear-gradient(135deg, ${start} 0%, ${end} 100%)`;
-    case 'radial':
-      return `radial-gradient(circle, ${start} 0%, ${end} 100%)`;
-    case 'horizontal':
-    default:
-      return `linear-gradient(90deg, ${start} 0%, ${end} 100%)`;
-  }
 }
