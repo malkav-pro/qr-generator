@@ -10,6 +10,9 @@ interface ExportButtonProps {
   qrConfig: QRConfig;
   disabled?: boolean;
   filename?: string;
+  backgroundImage?: string | null;
+  backgroundOpacity?: number;
+  shape?: 'square' | 'circle';
 }
 
 const SIZE_OPTIONS = [
@@ -22,11 +25,15 @@ export function ExportButton({
   qrConfig,
   disabled = false,
   filename = 'qrcode.png',
+  backgroundImage,
+  backgroundOpacity = 1.0,
+  shape = 'square',
 }: ExportButtonProps) {
   const [isExporting, setIsExporting] = useState(false);
   const [selectedSize, setSelectedSize] = useState<number>(2048);
   const [format, setFormat] = useState<'png' | 'svg'>('png');
   const [error, setError] = useState<string | null>(null);
+  const [includeBackground, setIncludeBackground] = useState(true);
 
   const exportFilename = useMemo(() => {
     const trimmed = filename.trim() || 'qrcode';
@@ -58,11 +65,21 @@ export function ExportButton({
     try {
       if (format === 'png') {
         const sizePx = selectedSize;
-        const blob = await exportQRCodePNG(qrConfig, { sizePx, filename: exportFilename });
+        const blob = await exportQRCodePNG(qrConfig, {
+          sizePx,
+          filename: exportFilename,
+          backgroundImage: includeBackground ? (backgroundImage ?? undefined) : undefined,
+          backgroundOpacity,
+          shape,
+        });
 
         downloadPNG(blob, exportFilename);
       } else {
-        await exportQRCodeSVG(qrConfig, exportFilename);
+        await exportQRCodeSVG(qrConfig, exportFilename, {
+          backgroundImage: includeBackground ? (backgroundImage ?? undefined) : undefined,
+          backgroundOpacity,
+          shape,
+        });
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Export failed';
@@ -115,6 +132,19 @@ export function ExportButton({
           </select>
         )}
       </div>
+
+      {backgroundImage && (
+        <label className="flex items-center gap-2 text-sm text-[var(--text-secondary)] cursor-pointer">
+          <input
+            type="checkbox"
+            checked={includeBackground}
+            onChange={(e) => setIncludeBackground(e.target.checked)}
+            disabled={disabled || isExporting}
+            className="rounded border-[var(--border-medium)] cursor-pointer disabled:cursor-not-allowed"
+          />
+          Include background image
+        </label>
+      )}
 
       <Button
         onClick={handleExport}

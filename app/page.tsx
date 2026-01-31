@@ -360,6 +360,9 @@ export default function Home() {
                   qrConfig={qrConfig}
                   disabled={!canExport}
                   filename="qrcode"
+                  backgroundImage={backgroundImage}
+                  backgroundOpacity={backgroundOpacity}
+                  shape={shape}
                 />
                 <ShareButton qrConfig={qrConfig} className="w-full" />
               </div>
