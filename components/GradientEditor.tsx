@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback, useMemo } from 'react';
 import { Popover } from '@headlessui/react';
-import { HexColorPicker } from 'react-colorful';
+import { HexAlphaColorPicker } from 'react-colorful';
 import { Gradient, GradientColorStop, GradientType } from '@/lib/types/gradient';
 
 interface GradientEditorProps {
@@ -171,29 +171,12 @@ export function GradientEditor({ value, onChange, disabled = false }: GradientEd
     [sortedStops, updateGradient]
   );
 
-  const handleColorChange = useCallback(
-    (hex: string) => {
-      if (!selectedStop) return;
-      const rgba = hexToRgba(selectedStop.color);
-      const newColor = rgbaToHex(
-        hexToRgba(hex).r,
-        hexToRgba(hex).g,
-        hexToRgba(hex).b,
-        rgba.a
-      );
-      updateStop(selectedStopIndex, { color: newColor });
+  const handleFullColorChange = useCallback(
+    (hexAlpha: string) => {
+      // HexAlphaColorPicker returns #rrggbbaa
+      updateStop(selectedStopIndex, { color: hexAlpha.toUpperCase() });
     },
-    [selectedStop, selectedStopIndex, updateStop]
-  );
-
-  const handleOpacityChange = useCallback(
-    (opacity: number) => {
-      if (!selectedStop) return;
-      const rgba = hexToRgba(selectedStop.color);
-      const newColor = rgbaToHex(rgba.r, rgba.g, rgba.b, Math.round((opacity / 100) * 255));
-      updateStop(selectedStopIndex, { color: newColor });
-    },
-    [selectedStop, selectedStopIndex, updateStop]
+    [selectedStopIndex, updateStop]
   );
 
   const handleRgbaInput = useCallback(
@@ -287,38 +270,40 @@ export function GradientEditor({ value, onChange, disabled = false }: GradientEd
           </div>
         )}
 
-        <div className="relative pb-1">
+        {/* Gradient bar with markers below */}
+        <div className="relative mb-6">
           <div
             ref={barRef}
             onClick={handleBarClick}
-            className="relative h-10 rounded-lg border-2 border-[var(--border-medium)] cursor-crosshair
+            className="relative h-8 rounded-lg border-2 border-[var(--border-medium)] cursor-crosshair overflow-hidden
               hover:border-[var(--border-strong)] transition-all duration-200"
             style={{
               background: `url("data:image/svg+xml,%3Csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='10' height='10' fill='%23333'/%3E%3Crect x='10' y='10' width='10' height='10' fill='%23333'/%3E%3Crect x='10' width='10' height='10' fill='%23666'/%3E%3Crect y='10' width='10' height='10' fill='%23666'/%3E%3C/svg%3E")`,
             }}
           >
             <div
-              className="absolute inset-0 rounded-md"
+              className="absolute inset-0"
               style={{ background: gradientCSS }}
             />
-
-            {sortedStops.map((stop, index) => (
-              <GradientStopMarker
-                key={index}
-                stop={stop}
-                isSelected={index === selectedStopIndex}
-                onSelect={() => setSelectedStopIndex(index)}
-                onDrag={clientX => handleStopDrag(index, clientX)}
-                onDoubleClick={() => handleStopDoubleClick(index)}
-                onDragStart={() => setIsDragging(true)}
-                onDragEnd={() => setIsDragging(false)}
-              />
-            ))}
           </div>
+
+          {/* Stop markers below the bar */}
+          {sortedStops.map((stop, index) => (
+            <GradientStopMarker
+              key={index}
+              stop={stop}
+              isSelected={index === selectedStopIndex}
+              onSelect={() => setSelectedStopIndex(index)}
+              onDrag={clientX => handleStopDrag(index, clientX)}
+              onDoubleClick={() => handleStopDoubleClick(index)}
+              onDragStart={() => setIsDragging(true)}
+              onDragEnd={() => setIsDragging(false)}
+            />
+          ))}
         </div>
 
         <div className="text-[10px] text-[var(--text-muted)] font-medium">
-          Click to add • Drag to move • Double-click to remove
+          Click bar to add • Drag to move • Double-click to remove
         </div>
 
         {selectedStop && (
@@ -339,41 +324,18 @@ export function GradientEditor({ value, onChange, disabled = false }: GradientEd
                     focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-start)]
                     hover:scale-105"
                   style={{
-                    backgroundColor: getStopColorHex(selectedStop.color),
+                    backgroundColor: selectedStop.color,
                     borderColor: 'var(--border-strong)',
-                    opacity: getStopOpacity(selectedStop.color) / 100,
                   }}
                 />
                 <Popover.Panel
                   className="absolute z-[100] mt-2 right-0 bg-[var(--surface-elevated)] rounded-xl border border-[var(--border-strong)] p-4"
                   style={{ boxShadow: 'var(--shadow-lg)' }}
                 >
-                  <HexColorPicker
-                    color={getStopColorHex(selectedStop.color)}
-                    onChange={handleColorChange}
+                  <HexAlphaColorPicker
+                    color={stopToRgbaString(selectedStop.color)}
+                    onChange={handleFullColorChange}
                   />
-                  <div className="mt-3 flex items-center gap-2">
-                    <label className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
-                      Opacity
-                    </label>
-                    <input
-                      type="range"
-                      min="0"
-                      max="100"
-                      value={getStopOpacity(selectedStop.color)}
-                      onChange={e => handleOpacityChange(parseInt(e.target.value))}
-                      className="flex-1 h-1.5 bg-[var(--surface-elevated)] rounded-lg appearance-none cursor-pointer
-                        [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3
-                        [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[var(--accent-start)]
-                        [&::-webkit-slider-thumb]:cursor-pointer
-                        [&::-moz-range-thumb]:w-3 [&::-moz-range-thumb]:h-3 [&::-moz-range-thumb]:rounded-full
-                        [&::-moz-range-thumb]:bg-[var(--accent-start)] [&::-moz-range-thumb]:border-0
-                        [&::-moz-range-thumb]:cursor-pointer"
-                    />
-                    <span className="text-xs text-[var(--text-secondary)] font-mono">
-                      {getStopOpacity(selectedStop.color)}%
-                    </span>
-                  </div>
                 </Popover.Panel>
               </Popover>
             </div>
@@ -456,22 +418,29 @@ function GradientStopMarker({
 
   return (
     <div
-      className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 cursor-grab active:cursor-grabbing z-10"
+      className="absolute top-full mt-1 -translate-x-1/2 cursor-grab active:cursor-grabbing"
       style={{ left: `${stop.offset * 100}%` }}
       onMouseDown={handleMouseDown}
       onDoubleClick={handleDoubleClick}
     >
+      {/* Triangle pointing up */}
+      <div className="mx-auto w-0 h-0
+        border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent
+        border-b-[5px]"
+        style={{ borderBottomColor: isSelected ? 'var(--accent-start)' : 'var(--border-strong)' }}
+      />
+      {/* Color circle */}
       <div
-        className={`w-4 h-7 rounded-sm border-2 transition-all duration-150 ${
+        className={`w-4 h-4 rounded-full border-2 transition-all duration-150 ${
           isSelected
-            ? 'border-white scale-110'
-            : 'border-white/70 hover:border-white hover:scale-105'
+            ? 'border-[var(--accent-start)] scale-110'
+            : 'border-[var(--border-strong)] hover:border-[var(--accent-start)] hover:scale-105'
         }`}
         style={{
           backgroundColor: getStopColorHex(stop.color),
           boxShadow: isSelected
-            ? '0 0 0 1px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.4)'
-            : '0 0 0 1px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.2)',
+            ? '0 0 0 2px var(--accent-glow), 0 2px 8px rgba(0,0,0,0.3)'
+            : '0 2px 4px rgba(0,0,0,0.2)',
         }}
       />
     </div>

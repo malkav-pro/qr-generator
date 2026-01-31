@@ -1,7 +1,7 @@
 'use client';
 
 import { Popover } from '@headlessui/react';
-import { HexColorPicker } from 'react-colorful';
+import { HexAlphaColorPicker } from 'react-colorful';
 import { SectionHeader } from './SectionHeader';
 
 interface ColorPickerProps {
@@ -12,7 +12,7 @@ interface ColorPickerProps {
 }
 
 function isValidHex(value: string): boolean {
-  return /^#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})$/.test(value);
+  return /^#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$/.test(value);
 }
 
 export function ColorPicker({
@@ -22,7 +22,7 @@ export function ColorPicker({
   allowTransparent = false
 }: ColorPickerProps) {
   const isTransparent = color === 'transparent';
-  const displayColor = isTransparent ? '#ffffff' : color;
+  const displayColor = isTransparent ? '#ffffffff' : (color.length === 7 ? color + 'ff' : color);
   const isValid = isTransparent || isValidHex(color);
 
   const handleHexInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,6 +31,11 @@ export function ColorPicker({
       value = `#${value}`;
     }
     onChange(value);
+  };
+
+  const handleColorPickerChange = (newColor: string) => {
+    // HexAlphaColorPicker returns #rrggbbaa — pass through directly
+    onChange(newColor);
   };
 
   const handleTransparentToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,6 +73,9 @@ export function ColorPicker({
     </label>
   ) : undefined;
 
+  // Swatch color — parse alpha for visual display
+  const swatchColor = isValid && !isTransparent ? color : '#fff';
+
   return (
     <div className="space-y-2.5">
       {label && <SectionHeader label={label} action={transparentCheckbox} />}
@@ -78,14 +86,14 @@ export function ColorPicker({
             type="text"
             value={color}
             onChange={handleHexInput}
-            placeholder="#000000"
+            placeholder="#000000FF"
             className={`flex-1 px-3.5 py-2.5 border rounded-lg font-mono text-sm
               focus:outline-none transition-all duration-200 ${
               isValid
                 ? 'border-[var(--border-medium)] focus:border-[var(--accent-start)] focus:shadow-[0_0_0_3px_var(--accent-glow)]'
                 : 'border-red-500/50 bg-red-500/5 text-red-400'
             }`}
-            maxLength={7}
+            maxLength={9}
           />
 
           <Popover className="relative flex-shrink-0">
@@ -95,7 +103,7 @@ export function ColorPicker({
                 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-start)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-raised)]
                 hover:scale-105 hover:shadow-[0_0_16px_var(--accent-glow)]"
               style={{
-                backgroundColor: isValid ? color : '#fff',
+                backgroundColor: swatchColor,
                 borderColor: isValid ? 'var(--border-strong)' : 'var(--border-medium)'
               }}
               title="Click to open color picker"
@@ -104,7 +112,7 @@ export function ColorPicker({
 
             <Popover.Panel className="absolute z-[100] mt-2 right-0 bg-[var(--surface-elevated)] rounded-xl border border-[var(--border-strong)] p-4"
                             style={{ boxShadow: 'var(--shadow-lg)' }}>
-              <HexColorPicker color={displayColor} onChange={onChange} />
+              <HexAlphaColorPicker color={displayColor} onChange={handleColorPickerChange} />
             </Popover.Panel>
           </Popover>
         </div>
@@ -112,7 +120,7 @@ export function ColorPicker({
 
       {!isTransparent && !isValid && (
         <p className="text-xs text-red-400 font-medium">
-          Enter a valid hex color (e.g., #FF0000 or #F00)
+          Enter a valid hex color (e.g., #FF0000 or #FF000080)
         </p>
       )}
     </div>
