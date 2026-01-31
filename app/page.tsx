@@ -16,6 +16,7 @@ import {
   LogoPicker,
   ShareButton,
   Footer,
+  BackgroundImagePicker,
 } from '@/components';
 import { ControlSection } from '@/components/ui';
 import { useQRCode } from '@/hooks/useQRCode';
@@ -74,6 +75,10 @@ export default function Home() {
   const [logo, setLogo] = useState<string | null>(null);
   const [logoSize, setLogoSize] = useState<number>(0.4);
 
+  // Background image
+  const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
+  const [backgroundOpacity, setBackgroundOpacity] = useState<number>(1.0);
+
   // Handle type changes - clear data when switching types
   const handleTypeChange = useCallback((newType: QRTypeKey) => {
     setQrType(newType);
@@ -91,8 +96,9 @@ export default function Home() {
     data: data,
     foreground: dotsMode === 'solid' ? dotsSolidColor : '#000000',
     dotsGradient: dotsMode === 'gradient' ? dotsGradient ?? undefined : undefined,
-    background: backgroundMode === 'solid' ? backgroundSolidColor : '#ffffff',
-    backgroundGradient: backgroundMode === 'gradient' ? backgroundGradient ?? undefined : undefined,
+    // When background image is set, force transparent background (no solid or gradient)
+    background: backgroundImage ? 'transparent' : (backgroundMode === 'solid' ? backgroundSolidColor : '#ffffff'),
+    backgroundGradient: backgroundImage ? undefined : (backgroundMode === 'gradient' ? backgroundGradient ?? undefined : undefined),
     errorCorrectionLevel: 'H',  // TECH-01: Always use highest error correction
     scale: 14, // 14 * 25 = 350px, fills preview container nicely
     shape,
@@ -307,6 +313,15 @@ export default function Home() {
                 qrSize={300}
               />
             </ControlSection>
+
+            <ControlSection title="Background Image">
+              <BackgroundImagePicker
+                backgroundImage={backgroundImage}
+                onBackgroundImageChange={setBackgroundImage}
+                backgroundOpacity={backgroundOpacity}
+                onOpacityChange={setBackgroundOpacity}
+              />
+            </ControlSection>
           </div>
 
           {/* Preview Section - Right column on desktop, sticky */}
@@ -320,6 +335,8 @@ export default function Home() {
                 containerRef={containerRef}
                 isGenerating={isGenerating}
                 error={error}
+                backgroundImage={backgroundImage}
+                backgroundOpacity={backgroundOpacity}
               />
               <div className="mt-8 flex flex-col gap-3">
                 <ExportButton
