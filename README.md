@@ -19,9 +19,6 @@ For the project philosophy, see `Intro.md` and `MANIFESTO.md`.
 - **Export**
   - **PNG** export at selectable resolutions (designed for print; crisp pixels, no smoothing)
   - **SVG** export for vector workflows
-- **Shareable URLs**
-  - QR configuration is encoded into the **URL hash** (compressed) so you can share a link that reproduces the same QR.
-  - **Logos are not included** in share links (URLs would get too large).
 - **Privacy by design**
   - No backend dependency required for generation
   - No analytics/telemetry in the app logic
@@ -84,20 +81,7 @@ Key code:
 - `hooks/useQRCode.ts`: debounced generation and DOM rendering
 - `lib/qr-generation.ts`: creation/render helpers (canvas + raw export helpers)
 
-### URL sharing (state in hash)
-
-The current configuration is synced into the URL hash (after a debounce) so it can be shared.
-
-- `hooks/useURLState.ts` manages bidirectional sync (initial restore, updates, and back/forward navigation).
-- `lib/url-state/*` encodes/decodes a **shareable config** using compression (lz-string).
-
-Notes:
-
-- The hash is updated via `history.replaceState` to avoid spamming browser history during slider/color adjustments.
-- **Logos are intentionally excluded** from shareable config due to size constraints.
-- Anything you encode and then share via URL is visible to whoever receives the link (it’s not sent to a server by this app, but it’s still part of the URL).
-
-### Export behavior and “DPI”
+### Export behavior and "DPI"
 
 PNG exports focus on print outcomes by controlling **pixel dimensions** and keeping edges crisp.
 
@@ -115,8 +99,8 @@ Relevant code:
 
 - `app/`: Next.js pages/layouts
 - `components/`: UI controls (type selector, inputs, color pickers, export/share, etc.)
-- `hooks/`: QR generation + URL state + debouncing
-- `lib/`: QR generation, exports, validations, URL-state encoding, shared types
+- `hooks/`: QR generation + debouncing
+- `lib/`: QR generation, exports, validations, shared types
 
 ### Clipboard sharing requirements
 
