@@ -277,16 +277,41 @@ export default function Home() {
                   onSolidColorChange={setCornersDotSolidColor}
                   onGradientChange={setCornersDotGradient}
                 />
-                <PerElementColorControl
-                  label="Background"
-                  mode={backgroundMode}
-                  solidColor={backgroundSolidColor}
-                  gradient={backgroundGradient}
-                  onModeChange={setBackgroundMode}
-                  onSolidColorChange={setBackgroundSolidColor}
-                  onGradientChange={setBackgroundGradient}
-                  allowTransparent={true}
+              </div>
+            </ControlSection>
+
+            <ControlSection title="Background">
+              <div className="space-y-6">
+                <BackgroundImagePicker
+                  backgroundImage={backgroundImage}
+                  onBackgroundImageChange={setBackgroundImage}
+                  backgroundOpacity={backgroundOpacity}
+                  onOpacityChange={setBackgroundOpacity}
                 />
+                {!backgroundImage && (
+                  <>
+                    <div className="relative">
+                      <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-[var(--border-subtle)]" />
+                      </div>
+                      <div className="relative flex justify-center text-xs">
+                        <span className="bg-[var(--surface-raised)] px-2 text-[var(--text-secondary)]">
+                          or use color/gradient
+                        </span>
+                      </div>
+                    </div>
+                    <PerElementColorControl
+                      label="Color"
+                      mode={backgroundMode}
+                      solidColor={backgroundSolidColor}
+                      gradient={backgroundGradient}
+                      onModeChange={setBackgroundMode}
+                      onSolidColorChange={setBackgroundSolidColor}
+                      onGradientChange={setBackgroundGradient}
+                      allowTransparent={true}
+                    />
+                  </>
+                )}
               </div>
             </ControlSection>
 
@@ -311,15 +336,6 @@ export default function Home() {
                 onLogoChange={setLogo}
                 onLogoSizeChange={setLogoSize}
                 qrSize={300}
-              />
-            </ControlSection>
-
-            <ControlSection title="Background Image">
-              <BackgroundImagePicker
-                backgroundImage={backgroundImage}
-                onBackgroundImageChange={setBackgroundImage}
-                backgroundOpacity={backgroundOpacity}
-                onOpacityChange={setBackgroundOpacity}
               />
             </ControlSection>
           </div>
