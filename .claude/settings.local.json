@@ -24,7 +24,13 @@
       "Bash(yarn dev)",
       "Bash(xargs:*)",
       "Bash(node:*)",
-      "Bash(node -e:*)"
+      "Bash(node -e:*)",
+      "Skill(gsd:map-codebase)",
+      "Bash(wc:*)",
+      "Bash(cat:*)",
+      "Bash(yarn remove:*)",
+      "Bash(yarn lint:*)",
+      "Bash(yarn why:*)"
     ]
   }
 }
