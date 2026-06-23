@@ -101,6 +101,28 @@ h1, h2, h3, h4 {
   color: var(--emphasis);
 }
 
+@keyframes module-flicker {
+  0%, 100% { opacity: 1; }
+  25% { opacity: 0.42; }
+  55% { opacity: 0.85; }
+  78% { opacity: 0.5; }
+}
+
+.animate-module-flicker {
+  animation: module-flicker 3.4s ease-in-out infinite;
+}
+
+.animate-module-flicker-delayed {
+  animation: module-flicker 3.7s ease-in-out infinite 2.1s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-module-flicker,
+  .animate-module-flicker-delayed {
+    animation: none;
+  }
+}
+
 /* Accent border */
 .accent-border {
   position: relative;

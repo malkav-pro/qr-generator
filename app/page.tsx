@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import Image from 'next/image';
 import {
   TypeSelector,
   PerElementColorControl,
@@ -15,6 +14,7 @@ import {
   LogoPicker,
   Footer,
   BackgroundImagePicker,
+  AnimatedQRMark,
 } from '@/components';
 import { ControlSection } from '@/components/ui';
 import { useQRCode } from '@/hooks/useQRCode';
@@ -142,17 +142,8 @@ export default function Home() {
       {/* Header */}
       <header className="relative z-10 border-b border-[var(--border-subtle)]">
         <div className="max-w-7xl mx-auto px-6 py-8 lg:px-12 lg:py-12">
-          <div className="flex items-end gap-4">
-            <div className="grid size-14 shrink-0 place-items-center rounded-xl border border-[var(--border-medium)] bg-[var(--surface-raised)] shadow-[var(--shadow-sm)]">
-              <Image
-                src="/icon.svg"
-                alt=""
-                aria-hidden="true"
-                width={36}
-                height={36}
-                className="size-9"
-              />
-            </div>
+          <div className="flex items-end gap-5">
+            <AnimatedQRMark />
             <div>
               <h1 className="text-4xl lg:text-5xl font-bold tracking-tight gradient-text leading-none">
                 QR Code Generator
