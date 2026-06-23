@@ -1,12 +1,39 @@
 import type { Metadata } from "next";
-import { DM_Sans } from "next/font/google";
+import {
+  Hanken_Grotesk,
+  Bricolage_Grotesque,
+  Lora,
+  Spline_Sans_Mono,
+} from "next/font/google";
 import { HashCleanup } from "@/components/HashCleanup";
 import "./globals.css";
 
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
+const hanken = Hanken_Grotesk({
+  variable: "--font-hanken",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+});
+
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
+  subsets: ["latin"],
+  weight: ["400", "600", "700", "800"],
+  display: "swap",
+});
+
+const lora = Lora({
+  variable: "--font-lora",
+  subsets: ["latin"],
+  style: ["italic", "normal"],
+  weight: ["400", "500", "600"],
+  display: "swap",
+});
+
+const spline = Spline_Sans_Mono({
+  variable: "--font-spline",
+  subsets: ["latin"],
+  weight: ["400", "500"],
   display: "swap",
 });
 
@@ -21,7 +48,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={dmSans.variable}>
+    <html
+      lang="en"
+      className={`${hanken.variable} ${bricolage.variable} ${lora.variable} ${spline.variable}`}
+    >
       <body className="antialiased">
         <HashCleanup />
         {children}

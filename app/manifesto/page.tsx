@@ -73,7 +73,7 @@ export default function ManifestoPage() {
             advertising surfaces — often without clear disclosure at the moment they are created.
           </p>
 
-          <p className="text-xl text-[var(--text-primary)] font-semibold mb-16">
+          <p className="accent-serif text-xl mb-16">
             This project exists as a direct rejection of that model.
           </p>
 
@@ -99,7 +99,7 @@ export default function ManifestoPage() {
               If you encode a URL, the QR code contains that URL — not a pointer to a service that
               may or may not exist tomorrow.
             </p>
-            <p className="text-xl text-[var(--accent-start)] font-semibold">
+            <p className="accent-serif text-xl">
               Once generated, the QR code is yours. Permanently.
             </p>
           </section>
@@ -185,7 +185,7 @@ export default function ManifestoPage() {
             <p className="text-2xl lg:text-3xl text-[var(--text-primary)] font-bold mb-4">
               QR codes should not be able to disappear.
             </p>
-            <p className="text-xl text-[var(--accent-start)] font-semibold">
+            <p className="accent-serif text-xl">
               This tool exists so they don't.
             </p>
           </section>

@@ -1,29 +1,35 @@
 @import "tailwindcss";
 
 :root {
-  /* Core colors */
-  --background: #0a0e14;
-  --foreground: #e6edf3;
+  /* Core colors — malkav.pro "Violet" system, cobalt signal.
+     Token NAMES are kept from the original tool so components stay
+     untouched; only the values are repointed to the house palette. */
+  --background: #14111b;
+  --foreground: #f3f1f6;
 
-  /* Accent gradient */
-  --accent-start: #00ffc6;
-  --accent-end: #00ff85;
-  --accent-glow: rgba(0, 255, 198, 0.15);
+  /* Accent (cobalt) — gradient retained for gradient-text / accent-border */
+  --accent-start: #3d5cff;
+  --accent-end: #8aa0ff;
+  --accent-glow: rgba(61, 92, 255, 0.18);
 
   /* Surfaces */
-  --surface-base: #141921;
-  --surface-raised: #1a1f2b;
-  --surface-elevated: #21263a;
+  --surface-base: #1c1825;
+  --surface-raised: #221d2c;
+  --surface-elevated: #272131;
 
-  /* Borders */
-  --border-subtle: rgba(255, 255, 255, 0.05);
-  --border-medium: rgba(255, 255, 255, 0.1);
-  --border-strong: rgba(255, 255, 255, 0.15);
+  /* Borders (ink-tinted to sit on the violet surfaces) */
+  --border-subtle: rgba(243, 241, 246, 0.05);
+  --border-medium: rgba(243, 241, 246, 0.1);
+  --border-strong: rgba(243, 241, 246, 0.16);
 
   /* Text */
-  --text-primary: #e6edf3;
-  --text-secondary: #8b949e;
-  --text-muted: #6e7681;
+  --text-primary: #f3f1f6;
+  --text-secondary: #9a93a6;
+  --text-muted: #6f6878;
+
+  /* Emphasis (Lora italic accents) */
+  --emphasis: #cdc6d8;
+  --accent-soft: #aebbff;
 
   /* Shadows */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -35,7 +41,12 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-dm-sans);
+  --font-sans: var(--font-hanken);
+  --font-display: var(--font-bricolage);
+  --font-serif: var(--font-lora);
+  --font-mono: var(--font-spline);
+  /* alias: legacy `font-dm-sans` utility now resolves to the body face */
+  --font-dm-sans: var(--font-hanken);
   --color-primary: var(--accent-start);
   --color-primary-hover: var(--accent-end);
   --color-surface: var(--surface-base);
@@ -62,10 +73,17 @@ body::before {
 body {
   background: var(--background);
   color: var(--foreground);
+  font-family: var(--font-hanken), system-ui, sans-serif;
   font-feature-settings: 'kern' 1, 'liga' 1;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Headings use the display face (Bricolage), matching malkav.pro */
+h1, h2, h3, h4 {
+  font-family: var(--font-bricolage), sans-serif;
+  letter-spacing: -0.02em;
 }
 
 /* Gradient text utility */
@@ -74,6 +92,13 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* Lora italic emphasis — the house "wink" accent */
+.accent-serif {
+  font-family: var(--font-lora), Georgia, serif;
+  font-style: italic;
+  color: var(--emphasis);
 }
 
 /* Accent border */

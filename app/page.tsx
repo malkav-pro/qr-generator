@@ -148,7 +148,7 @@ export default function Home() {
                 QR Code Generator
               </h1>
               <p className="mt-2 text-base lg:text-lg text-[var(--text-secondary)] font-medium">
-                Generate QR codes you own — no tracking, no redirects
+                Generate QR codes <span className="accent-serif">you own</span> — no tracking, no redirects
               </p>
             </div>
           </div>
