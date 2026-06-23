@@ -142,8 +142,8 @@ export default function Home() {
       {/* Header */}
       <header className="relative z-10 border-b border-[var(--border-subtle)]">
         <div className="max-w-7xl mx-auto px-6 py-8 lg:px-12 lg:py-12">
-          <div className="flex items-end gap-5">
-            <AnimatedQRMark />
+          <div className="flex items-start gap-5">
+            <AnimatedQRMark className="mt-1" />
             <div>
               <h1 className="text-4xl lg:text-5xl font-bold tracking-tight gradient-text leading-none">
                 QR Code Generator
